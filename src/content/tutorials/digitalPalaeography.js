@@ -31,8 +31,12 @@ export const digitalPalaeographyContent = {
   },
   resources: [
     {
-      label: 'Digital Palaeography Zotero Library',
-      href: 'https://www.zotero.org/groups/6352684/digital_palaeography/library',
+      label: 'Browse the Digital Palaeography bibliography',
+      to: '/bibliography',
+    },
+    {
+      label: 'Introduction references',
+      to: { path: '/bibliography', query: { collection: 'XWR4ID82' } },
     },
   ],
   concepts: [
@@ -47,6 +51,10 @@ export const digitalPalaeographyContent = {
         'Automatic transcription is performed by OCR or HTR systems that recognize and convert text from images using algorithms and machine learning models.',
         'The workflow described in the source moves through input and preprocessing, layout recognition, text recognition, and post-processing.',
       ],
+      bibliographyLink: {
+        label: 'Browse Transcription references',
+        to: { path: '/bibliography', query: { collection: 'EBC64JHC' } },
+      },
     },
     {
       id: 'xml',
@@ -59,6 +67,10 @@ export const digitalPalaeographyContent = {
         'It organizes data hierarchically as a tree structure with root, parent, child, and sibling elements.',
         'In Digital Palaeography it is fundamental through standards like TEI for transcriptions, annotations, and manuscript description.',
       ],
+      bibliographyLink: {
+        label: 'Browse XML references',
+        to: { path: '/bibliography', query: { collection: 'W6CWTT6J' } },
+      },
     },
     {
       id: 'iiif',
@@ -71,6 +83,10 @@ export const digitalPalaeographyContent = {
         'A IIIF object is described through a manifest in JSON format.',
         'Common viewers in this ecosystem include Mirador, Universal Viewer, Glycerine Viewer, Clover, Annona, IIIF Curation Viewer, Tify, and OpenSeadragon.',
       ],
+      bibliographyLink: {
+        label: 'Browse IIIF references',
+        to: { path: '/bibliography', query: { collection: 'H23TZCFJ' } },
+      },
     },
     {
       id: 'lod',
@@ -83,6 +99,10 @@ export const digitalPalaeographyContent = {
         'The source explains LOD through RDF, URIs, HTTP URIs, links to external datasets, and SPARQL.',
         'The Mapping Manuscript Migrations project is given as a Digital Palaeography example for linking manuscript-related data from different sources.',
       ],
+      bibliographyLink: {
+        label: 'Browse Linked Open Data references',
+        to: { path: '/bibliography', query: { collection: 'M63XMKFI' } },
+      },
     },
     {
       id: 'ner',
@@ -95,6 +115,10 @@ export const digitalPalaeographyContent = {
         'The source traces NER from classical machine-learning approaches such as HMMs and CRFs to neural models such as LSTMs and transformer-based systems.',
         'For Digital Palaeography, the side-menu script highlights manuscript annotation and historical-context reconstruction through entities such as scribes, locations, institutions, and dates.',
       ],
+      bibliographyLink: {
+        label: 'Browse NER references',
+        to: { path: '/bibliography', query: { collection: 'ZCUG5PJZ' } },
+      },
     },
     {
       id: 'gis',
@@ -107,6 +131,10 @@ export const digitalPalaeographyContent = {
         'The source frames GIS as a tool for analysing provenance, workshops, donor networks, material production context, and regional script change.',
         'QGIS is used in the text as the main example because it is open source, transparent, and flexible for Digital Humanities work.',
       ],
+      bibliographyLink: {
+        label: 'Browse GIS references',
+        to: { path: '/bibliography', query: { collection: 'DF7HMRXD' } },
+      },
     },
     {
       id: 'database-archiving',
@@ -119,6 +147,10 @@ export const digitalPalaeographyContent = {
         'The text stresses that data modelling is not only technical: selection, categorization, and structure reflect scholarly decisions.',
         'A digitized object is described not as a simple image, but as a complex research object containing image data, metadata, and transcriptions.',
       ],
+      bibliographyLink: {
+        label: 'Browse Database and Archiving references',
+        to: { path: '/bibliography', query: { collection: '7QFM957E' } },
+      },
     },
     {
       id: 'digital-editions',
@@ -131,10 +163,14 @@ export const digitalPalaeographyContent = {
         'It describes a separation between the core data layer, often TEI-XML, and the presentation layer delivered through an interface.',
         'Digital editions are presented as one possible final product of palaeographical research because they capture manuscript detail during transcription and then publish it through visualization tools.',
       ],
+      bibliographyLink: {
+        label: 'Browse Digital Editions references',
+        to: { path: '/bibliography', query: { collection: 'V8HDZX7A' } },
+      },
     },
   ],
   furtherReading: [
     'Use the live OrgPad map as the main interactive guide through the unit.',
-    'The Zotero library collects the supporting bibliography referenced across the topic nodes.',
+    'Use the integrated bibliography to continue from each concept into the project library without leaving the portal.',
   ],
 }

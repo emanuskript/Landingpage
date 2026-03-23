@@ -17,6 +17,7 @@ defineProps({
     <ul class="citation-list__items">
       <li v-for="item in items" :key="item.label || item">
         <template v-if="typeof item === 'string'">{{ item }}</template>
+        <RouterLink v-else-if="item.to" :to="item.to">{{ item.label }}</RouterLink>
         <a v-else-if="item.href" :href="item.href" target="_blank" rel="noreferrer noopener">{{ item.label }}</a>
         <span v-else>{{ item.label }}</span>
       </li>

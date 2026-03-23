@@ -53,6 +53,9 @@ const sidebarItems = computed(() =>
           <ul>
             <li v-for="bullet in concept.bullets" :key="bullet">{{ bullet }}</li>
           </ul>
+          <p v-if="concept.bibliographyLink" class="concept-grid__action">
+            <RouterLink :to="concept.bibliographyLink.to">{{ concept.bibliographyLink.label }}</RouterLink>
+          </p>
         </SectionFrame>
       </div>
 
@@ -97,5 +100,20 @@ const sidebarItems = computed(() =>
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1rem;
+}
+
+.concept-grid__action {
+  margin-top: 1rem;
+}
+
+.concept-grid__action a {
+  color: var(--color-primary);
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  text-decoration: none;
+}
+
+.concept-grid__action a:hover {
+  text-decoration: underline;
 }
 </style>

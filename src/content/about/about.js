@@ -24,14 +24,14 @@ export const aboutContent = {
       id: 'links',
       title: 'Project links',
       paragraphs: [
-        'Public project links can be added here as they are released. The Digital Palaeography Zotero library is already available and linked below.',
+        'Public project links can be added here as they are released. The Digital Palaeography bibliography is already integrated into the portal and linked below.',
       ],
       links: [
         { label: 'GitHub repository coming soon', href: null, placeholder: true },
         { label: 'Zenodo record coming soon', href: null, placeholder: true },
         {
-          label: 'Digital Palaeography Zotero Library',
-          href: 'https://www.zotero.org/groups/6352684/digital_palaeography/library',
+          label: 'Digital Palaeography bibliography',
+          to: '/bibliography',
         },
       ],
     },

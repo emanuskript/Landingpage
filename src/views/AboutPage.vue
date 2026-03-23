@@ -11,7 +11,8 @@ import { aboutContent } from '../content/about/about'
         <p v-for="paragraph in section.paragraphs" :key="paragraph">{{ paragraph }}</p>
         <ul v-if="section.links?.length">
           <li v-for="link in section.links" :key="link.label">
-            <a v-if="link.href" :href="link.href" target="_blank" rel="noreferrer noopener">{{ link.label }}</a>
+            <RouterLink v-if="link.to" :to="link.to">{{ link.label }}</RouterLink>
+            <a v-else-if="link.href" :href="link.href" target="_blank" rel="noreferrer noopener">{{ link.label }}</a>
             <span v-else>{{ link.label }}</span>
           </li>
         </ul>
