@@ -1,0 +1,72 @@
+:root {
+  --color-parchment: #efe4cf;
+  --color-parchment-light: #f8f3e7;
+  --color-parchment-dark: #dcccad;
+  --color-parchment-deep: #c7b38b;
+
+  --color-panel: rgba(248, 241, 229, 0.9);
+  --color-panel-muted: rgba(241, 233, 219, 0.86);
+  --color-panel-alt: #e8dcc4;
+  --color-panel-hover: rgba(247, 241, 230, 0.98);
+
+  --color-ink: #271d12;
+  --color-ink-light: #3c2d1e;
+  --color-ink-muted: #695643;
+  --color-ink-soft: #6e5d4c;
+
+  --color-primary: #395978;
+  --color-primary-strong: #21384f;
+  --color-primary-light: #5c7a95;
+  --color-primary-soft: #d8e1ea;
+  --color-gold: #d4b671;
+  --color-gold-light: #e6c98c;
+  --color-gold-muted: #a98f58;
+  --color-moss: #6c8845;
+  --color-red: #8f4338;
+  --color-green: #56735b;
+  --color-branch: #7f6439;
+
+  --color-border: rgba(113, 89, 54, 0.24);
+  --color-border-soft: rgba(113, 89, 54, 0.14);
+  --color-border-light: rgba(113, 89, 54, 0.18);
+  --color-border-strong: rgba(106, 83, 43, 0.3);
+  --color-shadow: rgba(60, 38, 12, 0.08);
+  --color-shadow-medium: rgba(60, 38, 12, 0.16);
+
+  --font-display: 'Cinzel', 'Palatino Linotype', 'Book Antiqua', serif;
+  --font-serif: 'IM Fell English', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Lato', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
+  --radius-round: 999px;
+
+  --content-width: 860px;
+  --sidebar-width: 252px;
+  --nav-height: 56px;
+
+  --transition-fast: 150ms ease;
+  --transition-base: 240ms ease;
+  --transition-slow: 420ms ease;
+
+  --shadow-panel:
+    0 14px 30px rgba(69, 49, 23, 0.08),
+    0 4px 12px rgba(69, 49, 23, 0.05);
+
+  --z-base: 1;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 40;
+  --z-tooltip: 50;
+  --z-rootling: 100;
+}

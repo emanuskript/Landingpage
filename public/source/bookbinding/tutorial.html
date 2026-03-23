@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Creation of a Medieval Codex: An Interactive Tutorial</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&family=Lato:wght@300;400;700&display=swap');
+
+  :root {
+    --parchment: #f5ecd7;
+    --parchment-dark: #e8d9b8;
+    --ink: #2b1d0e;
+    --red-ink: #8b1a1a;
+    --blue-ink: #1a3a5c;
+    --gold: #b8960c;
+    --gold-light: #d4af37;
+    --border: #8b6914;
+    --correction: #c0392b;
+    --correction-bg: #fdf0ed;
+    --note-bg: #eaf3fb;
+    --note-border: #1a3a5c;
+    --takeaway-bg: #f0f7e6;
+    --takeaway-border: #4a7c26;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #3a2a14;
+    background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 2px, transparent 2px, transparent 8px);
+    font-family: 'IM Fell English', Georgia, serif;
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  .page-wrapper {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* Header */
+  .site-header {
+    text-align: center;
+    padding: 40px 30px 30px;
+    background: var(--parchment);
+    border: 3px solid var(--border);
+    border-bottom: none;
+    position: relative;
+    margin-top: 20px;
+  }
+
+  .site-header::before {
+    content: '';
+    display: block;
+    height: 6px;
+    background: repeating-linear-gradient(90deg, var(--gold) 0px, var(--gold) 10px, var(--red-ink) 10px, var(--red-ink) 20px, var(--blue-ink) 20px, var(--blue-ink) 30px);
+    position: absolute; top: 0; left: 0; right: 0;
+  }
+
+  .site-header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 2.2rem;
+    color: var(--red-ink);
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+  }
+
+  .site-header .subtitle {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.9rem;
+    color: var(--blue-ink);
+    margin-top: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* TOC */
+  .toc {
+    background: var(--parchment-dark);
+    border: 2px solid var(--border);
+    border-top: none;
+    border-bottom: none;
+    padding: 20px 30px;
+  }
+
+  .toc h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: var(--red-ink);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .toc ol {
+    list-style: upper-roman;
+    padding-left: 24px;
+    column-count: 2;
+    column-gap: 20px;
+  }
+
+  .toc li {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+  }
+
+  .toc a {
+    color: var(--blue-ink);
+    text-decoration: none;
+  }
+
+  .toc a:hover { text-decoration: underline; color: var(--red-ink); }
+
+  /* Main content */
+  .content {
+    background: var(--parchment);
+    border: 2px solid var(--border);
+    padding: 30px 40px;
+    border-top: none;
+  }
+
+  .unit {
+    margin-bottom: 50px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 40px;
+  }
+
+  .unit:last-of-type { border-bottom: none; }
+
+  .unit-heading {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    color: var(--red-ink);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+
+  .unit-numeral {
+    font-size: 0.85rem;
+    font-family: 'Lato', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--border);
+    flex-shrink: 0;
+  }
+
+  p {
+    line-height: 1.85;
+    margin-bottom: 14px;
+    font-size: 1rem;
+  }
+
+  em { font-style: italic; }
+  strong { font-weight: bold; }
+
+  /* Correction markup */
+  .correction {
+    background: var(--correction-bg);
+    color: var(--correction);
+    border-bottom: 2px solid var(--correction);
+    cursor: help;
+    position: relative;
+    display: inline;
+  }
+
+  .correction::after {
+    content: ' ✏️';
+    font-size: 0.75em;
+  }
+
+  .correction-tooltip {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background: #fff;
+    border: 1px solid var(--correction);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 0.82rem;
+    font-family: 'Lato', sans-serif;
+    color: var(--correction);
+    white-space: nowrap;
+    z-index: 100;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.15);
+    min-width: 200px;
+    white-space: normal;
+  }
+
+  .correction:hover .correction-tooltip {
+    display: block;
+  }
+
+  /* Date additions */
+  .date-added {
+    color: var(--blue-ink);
+    font-size: 0.88em;
+    font-family: 'Lato', sans-serif;
+    font-style: italic;
+    vertical-align: super;
+    font-size: 0.78em;
+  }
+
+  /* Margin notes */
+  .marginal-note {
+    float: right;
+    clear: right;
+    width: 140px;
+    margin: 0 -160px 10px 15px;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.75rem;
+    color: var(--blue-ink);
+    border-left: 2px solid var(--blue-ink);
+    padding-left: 8px;
+    line-height: 1.4;
+    font-style: italic;
+  }
+
+  @media (max-width: 1080px) {
+    .marginal-note {
+      float: none;
+      width: auto;
+      margin: 0 0 12px 0;
+      border-left: 3px solid var(--note-border);
+      background: var(--note-bg);
+      padding: 8px 12px;
+      border-radius: 0 4px 4px 0;
+    }
+  }
+
+  /* Takeaway box */
+  .takeaway {
+    background: var(--takeaway-bg);
+    border-left: 4px solid var(--takeaway-border);
+    border-radius: 0 6px 6px 0;
+    padding: 14px 18px;
+    margin: 20px 0;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.9rem;
+  }
+
+  .takeaway h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    color: var(--takeaway-border);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .takeaway ul {
+    padding-left: 18px;
+    line-height: 1.7;
+  }
+
+  .takeaway li { margin-bottom: 4px; }
+
+  /* Illustrations */
+  .illustration-block {
+    margin: 22px 0;
+    border: 1px solid var(--border);
+    background: var(--parchment-dark);
+    padding: 10px;
+  }
+
+  .illustration-block img {
+    width: 100%;
+    max-height: 280px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .illustration-caption {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.78rem;
+    color: #555;
+    margin-top: 7px;
+    text-align: center;
+    font-style: italic;
+  }
+
+  .illustration-caption a {
+    color: var(--blue-ink);
+  }
+
+  /* Lacuna / blank */
+  .lacuna {
+    background: repeating-linear-gradient(90deg, #ccc 0, #ccc 6px, transparent 6px, transparent 10px);
+    display: inline-block;
+    min-width: 80px;
+    height: 1em;
+    vertical-align: middle;
+    border-radius: 2px;
+    position: relative;
+    cursor: help;
+  }
+
+  .lacuna::after {
+    content: '[lacuna]';
+    font-size: 0.75em;
+    color: #888;
+    font-family: 'Lato', sans-serif;
+    font-style: italic;
+    position: absolute;
+    left: 0; top: 0;
+    white-space: nowrap;
+    padding: 1px 4px;
+  }
+
+  /* References / links */
+  .ref-box {
+    background: var(--note-bg);
+    border: 1px solid var(--note-border);
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin: 14px 0;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.82rem;
+  }
+
+  .ref-box a { color: var(--blue-ink); }
+
+  /* Quiz section */
+  .quiz-section {
+    margin-top: 50px;
+    padding: 30px;
+    background: #1a1208;
+    border: 3px double var(--gold);
+  }
+
+  .quiz-section h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    color: var(--gold-light);
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  .quiz-section .quiz-subtitle {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.82rem;
+    color: #aaa;
+    text-align: center;
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+
+  .quiz-question {
+    margin-bottom: 28px;
+    padding: 18px;
+    background: #2a1e0a;
+    border: 1px solid #5a4010;
+    border-radius: 4px;
+  }
+
+  .question-text {
+    font-family: 'IM Fell English', serif;
+    font-size: 1rem;
+    color: #f5ecd7;
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+
+  .question-number {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    color: var(--gold-light);
+    display: block;
+    margin-bottom: 6px;
+    letter-spacing: 0.1em;
+  }
+
+  .option-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    padding: 7px 10px;
+    border-radius: 3px;
+    transition: background 0.2s;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.9rem;
+    color: #ddd;
+    border: 1px solid transparent;
+  }
+
+  .option-label:hover { background: rgba(180,140,30,0.12); border-color: #5a4010; }
+  .option-label input { margin-top: 3px; accent-color: var(--gold-light); flex-shrink: 0; }
+
+  .quiz-btn {
+    display: inline-block;
+    background: var(--gold);
+    color: #1a1208;
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    padding: 8px 22px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    margin-top: 10px;
+    transition: background 0.2s;
+  }
+
+  .quiz-btn:hover { background: var(--gold-light); }
+
+  .quiz-feedback {
+    margin-top: 10px;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.87rem;
+    padding: 8px 12px;
+    border-radius: 3px;
+    display: none;
+  }
+
+  .quiz-feedback.correct {
+    background: #1a3a1a;
+    color: #7fcb7f;
+    border: 1px solid #4a7c26;
+  }
+
+  .quiz-feedback.incorrect {
+    background: #3a1010;
+    color: #e07070;
+    border: 1px solid #8b1a1a;
+  }
+
+  .quiz-score {
+    text-align: center;
+    padding: 14px;
+    background: #0e0b04;
+    margin-top: 20px;
+    font-family: 'Cinzel', serif;
+    color: var(--gold-light);
+    font-size: 1.1rem;
+    display: none;
+  }
+
+  /* H5P export block */
+  .h5p-block {
+    background: #0a1525;
+    border: 1px solid var(--note-border);
+    border-radius: 4px;
+    padding: 16px;
+    margin-top: 30px;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.82rem;
+    color: #aac;
+  }
+
+  .h5p-block h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    color: #7fb3e0;
+    margin-bottom: 10px;
+  }
+
+  .h5p-block pre {
+    background: #040d18;
+    padding: 12px;
+    border-radius: 3px;
+    overflow-x: auto;
+    color: #bde;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .toggle-h5p {
+    background: #1a3a5c;
+    color: #acd;
+    border: 1px solid #2a5a8c;
+    padding: 6px 14px;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-top: 10px;
+  }
+
+  .toggle-h5p:hover { background: #2a4a7c; }
+  .h5p-json { display: none; }
+
+  /* Glossary popup */
+  .glossary-term {
+    border-bottom: 1px dotted var(--blue-ink);
+    cursor: help;
+    color: var(--blue-ink);
+    position: relative;
+  }
+
+  .glossary-term .glossary-def {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background: var(--note-bg);
+    border: 1px solid var(--note-border);
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.8rem;
+    color: var(--ink);
+    width: 240px;
+    z-index: 50;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+    line-height: 1.5;
+  }
+
+  .glossary-term:hover .glossary-def { display: block; }
+
+  /* Print styles */
+  @media print {
+    body { background: white; }
+    .page-wrapper { max-width: 100%; padding: 0; }
+    .quiz-section { background: #eee; border: 2px solid #333; }
+    .quiz-question { background: #f5f5f5; border: 1px solid #ccc; }
+    .question-text { color: #000; }
+    .option-label { color: #000; }
+  }
+
+  /* Accordion for duplicate/redundant section note */
+  .duplicate-warning {
+    background: #fff8e6;
+    border: 1px solid #c8a800;
+    border-left: 4px solid #c8a800;
+    padding: 10px 14px;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.82rem;
+    color: #5a4000;
+    margin: 10px 0;
+    border-radius: 0 4px 4px 0;
+  }
+
+  hr.ornament {
+    border: none;
+    text-align: center;
+    margin: 20px 0;
+    color: var(--border);
+    font-size: 1.2rem;
+  }
+  hr.ornament::after { content: '✦ ✦ ✦'; }
+
+  /* Per-unit quiz block */
+  .unit-quiz {
+    background: var(--parchment-dark);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--blue-ink);
+    margin-top: 28px;
+    padding: 18px 22px;
+  }
+
+  .unit-quiz-heading {
+    font-family: 'Cinzel', serif;
+    font-size: 0.88rem;
+    color: var(--blue-ink);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+  }
+
+  .unit-quiz .quiz-question {
+    background: #fff9ef;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+
+  .unit-quiz .quiz-question:last-of-type { margin-bottom: 0; }
+
+  .unit-quiz .question-text {
+    font-family: 'IM Fell English', serif;
+    font-size: 0.96rem;
+    color: var(--ink);
+    margin-bottom: 10px;
+    line-height: 1.6;
+  }
+
+  .unit-quiz .question-number {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.75rem;
+    color: var(--blue-ink);
+    font-style: italic;
+    display: block;
+    margin-bottom: 5px;
+    letter-spacing: 0.05em;
+  }
+
+  .unit-quiz .option-label {
+    color: var(--ink);
+    font-size: 0.88rem;
+  }
+
+  .unit-quiz .option-label:hover { background: rgba(26,58,92,0.07); border-color: var(--blue-ink); }
+
+  .unit-quiz .quiz-btn {
+    background: var(--blue-ink);
+    color: #f5ecd7;
+    font-size: 0.8rem;
+    padding: 6px 16px;
+    margin-top: 8px;
+  }
+
+  .unit-quiz .quiz-btn:hover { background: #2a4a7c; }
+
+  .unit-quiz-score {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.82rem;
+    margin-top: 12px;
+    padding: 8px 12px;
+    border-radius: 3px;
+    display: none;
+    text-align: center;
+  }
+
+  .unit-quiz-score.pass { background: #e6f4e6; color: #2a5c2a; border: 1px solid #4a7c26; }
+  .unit-quiz-score.fail { background: #fdf0ed; color: #8b1a1a; border: 1px solid #c0392b; }
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+<header class="site-header">
+  <h1>The Creation of a Medieval Codex</h1>
+  <p class="subtitle">An Interactive Tutorial · Units I–IX</p>
+</header>
+
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#unit1">Writing Supports</a></li>
+    <li><a href="#unit2">Folding & Formats</a></li>
+    <li><a href="#unit3">Quires & Ruling</a></li>
+    <li><a href="#unit4">Scribal Tools & Techniques</a></li>
+    <li><a href="#unit5">Decoration & Pigments</a></li>
+    <li><a href="#unit6">Sewing the Bookblock</a></li>
+    <li><a href="#unit7">Spine Treatment, Endbands & Edge Trimming</a></li>
+    <li><a href="#unit8">Bookboards</a></li>
+    <li><a href="#unit9">Covering & Fastenings</a></li>
+  </ol>
+</nav>
+
+<main class="content">
+
+<!-- ═══════════════════════════════════════════════════ UNIT I ═══ -->
+<section class="unit" id="unit1">
+  <h2 class="unit-heading"><span class="unit-numeral">Unit I</span> Writing Supports</h2>
+
+  <div class="takeaway">
+    <h4>📜 Key Takeaways</h4>
+    <ul>
+      <li>Medieval writing supports include papyrus, parchment, wax tablets, and paper — each with distinct properties and historical ranges.</li>
+      <li>Papyrus dominated antiquity; parchment dominated the European Middle Ages; paper spread from the late thirteenth century onward and became dominant well before the printing press.</li>
+      <li>Papyrus codices were rare but did exist; the transition to the codex form predates the full triumph of parchment.</li>
+      <li>Palimpsests — reused parchment — can be recovered by modern imaging technologies such as multispectral imaging.</li>
+    </ul>
+  </div>
+
+  <p>Ancient and medieval writing comes on many supports: lead tablets, wood tablets, bark, pottery, clay, stone. Mostly lost are the wax tablets used for everyday and ephemeral writing. In the ancient world, papyrus was the most common writing support. In the European Middle Ages, <span class="glossary-term">parchment<span class="glossary-def">A writing material made from the skin of a calf (vellum), sheep, or goat, prepared by de-hairing, liming, stretching under tension on a frame, and scraping with a lunellum. Unlike leather, parchment is not tanned but dried under tension. The word derives from Pergamum (modern Bergama, Turkey).</span></span> was the most common support until the spread of paper beginning in the late thirteenth century.</p>
+
+  <p>Throughout much of antiquity, the primary writing support for books was papyrus. Manufactured in Egypt from the pith of the papyrus plant (<em>Cyperus papyrus</em>), it was widely used across the Greek and Roman world. Thin strips of the plant were laid in perpendicular layers, pressed, and dried to form sheets, which were then joined edge to edge into long rolls. The natural fibers of the plant give papyrus a distinctive horizontal and vertical grain.</p>
+
+  <div class="illustration-block">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Papyrus_plant_at_kew_gardens.jpg/640px-Papyrus_plant_at_kew_gardens.jpg" alt="Papyrus plant (Cyperus papyrus)" onerror="this.style.display='none'">
+    <p class="illustration-caption">The papyrus plant (<em>Cyperus papyrus</em>) at Kew Gardens. Public domain via <a href="https://commons.wikimedia.org/wiki/File:Papyrus_plant_at_kew_gardens.jpg" target="_blank">Wikimedia Commons</a>.</p>
+  </div>
+
+  <p>Papyrus writing surfaces usually took the form of rolls. 
+      <div class="illustration-block">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c8/Busto_maschile.JPG" alt="A man holding a papyrus scroll" onerror="this.style.display='none'">
+    <p class="illustration-caption">A man holding a papyrus scroll. Before 79 C.E. National Archaeological Museum of Naples (inv. nr. 9072). Public domain via <a href="https://en.wikipedia.org/wiki/Papyrus#/media/File:Busto_maschile.JPG" target="_blank">Wikimedia Commons</a>.</p>
+  </div>
+    <p>In antiquity, such rolls were transported in cylindrical containers or baskets. The oldest surviving Latin poetry — that of 
+    <span class="glossary-term">Cornelius Gallus<span class="glossary-def">Gaius Cornelius Gallus (c. 70–26 B.C.E.), Roman poet and soldier. Long considered almost entirely lost; a papyrus fragment was discovered at Qasr Ibrim in 1978.</span></span> 
+    — survives on a papyrus fragment discovered in Egypt. Yet for Latin literature, the most famous surviving examples come from the Villa of the Papyri in Herculaneum, preserved under volcanic ash during the eruption of Mount Vesuvius in 79 C.E. These carbonized rolls are extremely fragile, and for centuries their contents remained largely inaccessible. Recent imaging technologies, including advanced scanning and virtual unrolling techniques, now allow scholars to read portions of these texts without physically opening them. Among the most exciting developments is the identification of historical works attributed to 
+    <span class="glossary-term">Seneca the Elder<span class="glossary-def">Marcus Annaeus Seneca (c. 54 B.C.E.–39 C.E.), Roman rhetorician and father of the philosopher Seneca the Younger. His <em>Controversiae</em> and <em>Suasoriae</em> are the main surviving works.</span></span>, 
+    whose lost historical writings may survive within these damaged scrolls. This identification remains preliminary.</p>
+
+  <p>Although papyrus is often considered too brittle for codex construction, there is evidence that papyrus codices did exist. A remarkable discovery at the University Library of Graz in 2023 identified a papyrus fragment that had originally been folded and bound as a bifolium within a codex structure. If this interpretation is accepted, it represents the oldest surviving bifolium from antiquity, demonstrating that the <span class="glossary-term">codex<span class="glossary-def">A book formed from bound stacked sheets, as opposed to the scroll/roll (volumen). The codex gradually replaced the roll from the second century C.E. onward. Its advantages include random-access reading, use of both sides of each leaf, and greater compactness.</span></span> form — later dominant in medieval manuscripts and modern books — was already being explored while papyrus was still in use. While papyrus codices in the European Middle Ages are rare, famous examples survive in the fragmentary remains of the homilies of 
+    <span class="glossary-term">Avitus of Vienne<span class="glossary-def">Alcimus Ecdicius Avitus (c. 450–518 C.E.), bishop of Vienne, Gaul. His works include biblical epic poetry and theological letters.</span></span>
+    and in the <em>Antiquitates Iudaicae</em> (Antiquities of the Jews) of <span class="glossary-term">Flavius Josephus<span class="glossary-def">Flavius Josephus (c. 37–c. 100 C.E.), a Roman-Jewish historian. His 20-volume work <em>Antiquities of the Jews</em> (93 AD), traces the history, laws and customs of the Jewish people from creation to the first century. It was translated into Latin by Rufinus of Aquileia (c. 345–411 C.E.)</span></span>, both of the sixth or seventh century.</p>
+
+  <p>According to a legend recorded by 
+    <span class="glossary-term">Pliny the Elder<span class="glossary-def">Gaius Plinius Secundus (23/24–79 C.E.), Roman author and naturalist. His <em>Naturalis Historia</em> (Natural History) is a major encyclopedic source for ancient science and technology.</span></span> 
+    in his <em>Natural History</em> (13.21.70), parchment originated in a trade dispute between Pergamum and Alexandria. When the king of Alexandria — 
+    allegedly banned the export of papyrus to Pergamum in order to hinder its rival library, Pergamene craftsmen responded by perfecting the preparation of writing material from animal skins — parchment (<em>membrana</em>). Pliny famously remarked that "the immortality of all human beings depends on it." While papyrus continued in widespread use for centuries, parchment ultimately proved more durable in medieval Europe and adaptable for the codex format. The specific king named by Pliny is usually identified as <span class="glossary-term">Ptolemy V Epiphanes<span class="glossary-def">Ptolemy V Epiphanes (r. 204–181 B.C.E.), fifth ruler of the Ptolemaic dynasty of Egypt. Pliny the Elder (<em>Nat. Hist.</em> XIII.21) identifies him as the king who banned papyrus exports to Pergamum, though the historicity of the episode is debated by modern scholars.</span></span> (r. 204–181 B.C.E.), though the historicity of the episode is debated.</p>
+
+  <p>In fact, parchment long predates the episode described by Pliny. Writing on treated animal skin was known in the Near East well before the Hellenistic period. The Latin poet 
+    <span class="glossary-term">Catullus<span class="glossary-def">Gaius Valerius Catullus (c. 84–54 B.C.E.), Roman lyric poet.</span></span> 
+    (poem 22) appears to refer to reused parchment, suggesting that the material was already familiar in the first century B.C.E. The poet 
+    <span class="glossary-term">Martial<span class="glossary-def">Marcus Valerius Martialis (c. 38/41–102/104 C.E.), Roman poet famous for his epigrams.</span></span> 
+    later gives one of the earliest references to a parchment codex. The earliest surviving parchment fragment with Latin script, known as <em>De bellis macedonicis</em>, dates to around 100 C.E., marking an important stage in the gradual shift toward parchment codices.</p>
+
+<p>The material for parchment is derived from the dermis layer of calfskin, sheepskin, or goatskin. Production begins with soaking the raw pelt to remove blood and impurities, followed by liming, which involves submerging the skin in an alkaline solution of slaked lime for anywhere from three to ten days. This causes the collagen fibers to swell and burst their casings, loosens the hair and follicles, and strips away natural grease. The technique of liming is attested in European literary sources by c. 800 CE and–perhaps transmitted from the Islamic world–represented a departure from the acidic vegetable infusions used in antiquity. After liming, the pelt is unhaired by scraping on a slanted board, fleshed to remove fat and muscle, trimmed of unusable sections, and then delimed in diluted vinegar to reduce the pH. Supplementary treatments such as bating (smearing in bird manure), puering (smearing in dog feces), or drenching with acids (barley, oat, ash bark, stale beer or urine) may also be applied. These procedures free remaining hair roots and grease, improve flexibility, and neutralize residual lime.</p>
+
+  <div class="illustration-block">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/a/ab/Mendel_I_034_v.jpg" alt="Preparation of parchment" onerror="this.style.display='none'">
+    <p class="illustration-caption">Preparation of parchment: stretching a skin on a frame. Public domain via <a href="https://commons.wikimedia.org/wiki/Category:Hausbuch_der_Mendelschen_Zw%C3%B6lfbr%C3%BCderstiftung_Band_1?uselang=de#/media/File:Mendel_I_034_v.jpg" target="_blank">Wikimedia Commons</a>.</p>
+  </div>
+
+<p>At this stage, the prepared skin could be finished as one of several distinct materials. <span class="glossary-term">Alum-tawed leather<span class="glossary-def">Leather prepared by treating a de-haired skin with alum (potassium aluminium sulfate) and salt, then working and drying it. The result is white, firm, and supple. Unlike vegetable-tanned leather, alum-tawing does not chemically transform the collagen and can deteriorate under damp conditions.</span></span> was treated with a potassium aluminium salt solution, then dried, and staked by stretching over a wooden surface to produce a characteristically white, supple material common on medieval book covers. <span class="glossary-term">Vegetable-tanned leather<span class="glossary-def">Leather made by immersing a de-haired skin in a tannin-rich solution (typically from oak bark or oak galls) for weeks or months. The tannins bond with collagen to produce a durable, water-resistant material. The standard covering leather for medieval bookbinding.</span></span>, by contrast, was steeped for up to a year in a solution rich in tannins, particularly from oak bark and oak galls, which bonded with the collagen fibers to produce a durable material resistant to water, heat, and decay.</p>
+
+<p>What fundamentally distinguishes parchment from leather is the drying process. After deliming, the wet, elastic skin is stretched tightly onto a wooden frame and dried under sustained tension. As it dries, the parchmentmaker scrapes the surface with a curved blade called a <span class="glossary-term">lunellum<span class="glossary-def">A crescent-shaped scraping tool used by the parchment-maker to thin and smooth the stretched skin as it dried. The scraping action, combined with the tension of the frame, reorganizes the collagen fibres into parallel layers, giving parchment its tautness and translucency.</span></span>, sometimes supplemented by pumice. This action, combined with the mechanical stress of stretching, reorganizes the normally irregular mesh of dermal collagen into uniform, parallel layers, which give parchment its characteristic tautness and translucency.</p>
+
+<p>Defects in parchment serve as material witnesses to both the skill of the maker and the life history of the animal. Veining results from inadequately drained blood, scarring from healed wounds, and holes from over-scraping, while cockling, a warping or puckering of the sheet, stems from uneven drying or later exposure to humidity.</p>
+
+<p>Modern science has opened new avenues for studying parchment through <span class="glossary-term">Zooarchaeology by Mass Spectrometry (ZooMS)<span class="glossary-def">A biomolecular technique that identifies animal species from collagen peptide markers using mass spectrometry. For manuscripts, tiny samples can be collected non-destructively using a PVC eraser rubbed across the parchment surface. Developed in the early 2000s and first applied systematically to manuscripts c. 2009.</span></span>. By analyzing the collagen profile of tiny samples, even those collected with a PVC eraser, researchers can identify the animal species used.</p>
+
+    <p>The investment of labor and capital in parchment making meant that parchments were reused as palimpsests. In palimpsests, older texts on the writing support were  scraped or washed off so that the surface could be written on again. Though the original writing was often faintly visible, modern imaging technologies such as 
+    <span class="glossary-term">multispectral imaging (MSI)<span class="glossary-def">A technique that captures images at multiple wavelengths of light (visible, infrared, ultraviolet), revealing materials invisible to the naked eye — used extensively in manuscript studies to recover erased or faded text.</span></span> 
+    now enable scholars to recover many erased texts.</p>
+
+  <p>Another ancient writing support was the wax tablet, widely used for note-taking, drafting, and education. A wooden tablet was recessed and filled with wax, into which letters were inscribed using a stylus. The writing could be erased by smoothing the wax surface with a <em>spatula</em>, a flat-edged tool sometimes at the opposite end of a stylus, like a modern pencil eraser. Wax tablets were thus ideal for ephemeral texts, such as drafts and school exercises, of which some examples survive. Multiple tablets could be hinged together to form a diptych or polyptych, an early precursor to the codex.</p>
+
+  <p>From the early centuries C.E. onward, paper gradually emerged as another major writing support. Invented in China by the second century B.C.E., paper spread westward through Islamic lands by the eighth century and reached parts of Europe by the twelfth and thirteenth centuries. Paper was produced by macerating plant fibers — including linen rags, hemp, bark, or other organic material — in water to create pulp. This pulp was scooped onto a mesh screen, forming a thin mat as water drained away, then pressed and dried into sheets. Compared to parchment, paper was cheaper and faster to produce, though generally less durable. Well before the spread of the printing press after the mid-fifteenth century, paper was becoming the dominant support for books in Europe.</p>
+
+   <div class="ref-box">
+    📚 <strong>Literature</strong><br>
+    C. Clarkson, "Rediscovering Parchment: The Nature of the Beast," <em>The Paper Conservator</em>, 16/1 (1992), 5–26.<br>
+    R. Reed, <em>Ancient Skins, Parchments and Leathers</em> (London, 1972).<br>
+    M.C. Scappaticcio,ed., <em>Seneca the Elder and his Rediscovered</em> Historiae ab initio bellorum civilium (Berlin, 2020)<br>
+    K.N. Turner, "The Materiality of Medieval Parchment: A Response to ‘The Animal Turn,’" <em>Revista Hispánica Moderna</em>, 71/1 (2018), 39–67.<br>
+    J. Vnouček, "The Story of the Production of Parchment as Recorded in the Animal Skins ofthe Hamburg Bible," <em>Journal of  Paper Conservation,</em> 1–46, https://doi.org/10.1080/18680860.2024.2448103.<br>
+    T. Zammit Lupi, et al., "‘The Graz Mummy Book’: The Oldest Known Codex Fragment from 260 BCDiscovered at Graz University Library, Austria," <em>Journal of Paper Conservation</em> 25 (2024), 41–46, https://doi.org/10.1080/18680860.2023.2292721<br>
+    🌐 <strong>Websites</strong><br>
+    <a href="https://www.science.org/content/article/goats-bookworms-monk-s-kiss-biologists-reveal-hidden-history-ancient-gospels" target="_blank">Ann Gibbons, "Goats, bookworms, a monk's kiss: Biologists reveal the hidden history of ancient gospels," <em>Science</em> (25 Jul 2017), doi: 10.1126/science.aan7150.</a>
+  </div>
+
+  <div class="unit-quiz">
+    <p class="unit-quiz-heading">📝 Unit I — Check Your Understanding</p>
+
+    <div class="quiz-question" id="u1q1">
+      <span class="question-number">Question 1 of 3</span>
+      <p class="question-text">Which writing support became dominant for books in the European Middle Ages, supplanting papyrus?</p>
+      <label class="option-label"><input type="radio" name="u1q1" value="a"> a) Paper, because it was cheaper and faster to produce.</label>
+      <label class="option-label"><input type="radio" name="u1q1" value="b"> b) Parchment, because it was more durable and better adapted to the codex format.</label>
+      <label class="option-label"><input type="radio" name="u1q1" value="c"> c) Wax tablets, because they could be erased and reused.</label>
+      <label class="option-label"><input type="radio" name="u1q1" value="d"> d) Papyrus remained dominant throughout the European Middle Ages.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u1q1','b','Parchment proved more durable than papyrus and better adapted to the folded pages of the codex. Paper only became dominant in the fifteenth century with the printing press.')">Check Answer</button>
+      <div class="quiz-feedback" id="u1q1-feedback"></div>
+    </div>
+
+    <div class="quiz-question" id="u1q2">
+      <span class="question-number">Question 2 of 3</span>
+      <p class="question-text">According to Pliny the Elder, what circumstance led to the perfection of parchment as a writing material?</p>
+      <label class="option-label"><input type="radio" name="u1q2" value="a"> a) The destruction of the Library of Alexandria by fire.</label>
+      <label class="option-label"><input type="radio" name="u1q2" value="b"> b) A trade embargo on papyrus exports from Alexandria to Pergamum.</label>
+      <label class="option-label"><input type="radio" name="u1q2" value="c"> c) A shortage of animal hides across the Roman Empire.</label>
+      <label class="option-label"><input type="radio" name="u1q2" value="d"> d) The invention of the printing press, which required a sturdier material.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u1q2','b','According to Pliny, the king of Alexandria banned papyrus exports to Pergamum to hinder its rival library, prompting Pergamene craftsmen to perfect parchment from animal skins. Pliny notes the legend in his Natural History.')">Check Answer</button>
+      <div class="quiz-feedback" id="u1q2-feedback"></div>
+    </div>
+
+    <div class="quiz-question" id="u1q3">
+      <span class="question-number">Question 3 of 3</span>
+      <p class="question-text">What is a palimpsest, and what modern technology is most commonly used to recover its erased text?</p>
+      <label class="option-label"><input type="radio" name="u1q3" value="a"> a) A luxury binding decorated with gems; recovered using X-ray fluorescence.</label>
+      <label class="option-label"><input type="radio" name="u1q3" value="b"> b) A parchment from which an older text was scraped so it could be reused; recovered using multispectral imaging.</label>
+      <label class="option-label"><input type="radio" name="u1q3" value="c"> c) A papyrus roll preserved under volcanic ash; recovered by virtual unrolling.</label>
+      <label class="option-label"><input type="radio" name="u1q3" value="d"> d) A wax tablet whose text has partially melted; recovered by infrared photography.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u1q3','b','A palimpsest is a parchment from which an earlier text was scraped or washed away so the surface could be rewritten. Multispectral imaging (MSI) captures light at multiple wavelengths to reveal faint traces of the erased text.')">Check Answer</button>
+      <div class="quiz-feedback" id="u1q3-feedback"></div>
+    </div>
+    <div class="unit-quiz-score" id="u1-score"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ UNIT II ═══ -->
+<section class="unit" id="unit2">
+  <h2 class="unit-heading"><span class="unit-numeral">Unit II</span> Folding & Formats</h2>
+
+  <div class="takeaway">
+    <h4>📜 Key Takeaways</h4>
+    <ul>
+      <li>Parchment sheets were folded to produce standard formats: folded once = folio (2 leaves); twice = quarto (4 leaves); three times = octavo (8 leaves).</li>
+      <li>The bifolium &#8212; one sheet folded in half &#8212; is the most common building block of a quire.</li>
+      <li>A quarto quire of eight leaves typically required two parchment skins; an octavo quire could be formed from a single sheet.</li>
+    </ul>
+  </div>
+
+  <p>The primary evidence for the history of medieval book production is the careful study of the surviving codices and fragments. Apart from this, there are some recipes and some descriptions of procedures, which mostly stem from the late Middle Ages. A third source is iconography, illustrations that contains books or, in some cases, stages in the book-making process. Perhaps the most thorough illustration is an image added to the beginning of a late twelfth-century manuscript containing works by the church father Ambrose (c. 339-397).</p>
+
+      <div class="illustration-block">
+    <img src="https://nbn-resolving.org/urn:nbn:de:bvb:22-dtl-0000025604" alt="Bamberger Schreiberbild" onerror="this.style.display='none'">
+    <p class="illustration-caption">Illustration of the Creation of a Book (c. 1200). Bamberg, Staatsbibliothek, Msc.Patr.5. Digital image provided by the digital holdings of the <a href="https://nbn-resolving.org/urn:nbn:de:bvb:22-dtl-0000025604" target="_blank">Bamberg Staatsbibliothek</a>.</p>
+  </div>   
+
+  <p>In eleven medallions it shows key steps in the process:<br>
+    1. Drafting on wax tablet<br>
+    2. Producing parchment<br>
+    3. Cutting and ruling the leaves<br>
+    4. Sharpening the quill<br>
+    5. Writing by a scribe<br>
+    6. Illustrating or decorating<br>
+    7. Cutting the wooden book cover<br>
+    8. Fashioning the metal parts<br>
+    9. Binding the codex on a sewing frame<br>
+    10. Displaying the completed codex<br>
+    11. Using the codex to teach<br>
+  </p>
+
+  <p>The finished parchment sheet was cut and folded into a number of leaves, which were then assembled into quires. The format of the book depended on how the sheets were folded: a single sheet could produce a folio, quarto, or octavo, depending on the number of folds. In principle, a parchment sheet could be used to produce pages of any of these formats, although the actual size depended on the dimensions of the animal from which the parchment was made. For example, a quire in quarto format typically required two parchment skins, while an octavo quire could be formed from a single sheet folded three times to produce eight leaves. If the full parchment sheet was folded once, it created two leaves at folio size; if it was folded twice, it produced four quarto leaves; if it was folded three times, it produced eight octavo leaves. A single sheet of parchment folded in half to form two leaves is a <span class="glossary-term">bifolium<span class="glossary-def">A single sheet folded once to create two leaves (four pages). Nested bifolia form a quire. The bifolium is sewn through its central fold during binding.</span></span>. The bifolium is the most common building block of a quire.</p>
+
+  <div class="illustration-block">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Folio-Quarto-Octavo_Compared.svg" alt="Diagram of folio, quarto and octavo formats" onerror="this.style.display='none'">
+    <p class="illustration-caption">Diagram illustrating folio, quarto, and octavo sheet-folding formats. Public domain via <a href="https://commons.wikimedia.org/wiki/File:Folio-Quarto-Octavo_Compared.svg" target="_blank">Wikimedia Commons</a>.</p>
+  </div>
+
+  <p>A vivid illustration of how parchment was sold and used comes from a visionary priest of the fourteenth century,
+    <span class="glossary-term">Opicinus de Canistris<span class="glossary-def">Opicinus de Canistris (1296–c. 1352), Pavian cleric and mapmaker at the Avignon papacy. His large-format cosmographic diagrams on unfolded parchment sheets survive in the Vatican Library (Pal. lat. 1993 and Vat. lat. 6435).</span></span>.</p>
+
+  <div class="illustration-block">
+    <img src="https://digi.vatlib.it/view/MSS_Pal.lat.1993/0005" alt="Drawing on full parchment sheet by Opicinus de Canistris" onerror="this.style.display='none'">
+    <p class="illustration-caption">Drawing on full parchment sheet by Opicinus de Canistris. Available via <a href="https://digi.vatlib.it/view/MSS_Pal.lat.1993/0005" target="_blank">the digital collection of the Biblioteca Apostolica di Vaticana</a>.</p>
+  </div>
+
+    <p>To record his visions of the world and the end times, he procured twenty-seven sheets of full, unfolded parchment. Differences in thickness at the tail and neck, variations in grain, and the location of follicle clusters near limbs can be detected in parchment sheets like this one. Although Opicinus did not assemble these sheets into a codex, his collection demonstrates the scale at which parchment was produced and sold, and how individual sheets could theoretically be folded to create books of different formats.</p>
+
+  <div class="ref-box">
+    📚 <strong>Literature</strong><br>
+    L. Gilissen, <em>Prolégomènes la codicologie. Recherches sur la construction des cahiers et la mise en page des manuscrits médiévaux</em> (Gand, 1977).<br>
+    H.-J. Martin and J. Vezin, eds., <em>Mise en page et mise en texte du livre manuscrit</em> (Paris, 1990).<br>
+    🌐 <strong>Websites</strong><br>
+    <a href="https://digi.vatlib.it/view/MSS_Pal.lat.1993/0005" target="_blank">Opicinus de Canistris, Pal. lat. 1993 — Biblioteca Apostolica Vaticana Digital</a>
+  </div>
+
+  <div class="unit-quiz">
+    <p class="unit-quiz-heading">📝 Unit II — Check Your Understanding</p>
+
+    <div class="quiz-question" id="u2q1">
+      <span class="question-number">Question 1 of 3</span>
+      <p class="question-text">How many leaves does a single parchment sheet yield when folded once (the folio format)?</p>
+      <label class="option-label"><input type="radio" name="u2q1" value="a"> a) One leaf.</label>
+      <label class="option-label"><input type="radio" name="u2q1" value="b"> b) Two leaves.</label>
+      <label class="option-label"><input type="radio" name="u2q1" value="c"> c) Four leaves.</label>
+      <label class="option-label"><input type="radio" name="u2q1" value="d"> d) Eight leaves.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u2q1','b','A single sheet folded once — the folio format — produces two leaves (four pages). The quarto (folded twice) yields four leaves; the octavo (folded three times) yields eight.')">Check Answer</button>
+      <div class="quiz-feedback" id="u2q1-feedback"></div>
+    </div>
+
+    <div class="quiz-question" id="u2q2">
+      <span class="question-number">Question 2 of 3</span>
+      <p class="question-text">How many parchment skins were typically needed to make a quire in quarto format?</p>
+      <label class="option-label"><input type="radio" name="u2q2" value="a"> a) One skin, folded three times.</label>
+      <label class="option-label"><input type="radio" name="u2q2" value="b"> b) Two skins.</label>
+      <label class="option-label"><input type="radio" name="u2q2" value="c"> c) Four skins, one per leaf.</label>
+      <label class="option-label"><input type="radio" name="u2q2" value="d"> d) Eight skins, since quarto quires had eight leaves.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u2q2','b','A quarto quire typically required two parchment skins. An octavo quire, by contrast, could be formed from a single sheet folded three times to produce eight leaves.')">Check Answer</button>
+      <div class="quiz-feedback" id="u2q2-feedback"></div>
+    </div>
+
+    <div class="quiz-question" id="u2q3">
+      <span class="question-number">Question 3 of 3</span>
+      <p class="question-text">What does the example of Opicinus de Canistris illustrate about medieval parchment?</p>
+      <label class="option-label"><input type="radio" name="u2q3" value="a"> a) That parchment was too expensive for most medieval writers to afford.</label>
+      <label class="option-label"><input type="radio" name="u2q3" value="b"> b) That parchment was sold as full unfolded sheets, and individual sheets could in principle be folded into books of any format.</label>
+      <label class="option-label"><input type="radio" name="u2q3" value="c"> c) That the octavo format was invented in fourteenth-century Avignon.</label>
+      <label class="option-label"><input type="radio" name="u2q3" value="d"> d) That visionary texts required a special grade of parchment unavailable elsewhere.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u2q3','b','Opicinus de Canistris procured twenty-seven full unfolded sheets to record his visions. Although he did not bind them, the example shows that parchment was sold as complete sheets, demonstrating the scale of production and the flexible range of formats that could be cut from them.')">Check Answer</button>
+      <div class="quiz-feedback" id="u2q3-feedback"></div>
+    </div>
+    <div class="unit-quiz-score" id="u2-score"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ UNIT III ═══ -->
+<section class="unit" id="unit3">
+  <h2 class="unit-heading"><span class="unit-numeral">Unit III</span> Quires & Ruling</h2>
+
+  <div class="takeaway">
+    <h4>📜 Key Takeaways</h4>
+    <ul>
+      <li>Despite significant variety, quires were widely in quaternions composed of four bifolia (eight leaves) with the hair side of skin facing the hair side and the flesh side facing the flesh side &#8212; "Gregory's Rule."</li>
+      <li>Quires were pricked and ruled before writing to establish text lines, margins, and page layout (<em>mise-en-page</em>).</li>
+      <li>Tacketing (a temporary thread or parchment-strip fastening) held quires together during handling before final binding.</li>
+      <li>Ruling techniques (drypoint, lead point, ink) varied by period and scriptorium tradition.</li>
+      <li>Quire signatures, catchwords, and (from the 14th century) foliation helped maintain the correct sequence of leaves and gatherings.</li>
+    </ul>
+  </div>
+
+  <p>A <span class="glossary-term">quire<span class="glossary-def">Also called a gathering or fascicle. A set of nested bifolia (folded sheets) sewn together through their central fold. The standard medieval quire contained four bifolia (eight leaves, sixteen pages), though quires of two, three, five, or more bifolia also occur.</span></span> is a stack of parchment sheets that would form a codex. The building block was the bifolium, but single leaves ("singletons") also appear. Quires often comprised four bifolia. Usually, the hair side, often somewhat darker, was on the outside, and facing pages matched one another, hair with hair, flesh with flesh. Once stacked into a quire and a layout scheme was determined, they were pricked with an awl or blade, and then lightly scored, or ruled, to furnish guidelines for copying the text. On the floor of the <span class="glossary-term">scriptorium<span class="glossary-def">The writing room of a medieval monastery or cathedral, where manuscripts were copied and decorated. Larger scriptoria employed teams of scribes, rubricators, and illuminators working in a coordinated sequence.</span></span>, a quire has fallen to the floor, but the pages stay together because it has been 
+    <span class="glossary-term">tacketed<span class="glossary-def">Tacketing: a method of temporarily securing a folded quire by passing a thread or strip of parchment through small holes near the top of the central fold, forming a simple staple-like fastening. Sometimes left in place when the book was bound.</span></span>, 
+    or joined by a fastening thread or parchment strip near the top, like a modern staple or paperclip.</p>
+
+  <p>Collation refers to the arrangement of leaves – how they have been folded and stacked – within a manuscript. The leaves were typically stacked so that hair sides faced hair sides and flesh sides faced flesh sides. This aesthetic arrangement, first noted by New Testament scholar 
+    <span class="glossary-term">Caspar René Gregory<span class="glossary-def">Caspar René Gregory (1846–1917), American-German New Testament scholar known for his systematic analysis of Greek manuscripts of the New Testament and the establishment of the "Gregory-Aland" manuscript numbering system. He first articulated "Gregory's Rule" concerning parchment orientation.</span></span> 
+    (1846–1917), is known as <span class="glossary-term">"Gregory's Rule"<span class="glossary-def">The observation, first systematized by New Testament scholar Caspar René Gregory (1846&#8211;1917), that in medieval parchment manuscripts hair sides face hair sides and flesh sides face flesh sides across each opening. The rule is a useful tool for detecting displaced or misbound leaves.</span></span> and is preserved across folio and quarto formats as well.</p>
+    
+    <p>This aesthetic may also be the result of the folding technique used in making a quire. In most common folding techniques, such as the octavo format, the hair side faced hair side, and flesh side faced flesh side. When the folds along the edges were cut, the resulting quire naturally paired facing hair sides and facing flesh sides together. Most medieval manuscripts place the hair side on the outside of the quire. In contrast, late antique codices, insular ones and those from specific scriptoria like the abbey of 
+    <span class="glossary-term">Corbie<span class="glossary-def">Corbie Abbey (founded c. 657 C.E.), near Amiens in northern France. A major early medieval scriptorium responsible for important developments in Caroline minuscule script.</span></span> 
+    tended to place the flesh side on the outside of the quire.</p>
+
+  <p>Once the quires were stacked, they could be pricked and ruled in preparation for writing. Pricking involved making small punctures or slits along the edges of the leaves to mark the positions of lines and margins. Ruling established the guidelines for text lines, margins, and other elements of the page layout (<span class="glossary-term"><em>mise-en-page</em><span class="glossary-def">French term for the overall layout of a manuscript page: the arrangement of text columns, margins, ruling lines, initials, and decorative elements. Different periods and scriptoria developed characteristic mise-en-page conventions that can help date and localize a manuscript.</span></span>). These lines could be incised with a stylus or penknife (drypoint ruling), drawn with a lead point, or, more often in the late Middle Ages, applied in ink. The visible lines of lead point and especially of ink turned ruling into a part of the aesthetic of the page. Compasses could also be used for marking curves in diagrams and illustrations. There is no general typology of ruling patterns, but particular techniques may reflect house or local practices.</p>
+
+  <p>Before the scribe began writing, the folded sheets of a quire were often kept together by tacketing. Small holes were pierced near the top of the quire's central fold, and a thread or twisted strip of parchment was drawn through and tied, forming a simple staple-like binding. Sometimes they were not removed when the book was bound. Later on in the book assembly, bookmakers could keep quires in sequence with the help of quire signatures and catchwords. A quire signature is a letter, number, or symbol placed on the last folio (or sometimes first) of a quire to indicate its position within the larger codex, ensuring correct assembly by the binder. A scribe who used <span class="glossary-term">catchwords<span class="glossary-def">A word or phrase written at the foot of the last page of a quire, repeating the opening word(s) of the next quire. They allowed binders and readers to verify the correct sequence of gatherings. Catchwords became widespread in western manuscripts from the twelfth century onward.</span></span> included the first word of the following quire or page at the bottom of the prior one, so that the page sequence could be quickly confirmed and maintained. <span class="glossary-term">Foliation<span class="glossary-def">The numbering of leaves (folios) in a manuscript, as opposed to pagination (numbering of pages). In medieval manuscripts, foliation was often added by later hands. It only became a standard feature in some European regions during the fourteenth century.</span></span>, or numbering each leaf, only became a common practice in some European regions during the fourteenth century.</p>
+
+    <div class="ref-box">
+    📚 <strong>Literature</strong><br>
+    L. Gilissen, <em>Prolégomènes la codicologie. Recherches sur la construction des cahiers et la mise en page des manuscrits médiévaux</em> (Gand, 1977).<br>
+    🌐 <strong>Websites</strong><br>
+    <a href="https://viscoll.org/" target="_blank">VisColl (Collation Visualisation), a system for visualising manuscript collations</a>
+  </div>
+
+  <div class="unit-quiz">
+    <p class="unit-quiz-heading">📝 Unit III — Check Your Understanding</p>
+
+    <div class="quiz-question" id="u3q1">
+      <span class="question-number">Question 1 of 3</span>
+      <p class="question-text">What is "Gregory's Rule" in the context of medieval manuscript production?</p>
+      <label class="option-label"><input type="radio" name="u3q1" value="a"> a) The convention that quire signatures are placed on the last folio of each gathering.</label>
+      <label class="option-label"><input type="radio" name="u3q1" value="b"> b) The principle that every quire must contain exactly four sheets.</label>
+      <label class="option-label"><input type="radio" name="u3q1" value="c"> c) The arrangement of parchment so that hair sides face hair sides and flesh sides face flesh sides within a quire.</label>
+      <label class="option-label"><input type="radio" name="u3q1" value="d"> d) The requirement that scribes always rule in lead before writing in ink.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u3q1','c','Gregory\'s Rule — first noted by New Testament scholar Caspar René Gregory (1846–1917) — describes the practice of stacking parchment so that matching sides face each other: hair to hair, flesh to flesh, across each opening.')">Check Answer</button>
+      <div class="quiz-feedback" id="u3q1-feedback"></div>
+    </div>
+
+    <div class="quiz-question" id="u3q2">
+      <span class="question-number">Question 2 of 3</span>
+      <p class="question-text">What was the purpose of pricking a quire before writing?</p>
+      <label class="option-label"><input type="radio" name="u3q2" value="a"> a) To pierce sewing holes for later binding.</label>
+      <label class="option-label"><input type="radio" name="u3q2" value="b"> b) To make small punctures along the edges as reference points for ruling lines and margins.</label>
+      <label class="option-label"><input type="radio" name="u3q2" value="c"> c) To allow air to circulate through stacked quires and prevent mold.</label>
+      <label class="option-label"><input type="radio" name="u3q2" value="d"> d) To mark the hair side so it could be distinguished from the flesh side.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u3q2','b','Pricking made small holes or slits along the edges of the leaves to mark the positions of text lines and margins. Ruling lines were then drawn between these reference points, establishing the page layout (mise-en-page) before writing began.')">Check Answer</button>
+      <div class="quiz-feedback" id="u3q2-feedback"></div>
+    </div>
+
+    <div class="quiz-question" id="u3q3">
+      <span class="question-number">Question 3 of 3</span>
+      <p class="question-text">What was tacketing, and why was it useful before a book was formally bound?</p>
+      <label class="option-label"><input type="radio" name="u3q3" value="a"> a) A decorative stitching technique applied to the spine cover of a finished binding.</label>
+      <label class="option-label"><input type="radio" name="u3q3" value="b"> b) The process of applying pounce powder to reduce grease before writing.</label>
+      <label class="option-label"><input type="radio" name="u3q3" value="c"> c) A temporary fastening — a thread or parchment strip through the quire fold — that held leaves together like a staple during handling.</label>
+      <label class="option-label"><input type="radio" name="u3q3" value="d"> d) The technique of numbering each leaf to ensure correct sequence.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u3q3','c','Tacketing was a simple temporary fastening: a thread or twisted parchment strip passed through small holes near the top of the central fold and tied, holding the sheets together during transport and ruling — much like a modern staple. Tackets were sometimes left in place during binding.')">Check Answer</button>
+      <div class="quiz-feedback" id="u3q3-feedback"></div>
+    </div>
+    <div class="unit-quiz-score" id="u3-score"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ UNIT IV ═══ -->
+<section class="unit" id="unit4">
+  <h2 class="unit-heading"><span class="unit-numeral">Unit IV</span> Scribal Tools & Techniques</h2>
+
+  <div class="takeaway">
+    <h4>📜 Key Takeaways</h4>
+    <ul>
+      <li>The scribe's primary tools were the quill and the penknife (<em>scalpellum</em>); the reed pen (<em>calamus</em>) was standard in antiquity but largely replaced in medieval Europe.</li>
+      <li>Scribes first learned to write on wax tablets with a metal or ivory stylus; drypoint tools remained in use in the scriptorium for ruling and marginal annotation.</li>
+      <li>The traditional three-finger grip (<em>tres digiti scribunt, totum corpus laborat</em>) differs from the modern school grip and involved the middle finger for fine control.</li>
+      <li>Parchment was dressed with calcium-based powders to remove grease and improve ink adhesion before writing began.</li>
+      <li>Reflectance Transformation Imaging (RTI) can reveal faint drypoint inscriptions and scribal markings invisible to the naked eye.</li>
+    </ul>
+  </div>
+
+  <p>Once the quire was prepared for copying, the scribe went to work. He or she held a quill pen in one hand and a penknife in the other for scraping mistakes away and sharpening the pen. The writing desk was equipped with an inkpot or inkhorn for black ink.</p>
+
+  <p>In Antiquity and the Middle Ages, people first learned to write on wax tablets with a drypoint stylus. Most styluses were probably made of metal, though ivory examples also survive. Literary sources from Late Antiquity and the early Middle Ages preserve vivid — and sometimes violent — classroom anecdotes. One legend claims that the ninth-century scholar 
+    <span class="glossary-term">John Scottus Eriugena<span class="glossary-def">Johannes Scottus Eriugena (c. 800–877 C.E.), Irish philosopher and theologian working at the Carolingian court of Charles the Bald. His major work is the <em>Periphyseon</em> (On the Division of Nature).</span></span>(c. 800–877 C.E.) 
+    was killed by students armed with their styluses. The story is almost certainly apocryphal: it appears several centuries after his death and seems to echo an earlier Late Antique tale. Even so, it captures something of the intensity and discipline associated with early medieval schooling. Styluses preserved in ancient graves show traces of ink on the tip, suggesting that they were also used on papyrus and perhaps parchment supports.</p>
+
+  <p>Drypoint tools did not disappear with the adoption of parchment. In the scriptorium the stylus, besides the awl, likely served for pricking and ruling. Alongside it, the penknife (<em>scalpellum</em>) could also be used for pricking or incising drypoint lines. A large body of understudied texts were scribbled in drypoint, probably with a stylus, in the margins of manuscripts, the comments of users on the texts, and often of learners who had not yet graduated to the stylus. Dividers — the compass or calipers (Latin <em>circinus</em>) — were essential for drawing the geometric diagrams that fill many medieval codices, such as those described by 
+    <span class="glossary-term">Isidore of Seville<span class="glossary-def">Isidore of Seville (c. 560–636 C.E.), bishop and encyclopedist, author of the <em>Etymologiae</em>, a major reference work of the early Middle Ages.</span></span>
+    (c. 560–636 C.E.) 
+    in the so-called <em>Liber rotarum</em> (Book of Wheels), a treatise about the nature of the world featuring a series of diagrams made with circles.</p>
+
+  <div class="illustration-block">
+    <img src="https://bibliotheque-numerique.ville-laon.fr/idviewer/1465/26" alt="Diagram showing the year from Isidore's De natura rerum" onerror="this.style.display='none'">
+    <p class="illustration-caption">Diagram showing the year (<em>annus</em>) from Isidore's <em>De natura rerum</em>. Laon, Bibliothèque Municipale, 423, fol. 8v.Available via <a href="https://bibliotheque-numerique.ville-laon.fr/idviewer/1465/26" target="_blank">the digital collection of the Municipal Library of Laon</a>.</p>
+  </div>
+
+     <p>A humorous episode in the <em>Deeds of Charlemagne</em> (1.32) by 
+    <span class="glossary-term">Notker I of Saint Gall<span class="glossary-def">Adso of Montier-en-Der (c. 840–912 C.E.), Benedictine scholar and poet, known for writing musical sequences.</span></span>
+    (cc. 840–912 C.E.) 
+    tells of a deacon whose fine manners and elegant appearance drew the attention of Charlemagne's court. It was observed of him that he styled his hair very short, his tonsure being cut as though on a lathe with a compass. Today, the faint drypoint words, lines and impressions left by stylus or compass on parchment can be studied using 
+    <span class="glossary-term">Reflectance Transformation Imaging (RTI)<span class="glossary-def">A computational photographic technique that captures surface shape and color using images taken from multiple lighting angles, enabling visualization of subtle surface relief invisible to the naked eye. Widely used in manuscript and archaeological studies.</span></span>, 
+    which reveals subtle incisions invisible to the naked eye.</p>
+
+  <p>When it came to writing with ink, the reed pen (<em>calamus</em>) was standard in Antiquity. Though largely replaced in medieval Europe, it makes a memorable appearance in a riddle from the 
+    <span class="glossary-term">Exeter Book<span class="glossary-def">A manuscript anthology of Old English poetry, donated to Exeter Cathedral by Bishop Leofric (d. 1072 C.E.). It contains about a third of all surviving Old English poetry, including famous riddles.</span></span> 
+    (poem 60), where the pen describes itself as a cut reed that leaves traces like dark watery waves: 
+    <p>"I was born in the sand<br>
+along the sea-wall,<br>
+at the edge of the water,<br>
+dwelling well-established<br>
+in my birth place.<br>
+
+There weren’t many men<br>
+who beheld my home<br>
+of solitude—<br>
+
+yet every dawning of day<br>
+those brown waves<br>
+locked me in their<br>
+watery embrace.<br>
+
+I hardly thought<br>
+that I, early or later,<br>
+should ever speak<br>
+mouthless<br>
+over mead-benches,<br>
+mixing up words.<br>
+
+There is some portion<br>
+of wonder in that—<br>
+curious in the mind,<br>
+to those who likewise<br>
+could never know<br>
+
+how the tip of a knife<br>
+and a right hand,<br>
+and man’s intention<br>
+deliberately joined together<br>
+to form this nib—<br>
+
+so that I should<br>
+announce boldly<br>
+this urgent message<br>
+by your side,<br>
+for both of us alone,<br>
+
+so more humans<br>
+may not relate<br>
+our wordy statements—<br>
+(trans. <cite> <a href="https://oldenglishpoetry.camden.rutgers.edu/exeter-book-riddles/"> Ophelia Eryn Hostetter</a></cite>)</p>
+
+  <p>Despite the reed's prominence in this medieval verse, the dominant writing instrument during the Middle Ages was the <span class="glossary-term">quill<span class="glossary-def">A writing pen made from the flight feather of a large bird &#8212; most often a goose, but also swan, peacock, or crow. The hollow base (calamus) was cut at an oblique angle and slit to form a nib that could be re-cut as it wore down. The penknife was essential for this purpose.</span></span>, usually taken from the flight feathers of a goose. It, too, became the subject of riddling verse, here in the Latin verse of the early eighth-century Anglo-Saxon poet, <span class="glossary-term">Aldhelm<span class="glossary-def">Aldhelm (c. 639–709), Abbot of Malmesbury, first Bishop of Sherborne Celebrated as the earliest known English poet, renowned for his ornate Latin verse and riddles</span></span>:
+
+    <p>Nunc cernenda placent nostrae spectacula vitae;<br>
+Cum grege piscoso scrutor maris aequora squamis.<br>
+Cum volucrum turma quoque scando per aethera pennis,<br>
+Et tamen aethereo non possum vivere flatu.<br>
+
+(Seeing life’s spectacles now entertains;<br>
+With fishy, scaly flocks, I search sea plains.<br>
+With mobs of birds I also rise through sky,<br>
+And yet I can’t survive in breeze that’s high.<br>
+[enigma 16, trans. A.M. Juster])</p>
+
+<p>Most manuscript illustrations show scribes holding the quill in the right hand. The quill worked in tandem with the penknife, habitually held in the left hand. The knife sharpened the quill when its tip softened and allowed the scribe to scrape away mistakes before the ink fully set. Numerous illuminations depict scribes with these two essential tools poised above the page.</p>
+
+  <div class="illustration-block">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Marie_de_France_1.tif/lossy-page1-714px-Marie_de_France_1.tif.jpg?_=20120509143945" alt="Marie de France, medieval scribe depicted at work" onerror="this.style.display='none'">
+    <p class="illustration-caption">Marie de France depicted at her writing desk. Paris, Bibliothèque Nationale de France, Arsenal Library, 3142 fol. 256. Public domain via <a href="https://commons.wikimedia.org/wiki/File:Marie_de_France_1.tif" target="_blank">Wikimedia Commons</a>.
+    </p>
+  </div>
+
+  <p>While the evidence for pen grips is scanty, the most common manner of depiction, such as this one of Marie de France, shows the scribe with the middle and index fingers on top of the shaft of the quill and the thumb underneath. This "three-finger pose" contrasts with the modern school grip that emphasizes the index finger and is infrequently represented in medieval imagery. The traditional posture is echoed in the well-known scribal saying: <em>Tres digiti scribunt, totum corpus laborat</em> — "Three fingers write, the whole body labors." While modern writers tend to write by the combined motion of the fingers and the rotation of the wrist from the elbow, medieval writers probaby wrote in a more "painter"-like way by moving the whole arm from the elbow, reserving fine and detailed work to the action of the middle finger controlling the tip of the pen.</p>
+
+<p>The scribe may have also prepared the page for writing. Dry parchment could receive several other treatments or dressings that affect the fineness of the leaf and the ability of ink to adhere in a uniform way. Some of these processes may have been done not by the parchment-maker, but by the scribe. It could be smoothed with pumice or, for a finer finish, cuttlebone. It could be dressed in calcium-based powders, like <span class="glossary-term">pounce<span class="glossary-def">A fine powder (often made from cuttlefish bone, sandarac resin, or pumice) dusted onto parchment or paper to reduce grease and prevent ink from spreading. Also used after writing to absorb excess ink.</span></span>, gesso (a thin calcium paste), powdered quicklime (made from kiln-heating limestone/ seashells), bone, chalk, egg shell. These substances removed grease - especially from the flesh side - and prevented ink from running. Recipes describe finely ground substances applied and then rubbed in, sometimes with a rabbit's foot kept for that purpose.</p>
+
+      <div class="illustration-block">
+    <img src="https://books.google.de/books/content?id=mNOBekGmmpQC&pg=PA22&img=1&zoom=3&hl=en&sig=ACfU3U0mCh32-yLR1V6CWJbjSnlfuS_1TQ&w=1025" alt="Scribal tools" onerror="this.style.display='none'">
+    <p class="illustration-caption">Scribal tools illustrated in Tagliente's calligraphy handbook (1524). Public domain via <a href="https://books.google.de/books/about/Lo_presente_libro_Insegna_La_vera_arte_d.html?id=mNOBekGmmpQC&redir_esc=y" target="_blank">Google Books</a>.</p>
+  </div> 
+
+  <div class="ref-box">
+    📚 <strong>Literature</strong><br>
+      J.-P. Gumbert, "Les outils du copiste," <em>Gazette du livre médiéval</em>, 32 (1998), 1-7.<br>
+      R. Rosenfeld, "<em>Tres digiti scribunt</em>: A Typology of Late-Antique and Medieval Pen Grips," in <em>Music and Medieval Manuscripts: Paleography and Performance</em>, edited by J. Haines and R. Rosenfeld (London, 2004), 20–59.<br>
+    🌐 <strong>Websites</strong><br>
+    <a href="https://www.bl.uk/catalogues/illuminatedmanuscripts/TourIntroGen.asp" target="_blank">British Library — Illuminated Manuscripts Catalogue</a>
+  </div>
+
+  <div class="unit-quiz">
+    <p class="unit-quiz-heading">📝 Unit IV — Check Your Understanding</p>
+
+    <div class="quiz-question" id="u4q1">
+      <span class="question-number">Question 1 of 3</span>
+      <p class="question-text">What were the two primary functions of the penknife in the medieval scriptorium?</p>
+      <label class="option-label"><input type="radio" name="u4q1" value="a"> a) Cutting parchment to size and applying pounce powder before writing.</label>
+      <label class="option-label"><input type="radio" name="u4q1" value="b"> b) Sharpening the quill and scraping away mistakes from the parchment before the ink set.</label>
+      <label class="option-label"><input type="radio" name="u4q1" value="c"> c) Pricking guidelines and trimming the finished bookblock edges.</label>
+      <label class="option-label"><input type="radio" name="u4q1" value="d"> d) Drawing rubrication lines and cutting quire signatures.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u4q1','b','The penknife (scalpellum) served two essential functions: it sharpened the quill to maintain a fine writing tip, and it scraped away errors from the parchment surface before the ink set fully. Both tasks required it to be held ready in the left hand while writing.')">Check Answer</button>
+      <div class="quiz-feedback" id="u4q1-feedback"></div>
+    </div>
+
+    <div class="quiz-question" id="u4q2">
+      <span class="question-number">Question 2 of 3</span>
+      <p class="question-text">What does the Latin saying <em>Tres digiti scribunt, totum corpus laborat</em> describe?</p>
+      <label class="option-label"><input type="radio" name="u4q2" value="a"> a) A monastic rule requiring three scribes to share the copying of each manuscript.</label>
+      <label class="option-label"><input type="radio" name="u4q2" value="b"> b) The three steps of manuscript preparation: pricking, ruling, and copying.</label>
+      <label class="option-label"><input type="radio" name="u4q2" value="c"> c) The three-finger grip used to hold the quill, and the physical effort involved in extended writing.</label>
+      <label class="option-label"><input type="radio" name="u4q2" value="d"> d) The three materials needed for ink: carbon, iron gall, and gum arabic.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u4q2','c','The saying — &quot;Three fingers write, the whole body labors&quot; — refers to the tight three-finger grip (thumb, index, and middle finger) used to hold the quill, and captures the physical strain of sustained copying. This grip differs from the modern school grip that emphasizes the index finger.')">Check Answer</button>
+      <div class="quiz-feedback" id="u4q2-feedback"></div>
+    </div>
+
+    <div class="quiz-question" id="u4q3">
+      <span class="question-number">Question 3 of 3</span>
+      <p class="question-text">What was the purpose of quire signatures, and where were they typically placed?</p>
+      <label class="option-label"><input type="radio" name="u4q3" value="a"> a) Decorative marks placed at the top of the first folio of each quire to identify the scribe.</label>
+      <label class="option-label"><input type="radio" name="u4q3" value="b"> b) Numbers or letters on the last folio of a quire indicating its position in the codex, so quires could be assembled in the correct order.</label>
+      <label class="option-label"><input type="radio" name="u4q3" value="c"> c) Marginal annotations added by readers to identify important passages for later reference.</label>
+      <label class="option-label"><input type="radio" name="u4q3" value="d"> d) Watermarks pressed into parchment by the skinner to identify the workshop.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u4q3','b','Quire signatures were letters, numbers, or symbols placed on the last folio of a quire (sometimes the first) to indicate its correct position in the larger codex. They allowed the binder to assemble the gatherings in sequence and were especially important in long multi-quire manuscripts.')">Check Answer</button>
+      <div class="quiz-feedback" id="u4q3-feedback"></div>
+    </div>
+    <div class="unit-quiz-score" id="u4-score"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ UNIT V ═══ -->
+<section class="unit" id="unit5">
+  <h2 class="unit-heading"><span class="unit-numeral">Unit V</span> Ink, Pigments, & Decoration</h2>
+
+  <div class="takeaway">
+    <h4>📜 Key Takeaways</h4>
+    <ul>
+      <li>Medieval ink fell into three main types: carbon ink, iron-gall ink, and vegetable-based or mixed inks. Iron-gall ink was dominant throughout most of the Middle Ages.</li>
+      <li>Rubrication (titles and headings written in red) was often done by a rubricator working separately from the main scribe.</li>
+      <li>Pigments came from mineral sources (lapis lazuli, cinnabar, orpiment) and organic dyes; gold and silver leaf adorned luxury manuscripts.</li>
+      <li>Many manuscripts were never fully decorated: spaces for initials and illustrations were left blank where work was planned but not completed.</li>
+      <li>Modern analytical techniques (XRF, Raman spectroscopy, multispectral imaging) can identify pigments and inks non-invasively.</li>
+    </ul>
+  </div>
+
+  <p>Medieval black ink falls into three main groups: carbon, iron-gall, and vegetable based or mixed inks. Carbon inks consisted of (1) soot or charcoal, (2) water, (3) a binder like tree gum, honey, gelatin, egg white, rabbit-skin glue, fats. Some carbon inks also have copper or lead ingredients. <span class="glossary-term">Iron-gall ink<span class="glossary-def">The dominant writing ink of the medieval period, made from tannic acid (extracted from oak galls) combined with iron sulfate (green vitriol) and a binder such as gum arabic.</span></span> consisted of (1) tannic acid extracted by boiling or macerating and filtering crushed gall nuts soaked in water, vinegar, wine, or beer, (2) a mineral source, green vitriol (iron sulfate) or metallic iron dissolved in acid, and (3) a binding like gum arabic. The mixture of tannic acid and iron leads to a chemical reaction, which gives the resultant ink corrosive properties. The last category is perhaps the least studied and contains a variety of ink-types: (a) vegetable extract combined with a metallic salt; (b)vegetable extract with a binder; or (c) metallic salt with a binder. These vegetable or mixed inks might include tannic extracts, but did not undergo any chemical reaction because iron was absent in the mixture. Carbon inks were used in classical antiquity and again after the twelfth century. Iron-gall ink was the main ink type of the whole Middle Ages, but plant-based or mixed inks were also used.</p>
+
+  <p>After the main text was transcribed, the manuscript could be rubrication. Rubrics are text, usually written in red, that mark titles, headings, section breaks, saints' feast days or important liturgical cues. They have a function essential to the main text. The term comes from the Latin <em>rubricare</em>, "to colour red," and reflects how scribes used red ink for textual elements that guided readers through the text. Rubricators often worked separately from the main scribe and, in many manuscripts today, rubrication spaces are left blank where work was never completed. Some manuscripts also use rubrics for an aesthetic effect.</p>
+
+  <p>Beyond red ink, decorative practice expanded into the use of coloured initials. Small flourishing capitals in penwork were common in many Gothic books, typically executed in alternating red and blue and often filled with intricate fleurons, interlace, or figural motifs. In more luxurious works these initials could be large, multicoloured, or even 
+    <span class="glossary-term">historiated<span class="glossary-def">Historiated initials contain figurative scenes (human or animal figures) that relate to the adjacent text, as opposed to purely decorative initials.</span></span> 
+    — containing figurative scenes that related to the text.</p>
+
+  <div class="illustration-block">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Illuminated_manuscript%2C_1407_AD.jpg/480px-Illuminated_manuscript%2C_1407_AD.jpg" alt="Illuminated manuscript page, 1407" onerror="this.style.display='none'">
+    <p class="illustration-caption">A highly decorated illuminated manuscript page (1407 C.E.) showing historiated initials and marginal decoration. Public domain via <a href="https://commons.wikimedia.org/wiki/File:Illuminated_manuscript,_1407_AD.jpg" target="_blank">Wikimedia Commons</a>.</p>
+  </div>
+
+   <p>Miniatures and illustrations represent some of the richest decoration in the surviving medieval codices. In the early Middle Ages, until about 1200, illustrations or miniatures were often executed within the monastic house creating the codex. From the late Middle Ages, major illustration campaigns were executed by professional workshops or ateliers. However, not all decoration was pictorial. Many manuscripts feature calligraphic ornament, marginal embellishment, and decorative frames that enhance readability as much as aesthetic appeal. These features often embodied theological and mnemonic functions: borders, symbolic forms, or animal figures could frame text in ways that reinforced memory or devotional experience.</p>
+
+  <p>Pigments for colored initials and for illustrations were drawn from various mineral and organice sources: red from cinnabar and vermilion, blue from azurite, ultramarine blue from lapis lazuli, dark blue from indigo, white from gypsum or calcium compounds, black from chars and soot, yellow from orpiment, greens from malachite or copper sulphate, and metal leaf made of thinly hammered gold and silver sheets. These pigments were bound with organic media such as egg tempera or gum arabic. In 2019, a team of researchers announced the discovery of blue pigment on the tooth of a nun who lived at the women's monastery at Dalheim, Germany, between 997 and 1162 C.E. Their analysis revealed that blue pigment was caused by ground lapis lazuli, precious mineral sourced only in a certain region of Afghanistan. This unexpected finding recalls the long trade routes standing behind book production. Perhaps more interesting, it reveals that this nun was closely involved in a practice that came into contact with ground lapis lazuli. In all likelihood, she was a scribe and illustrator.</p>
+
+  <p>As hinted at in the story of the nun from ???, scholars and conservators today can analyze the material composition of inks and pigments using a range of non- or minimally invasive technologies that reveal the chemical and mineral content without damaging fragile manuscripts. Infrared reflectography can distinguished carbon and iron-gall inks from one another. Techniques such as 
+    <span class="glossary-term">X-ray fluorescence (XRF)<span class="glossary-def">A non-destructive analytical technique that bombards a surface with X-rays to identify elemental composition. Widely used in manuscript studies to detect metallic pigments (lead white, gold, vermilion) and other materials.</span></span> allow researchers to detect the elemental makeup of metallic inks, pigments, and gold or silver leaf. Raman spectroscopy can identify molecular structures in organic and inorganic colourants, distinguishing plant-based dyes, earth pigments, and synthetic compounds. Infrared and multispectral imaging highlight layers of pigments invisible to the naked eye, revealing erased, faded, or underdrawn decorations and clarifying the sequence of application.</p>
+
+  <div class="ref-box">
+    📚 <strong>Literature</strong><br>
+    R. Gameson, et al., <em>The Pigments of British Medieval Illuminators: A Scientific and Cultural Study</em> (London, 2023).<br>
+    S. Panayotova, <em>The Art and Science of Illuminated Manuscripts: A Handbook</em> (Turnhout, 2021).<br>
+    I. Rabin, "Material Studies of Historic Inks: Transition from Carbon to Iron-Gall Inks," in <em>Traces of Ink. Experiences of Philology and Replication</em>, edited by L. Raggetti (Leiden, 2021), 70-78.<br>
+    A. Radini, et al., "Medieval women’s early involvement in manuscript production suggested by lapis lazuli identification in dental calculus," <em>Science Advances</em> 5/1 (2019), <a href="https://doi.org/10.1126/sciadv.aau7126" target="blank">https://doi.org/10.1126/sciadv.aau7126</a><br>
+    M. Zerdoun Bat-Yehouda, <em>Les encres noires au Moyen Âge: jusqu’à 1600</em> (Paris,
+1983).<br>
+    🌐 <strong>Websites</strong><br>
+    <a href="https://qi.fitzmuseum.cam.ac.uk/illuminated/lab/lab" target="_blank">Illuminated: Manuscripts in the Making, Fitzwilliam Library, Cambridge</a><br>
+  </div>
+
+  <div class="unit-quiz">
+    <p class="unit-quiz-heading">📝 Unit V — Check Your Understanding</p>
+
+    <div class="quiz-question" id="u5q1">
+      <span class="question-number">Question 1 of 3</span>
+      <p class="question-text">What is rubrication, and who typically performed it?</p>
+      <label class="option-label"><input type="radio" name="u5q1" value="a"> a) The application of gold leaf to initials, carried out by a specialist gilder.</label>
+      <label class="option-label"><input type="radio" name="u5q1" value="b"> b) The writing of headings, titles, and liturgical cues in red ink, often by a specialist rubricator working separately from the main scribe.</label>
+      <label class="option-label"><input type="radio" name="u5q1" value="c"> c) The application of an undercoat of gesso to initials before painting, done by the illuminator.</label>
+      <label class="option-label"><input type="radio" name="u5q1" value="d"> d) The practice of blind-tooling red patterns into leather covers, done by the binder.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u5q1','b','Rubrication (from Latin rubricare, to colour red) was the writing of titles, headings, liturgical feast days, and section breaks in red ink. It was often carried out by a specialist rubricator working after the main text was copied, which is why many unfinished manuscripts today show blank spaces where rubrication was planned but never completed.')">Check Answer</button>
+      <div class="quiz-feedback" id="u5q1-feedback"></div>
+    </div>
+
+    <div class="quiz-question" id="u5q2">
+      <span class="question-number">Question 2 of 3</span>
+      <p class="question-text">From what source was ultramarine blue — one of the most prized pigments in medieval manuscripts — derived?</p>
+      <label class="option-label"><input type="radio" name="u5q2" value="a"> a) Copper compounds mined in the Rhineland.</label>
+      <label class="option-label"><input type="radio" name="u5q2" value="b"> b) Woad plants grown across northern Europe.</label>
+      <label class="option-label"><input type="radio" name="u5q2" value="c"> c) Lapis lazuli, a semi-precious stone imported from Afghanistan.</label>
+      <label class="option-label"><input type="radio" name="u5q2" value="d"> d) Indigo extracted from molluscs found along the Mediterranean coast.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u5q2','c','Ultramarine blue was ground from lapis lazuli, a semi-precious stone whose main source in the Middle Ages was the mines of Badakhshan in present-day Afghanistan. Its rarity and cost made it among the most expensive pigments available, often reserved for the most important figures in illuminations.')">Check Answer</button>
+      <div class="quiz-feedback" id="u5q2-feedback"></div>
+    </div>
+
+    <div class="quiz-question" id="u5q3">
+      <span class="question-number">Question 3 of 3</span>
+      <p class="question-text">Which analytical technique is best suited to identifying the elemental composition of metallic inks and pigments in manuscripts without damaging them?</p>
+      <label class="option-label"><input type="radio" name="u5q3" value="a"> a) Raman spectroscopy, which identifies molecular structures in organic dyes.</label>
+      <label class="option-label"><input type="radio" name="u5q3" value="b"> b) X-ray fluorescence (XRF), which detects the elemental makeup of materials by bombarding them with X-rays.</label>
+      <label class="option-label"><input type="radio" name="u5q3" value="c"> c) Reflectance Transformation Imaging (RTI), which reveals surface relief invisible to the naked eye.</label>
+      <label class="option-label"><input type="radio" name="u5q3" value="d"> d) Multispectral imaging (MSI), which recovers erased or faded text beneath later writing.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u5q3','b','X-ray fluorescence (XRF) is a non-destructive technique that identifies the elemental composition of pigments and inks by detecting characteristic X-ray emissions. It is particularly effective for metallic pigments such as lead white, vermilion, and gold or silver leaf. Raman spectroscopy, MSI, and RTI are complementary techniques used for different purposes.')">Check Answer</button>
+      <div class="quiz-feedback" id="u5q3-feedback"></div>
+    </div>
+    <div class="unit-quiz-score" id="u5-score"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ UNIT VI ═══ -->
+<section class="unit" id="unit6">
+  <h2 class="unit-heading"><span class="unit-numeral">Unit VI</span> Sewing the Bookblock</h2>
+
+  <div class="takeaway">
+    <h4>📜 Key Takeaways</h4>
+    <ul>
+      <li>Holes were made to create sewing stations where sewing supports (leather thongs or hemp/linen cords) were sewn to the book block. These supports create the bond between the book block and the book cover.</li>
+      <li>From at least the High Middle Ages, sewing took place on a sewing frame that held the supports under tension.</li>
+      <li>Multiple stitching styles existed: herringbone, straight, packed straight, and others.</li>
+      <li>Integral sewing combined quire sewing and endband sewing in a single pass, saving labor &#8212; attested in both Romanesque and Gothic bindings.</li>
+    </ul>
+  </div>
+
+  <p>After the text had been copied, the quires were stacked in a bookblock and bound together as a volume. This process had many stages, and different periods and places took different approaches. Holes or slits were pierced into the open quires for sewing together; they were folded again and stacked into a bookblock. They were then sewn together along thicker cables called sewing supports. At least from the High Middle Ages, this took place on a sewing frame.</p>
+
+  <p>First, the book block was prepared for sewing. Each quire — composed of folded sheets of parchment or paper nested together — was opened at its center fold. Using an awl or knife, the binder pierced a series of holes or cut small slits along the fold. These sewing stations were carefully measured to align across all gatherings. Only in the late Middle Ages do the number of sewing stations seem to relate to the size and weight of the codex.</p>
+
+  <p>Once pierced, the quires were refolded and arranged in correct order to form the bookblock. Catchwords, quire signatures, or other guide marks helped ensure the proper sequence. The gatherings were then sewn together along thicker cords or thongs known as 
+    <span class="glossary-term">sewing supports<span class="glossary-def">Cords or thongs (of leather, alum-tawed skin, hemp, or linen) stretched across the spine onto which quires are sewn. They form the structural backbone of medieval bindings and are later laced into the bookboards.</span></span>. 
+    These supports formed the structural backbone of the binding. In earlier periods they were often made of split leather or alum-tawed skin; later, cords of hemp or linen became common. The sewing thread, perhaps coated in wax to make sewing easier, passed in and out through the prepared holes, looping around the supports at each station. This technique linked the gatherings together while simultaneously anchoring them to the supports.</p>
+
+  <div class="illustration-block">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Sewing_on_cords.jpg/640px-Sewing_on_cords.jpg" alt="Bookbinding sewing on cords" onerror="this.style.display='none'">
+    <p class="illustration-caption">Sewing a bookblock onto cord sewing supports. Public domain via <a href="https://commons.wikimedia.org/wiki/File:Sewing_on_cords.jpg" target="_blank">Wikimedia Commons</a>.</p>
+  </div>
+
+  <p>From at least the High Middle Ages onward, sewing commonly took place on a 
+  <span class="glossary-term">sewing frame<span class="glossary-def">A wooden device used by medieval binders to hold sewing supports (cords or thongs) taut under tension during the sewing of quires. The supports were stretched vertically between upper and lower beams; the binder passed the needle through each gathering in turn, looping the thread around each taut support.</span></span>. If we look again at the Bamberg illustration mentioned in Unit II, we see what is perhaps the only illustration before 1400 of a sewing frame. Presumably, the illustrator expected people to recognize the sewing frame depicted there much as they should recognize the other illustrations on the same page. Nevertheless, it is unclear to modern viewers how it works in detail. In particular, while the sewing supports are attached by a mechanism, it is unclear what this mechanism is. In any case, the book block, the stack of copied quires, would sit on this frame during the next part of the process.</p>
+
+      <div class="illustration-block">
+    <img src="https://nbn-resolving.org/urn:nbn:de:bvb:22-dtl-0000025604" alt="Bamberger Schreiberbild" onerror="this.style.display='none'">
+    <p class="illustration-caption">Illustration of the Creation of a Book (c. 1200). Bamberg, Staatsbibliothek, Msc.Patr.5. Digital image provided by the digital holdings of the <a href="https://nbn-resolving.org/urn:nbn:de:bvb:22-dtl-0000025604" target="_blank">Bamberg Staatsbibliothek</a>.</p>
+  </div>   
+    
+    Quires were joined to one another by being sewn together on cables called sewing supports positioned perpendicular to the face of the book block. This sewing frame held the sewing supports under tension, stretched vertically between the upper and lower beams of the frame. In the picture below, sewing supports are hanging from the cross beam of the sewing frame.</p>
+
+      <div class="illustration-block">
+    <img src="https://www.conservation-wiki.com/wiki/File:Sewing-frame.jpg" alt="Bookbinding sewing frame" onerror="this.style.display='none'">
+    <p class="illustration-caption">Modern reproduction of a sewing frame. <a href="https://www.conservation-wiki.com/wiki/File:Sewing-frame.jpg" target="_blank">Conservation Wiki</a>.</p>
+  </div>
+
+    <p>The binder passed the needle through each gathering in turn and around the taut supports. Many different stitching styles were employed: herringbone, straight, packed straight, and others. The thread ran on the inside of the center of a quire to the next station. When the gatherings were sewn together, the thread looped around these supports, forming raised bands along the spine. At the end, it exited and moved to the next quire by a link ("kettle") or span stitch.</p>
+
+  <p>A trivial number of Romanesque bindings and a more significant, albeit not large, number of Gothic bindings exhibit integral sewing — a technique undoubtedly invented to accelerate the tedious work of endband sewing. Instead of stopping short of the spine end to make the changeover, the binder runs the sewing thread all the way to the head or tail of the spine and loops it around the endband support cable.</p>
+
+  <div class="ref-box">
+    📚 <strong>Literature</strong><br>
+    J.A. Szirmai, <em>The Archaeology of Medieval Bookbinding</em> (Aldershot, 1999), chapters 7-9.<br>
+    J. Vezin, "La réalisation matérielle des manuscrits latins pendant le haut Moyen Âge," <em>Codicologica</em> 2 (1978), 15-51.<br>
+    🌐 <strong>Websites</strong><br>
+    <a href="https://www.ligatus.org.uk" target="_blank">Ligatus Research Centre — Language of Bindings Thesaurus</a><br>
+  </div>
+
+  <div class="unit-quiz">
+    <p class="unit-quiz-heading">📝 Unit VI — Check Your Understanding</p>
+
+    <div class="quiz-question" id="u6q1">
+      <span class="question-number">Question 1 of 3</span>
+      <p class="question-text">What are sewing supports, and what role do they play in bookbinding?</p>
+      <label class="option-label"><input type="radio" name="u6q1" value="a"> a) Wooden clamps that hold the bookblock flat while the glue on the spine dries.</label>
+      <label class="option-label"><input type="radio" name="u6q1" value="b"> b) Cords or thongs stretched across the spine onto which each quire is sewn, forming the structural backbone of the binding.</label>
+      <label class="option-label"><input type="radio" name="u6q1" value="c"> c) Metal rods inserted along the spine to keep it rigid during transport.</label>
+      <label class="option-label"><input type="radio" name="u6q1" value="d"> d) Leather strips glued to the inside of bookboards to reinforce the joint.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u6q1','b','Sewing supports are cords or thongs — of leather, alum-tawed skin, hemp, or linen — stretched across the spine. Each quire is sewn onto them at multiple stations, linking the gatherings together while simultaneously anchoring them to the supports. The support ends are later laced into the bookboards.')">Check Answer</button>
+      <div class="quiz-feedback" id="u6q1-feedback"></div>
+    </div>
+
+    <div class="quiz-question" id="u6q2">
+      <span class="question-number">Question 2 of 3</span>
+      <p class="question-text">What is the function of a sewing frame in medieval bookbinding?</p>
+      <label class="option-label"><input type="radio" name="u6q2" value="a"> a) To hold the finished bookblock in a press while the spine lining dried.</label>
+      <label class="option-label"><input type="radio" name="u6q2" value="b"> b) To hold the sewing supports taut under tension so the binder could sew each quire onto them in sequence.</label>
+      <label class="option-label"><input type="radio" name="u6q2" value="c"> c) To clamp the wooden bookboards while their channels were being drilled.</label>
+      <label class="option-label"><input type="radio" name="u6q2" value="d"> d) To stretch the leather covering material evenly over the boards before pasting.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u6q2','b','The sewing frame held the sewing supports vertically under tension between upper and lower beams, allowing the binder to pass the needle through each quire in turn and loop it around the taut supports. This ensured even tension and consistent stitching across all gatherings.')">Check Answer</button>
+      <div class="quiz-feedback" id="u6q2-feedback"></div>
+    </div>
+
+    <div class="quiz-question" id="u6q3">
+      <span class="question-number">Question 3 of 3</span>
+      <p class="question-text">What distinguishes integral sewing from standard sewing?</p>
+      <label class="option-label"><input type="radio" name="u6q3" value="a"> a) Integral sewing uses metal wire instead of linen thread.</label>
+      <label class="option-label"><input type="radio" name="u6q3" value="b"> b) In integral sewing the thread runs all the way to the head or tail of the spine and loops directly around the endband core, combining quire sewing and endband sewing in one pass.</label>
+      <label class="option-label"><input type="radio" name="u6q3" value="c"> c) Integral sewing attaches the bookboards at the same time as sewing the quires.</label>
+      <label class="option-label"><input type="radio" name="u6q3" value="d"> d) Integral sewing uses a herringbone stitch throughout, rather than alternating stitch patterns.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u6q3','b','In integral sewing, instead of stopping short of the spine end and separately sewing the endbands, the binder carries the thread all the way to the head or tail and loops it around the endband support cable. This combines two operations into one, saving labor — hence its use in some Romanesque and Gothic bindings.')">Check Answer</button>
+      <div class="quiz-feedback" id="u6q3-feedback"></div>
+    </div>
+    <div class="unit-quiz-score" id="u6-score"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ UNIT VII ═══ -->
+<section class="unit" id="unit7">
+  <h2 class="unit-heading"><span class="unit-numeral">Unit VII</span> Spine Treatment, Endbands & Edge Trimming</h2>
+
+  <div class="takeaway">
+    <h4>📜 Key Takeaways</h4>
+    <ul>
+      <li>Endbands (sewn at head and tail of the spine) stabilized gatherings and protected spine edges from wear; in many medieval bindings they were also laced into the bookboards.</li>
+      <li>Carolingian and Romanesque spines tend to be flat or concave; Gothic spines tend to be convex, possibly from deliberate rounding with a hammer.</li>
+      <li>Spine linings of parchment, linen, or leather reinforced the spine and provided a base for covering materials.</li>
+      <li>Edge trimming &#8212; with a drawknife in earlier periods, and a book plough from the later Middle Ages onward &#8212; gave the bookblock smooth, even edges.</li>
+    </ul>
+  </div>
+
+  <p>The head and tail ends of the spine were sewn together to form 
+    <span class="glossary-term">endbands<span class="glossary-def">Structural and decorative elements at the head (top) and tail (bottom) of a book spine. In their earliest form they were sewn through the gatherings onto a core of thong or cord, stabilizing the gatherings and protecting the spine edges. Later they became primarily decorative.</span></span>; 
+    sometimes these were reinforced with a piece of leather or parchment called endtabs. The spine was spread with paste, and a piece of cloth, variously cut depending on the sewing supports, was pasted down as a supportive spine lining. In later periods, the edges would have been trimmed with a drawknife or, later, a book plough.</p>
+
+  <p>The top or bottom profile of Carolingian and Romanesque bindings tends to show a flat or concave spine. Gothic bindings, in contrast, tend to have a convex spine. After sewing, the spine of the book block often exhibits "swelling" caused by the accumulation of layered thread and the thickness of folded parchment gatherings. Following others, the bookbinding scholar Szirmai (pp. 193–194) infers that Gothic bindings owe their convex shape to deliberate rounding of the spine, possibly carried out with a hammer. According to this interpretation, controlled hammer blows helped reshape the spine, and in some cases faint traces of this shaping process can still be observed in the profile of surviving books.</p>
+
+  <p>Thereafter, the top and bottom of the spine were reinforced by the addition of endbands. In their earliest and most structural form, they were sewn directly through the gatherings at the head (top) and tail (bottom) of the spine. A core of leather thong, rolled parchment, or cord was laid along the edge of the spine, forming a single or double cable, and thread was worked around it in a series of tight stitches that passed through the folded sections of the textblock. This sewing helped stabilize the gatherings, preventing them from shifting and protecting the vulnerable spine edges from wear as the book was handled. In many medieval bindings, the endbands were also laced and pegged into the top spine corners of the book boards. Over time, endbands became more elaborate, with colored threads forming decorative patterns, though their structural role remained essential in earlier periods.</p>
+
+  <p>Once the endbands were completed, attention turned to the spine lining. This was an added layer of parchment, linen or leather support pasted to the spine of the quires with flour paste or, in the late Middle Ages, animal glue. The cloth was carefully cut to accommodate the raised sewing supports. In some cases, slits were made so that the lining would fit between the supports; in others, it was applied over them to create a unified surface. In the picture below, a parchment folio has been repurposed as a spine lining. The cutting pattern has earned it the name of a "comb" lining. The two fragments met on the book spine; the spaces cut out allowed for the sewing supports.</p>
+
+     <div class="illustration-block">
+    <img src="https://www.conservation-wiki.com/w/images/d/d6/Fragmentarium_F-boql_1r.jpg_medium.jpg" alt="A twelfth-century parchment folio used as spine lining" onerror="this.style.display='none'">
+    <p class="illustration-caption">A twelfth-century parchment folio used as spine lining. Budapest, Magyar Tudományos Akadémia Könyvtár és Információs Központ, T 338. <a href="https://www.conservation-wiki.com/wiki/File:Fragmentarium_F-boql_1r.jpg_medium.jpg" target="_blank">Conservation Wiki</a>.</p>
+  </div>
+    
+    <p>This textile layer served multiple purposes: it reinforced the spine, distributed mechanical stress during opening, and provided a stable base for further covering materials. In heavier volumes, additional linings of parchment or leather might be added to increase strength.</p>
+
+  <p>Edge trimming was another important stage in the finishing of the bookblock. In the late Middle Ages, trimming often took place before the boards were attached, ensuring that the pages were even and square. The binder secured the bookblock firmly and used a sharp drawknife to shave the edges smooth by hand. This required care, as uneven pressure could gouge or tear the parchment. In the later medieval and early modern periods, the book plough became common. This device comprised a vise-like press in which the book block was held as a blade was repeatedly drawn across it. Smoothly trimmed edges not only improved the book's appearance but also reduced the likelihood of dirt accumulation.</p>
+
+      <div class="ref-box">
+    📚 <strong>Literature</strong><br>
+    J.A. Szirmai, <em>The Archaeology of Medieval Bookbinding</em> (Aldershot, 1999), chapters 7-9.<br>
+    🌐 <strong>Websites</strong><br>
+    <a href="https://qi.fitzmuseum.cam.ac.uk/illuminated/lab/lab" target="_blank"></a>
+  </div>
+
+  <div class="unit-quiz">
+    <p class="unit-quiz-heading">📝 Unit VII — Check Your Understanding</p>
+
+    <div class="quiz-question" id="u7q1">
+      <span class="question-number">Question 1 of 3</span>
+      <p class="question-text">What is the structural purpose of endbands in their earliest medieval form?</p>
+      <label class="option-label"><input type="radio" name="u7q1" value="a"> a) They were purely decorative bands of colored silk sewn along the spine edges to signal a book's value.</label>
+      <label class="option-label"><input type="radio" name="u7q1" value="b"> b) They were sewn through the gatherings at head and tail, stabilizing the gatherings and protecting the vulnerable spine edges from wear.</label>
+      <label class="option-label"><input type="radio" name="u7q1" value="c"> c) They were linen strips glued over the spine to hold the quires together before the boards were attached.</label>
+      <label class="option-label"><input type="radio" name="u7q1" value="d"> d) They were metal clasps riveted to the spine at head and tail to keep the book closed.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u7q1','b','In their earliest structural form, endbands were sewn directly through the gatherings at the head and tail of the spine. A core of thong or cord was laid along the spine edge and the thread was worked around it, stabilizing the gatherings and protecting the spine edges. In many medieval bindings the endbands were also laced into the corners of the bookboards.')">Check Answer</button>
+      <div class="quiz-feedback" id="u7q1-feedback"></div>
+    </div>
+
+    <div class="quiz-question" id="u7q2">
+      <span class="question-number">Question 2 of 3</span>
+      <p class="question-text">How does the spine profile of a Carolingian or Romanesque binding typically differ from that of a Gothic binding?</p>
+      <label class="option-label"><input type="radio" name="u7q2" value="a"> a) Carolingian spines are convex; Gothic spines are flat or concave.</label>
+      <label class="option-label"><input type="radio" name="u7q2" value="b"> b) Carolingian and Romanesque spines tend to be flat or concave; Gothic spines tend to be convex.</label>
+      <label class="option-label"><input type="radio" name="u7q2" value="c"> c) Both periods produced exclusively flat spines; the convex spine was only introduced in the early modern period.</label>
+      <label class="option-label"><input type="radio" name="u7q2" value="d"> d) Gothic spines are always concave due to the use of thinner parchment in that period.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u7q2','b','Carolingian and Romanesque bindings tend to show flat or concave spines; Gothic bindings, in contrast, typically have a convex spine. Some scholars (Szirmai) have argued that this convexity resulted from deliberate rounding with a hammer after sewing, not merely from thread swelling.')">Check Answer</button>
+      <div class="quiz-feedback" id="u7q2-feedback"></div>
+    </div>
+
+    <div class="quiz-question" id="u7q3">
+      <span class="question-number">Question 3 of 3</span>
+      <p class="question-text">What tool replaced the drawknife for trimming bookblock edges in the later medieval and early modern periods?</p>
+      <label class="option-label"><input type="radio" name="u7q3" value="a"> a) The penknife, which was adapted from scribal use to trimming.</label>
+      <label class="option-label"><input type="radio" name="u7q3" value="b"> b) The book plough — a vise-like press in which the book block was held while a blade was drawn repeatedly across the edges.</label>
+      <label class="option-label"><input type="radio" name="u7q3" value="c"> c) The gimlet, a rotating blade that could shave multiple leaves at once.</label>
+      <label class="option-label"><input type="radio" name="u7q3" value="d"> d) The scalpellum, a variant of the scribal penknife adapted for binders.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u7q3','b','The book plough was a device consisting of a vise-like press that held the bookblock firmly while a blade was repeatedly drawn across the edges. It allowed for more controlled and even trimming than the drawknife, which required the binder to shave by hand and risked uneven pressure.')">Check Answer</button>
+      <div class="quiz-feedback" id="u7q3-feedback"></div>
+    </div>
+    <div class="unit-quiz-score" id="u7-score"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ UNIT VIII ═══ -->
+<section class="unit" id="unit8">
+  <h2 class="unit-heading"><span class="unit-numeral">Unit VIII</span> Bookboards</h2>
+
+  <div class="takeaway">
+    <h4>📜 Key Takeaways</h4>
+    <ul>
+      <li>Bookboards were typically made of oak, though beech, pine, walnut, poplar, and others were also used.</li>
+      <li>Sewing supports were laced through channels drilled in the boards — a structural technique far stronger than later adhesive case bindings.</li>
+      <li>In the Carolingian period, boards were often attached when the book block was sewn together; from the Gothic period, they were attached after sewing and trimming.</li>
+      <li>Board edges could be squared, rounded, or beveled, depending on purpose and local practice.</li>
+    </ul>
+  </div>
+
+  <p>Wooden bookboards were attached to the front and back of the book. While this was done at the time of bookblock sewing in the Carolingian period, it was normally done after edge trimming from the High Middle Ages on. The bookboards were shaped and drilled with channels for lacing and fastening the bookblock to the boards. The ends of the sewing supports, already bound to the bookblock, were tightly laced through the channels and fastened in place.</p>
+
+  <p>The covers of medieval codices were typically made from oak boards. 
+    Other kinds of wood were available: beech, pine, walnut, poplar. A minor, but significant, corpus has covers bound in parchment, often called "limp bindings," sometimes layered to form thick covers. The thickness of wooden book boards
+    varied and could relate to the size of the book and the eminence of the design. A private prayer book might have a thinner cover than a luxurious liturgical book. The edges could be squared, rounded, or beveled in varying degrees, applied to the spine edge, the free edges, or both. Board shaping could also be applied to only part of an edge. In the late Middle Ages, the spine edge was usually beveled to facilitate the lacing of the sewing supports and to accommodate the extra width of the book block at the spine edge, where the support is folded and thread run through.</p>
+
+  <div class="illustration-block">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Winchester_Bible_binding.jpg/480px-Winchester_Bible_binding.jpg" alt="Medieval wooden bookboard binding" onerror="this.style.display='none'">
+    <p class="illustration-caption">Medieval wooden board binding showing laced-in sewing supports. Public domain via <a href="https://commons.wikimedia.org" target="_blank">Wikimedia Commons</a>.</p>
+  </div>
+
+  <p>Channels were drilled into the boards to match the sewing supports along the spine and the endbands at head and tail. Using awls, drills, gimlets, or knives, the binder created angled tunnels or grooves through the thickness of the wood. Different channel patterns were employed. To attach the boards, the binder threaded or "laced" these support ends through the prepared channels. The channels were often angled so that the supports entered from the spine edge and emerged on the inside of the board. The ends were then frayed, wedged, or pegged into place, sometimes secured with small wooden pegs or adhesive. This <span class="glossary-term">lacing technique<span class="glossary-def">The method by which sewing support ends were threaded through channels drilled in the wooden boards and then frayed, wedged, or pegged in place. Laced-board bindings were structurally far stronger than the adhesive case-bindings that largely replaced them after the early modern period.</span></span> created a strong bond between book block and board. Unlike later case bindings, in which covers were attached with adhesive alone, medieval laced-board bindings relied on this structural integration for durability.</p>
+
+  <p>There was no single method of medieval bookbinding, and book boards illustrate that aptly. In the early medieval period, particularly during the <span class="glossary-term">Carolingian era<span class="glossary-def">The Carolingian period (c. 750–900 C.E.) refers to the dynasty of Charlemagne (r. 768–814 C.E.) and his successors. It was marked by a major cultural and educational revival (the "Carolingian Renaissance") with important consequences for book production and script standardization.</span></span> 
+    (8th–9th centuries), binders often prepared the boards in advance and attached them as the quires of the book block were sewn. The sewing supports were laced into one cover, the quires were sewn, and then the sewing supports were laced into the other cover. The book block was then trimmed with the boards on it, as revealed by scraping marks left by trimming on the edges of some boards. This trimming created a smooth, even edge From perhaps the twelfth century on, the use of the sewing frame allowed binders to attach the boards at a later stage. In the Romanesque period, book trimming still occurred after the boards had been attached. In the Gothic period, the book block was trimmed before it was attached to the boards.</p>
+
+  <div class="ref-box">
+    📚 <strong>Literature</strong><br>
+    J.A. Szirmai, <em>The Archaeology of Medieval Bookbinding</em> (Aldershot, 1999), chap. 7–9.<br>
+    🌐 <strong>Websites</strong><br>
+    <a href="https://www.ligatus.org.uk" target="_blank">Ligatus Research Centre — Language of Bindings Thesaurus</a>
+  </div>
+
+  <div class="unit-quiz">
+    <p class="unit-quiz-heading">📝 Unit VIII — Check Your Understanding</p>
+
+    <div class="quiz-question" id="u8q1">
+      <span class="question-number">Question 1 of 3</span>
+      <p class="question-text">What is the defining structural feature of a medieval laced-board binding?</p>
+      <label class="option-label"><input type="radio" name="u8q1" value="a"> a) The boards were attached to the spine using animal-hide glue applied along the length of the joint.</label>
+      <label class="option-label"><input type="radio" name="u8q1" value="b"> b) The sewing support ends were threaded through angled channels drilled in the boards and pegged or wedged in place, physically integrating block and boards.</label>
+      <label class="option-label"><input type="radio" name="u8q1" value="c"> c) The boards were nailed directly to the spine with metal tacks at regular intervals.</label>
+      <label class="option-label"><input type="radio" name="u8q1" value="d"> d) The boards were tied to the book block with cords running through holes in both the boards and the quires.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u8q1','b','In medieval laced-board bindings the sewing support ends (already sewn into the textblock) were threaded through angled channels drilled in the wooden boards and then frayed, wedged, or pegged in place. This physically integrated block and boards and was far more durable than the adhesive-only method of later case bindings.')">Check Answer</button>
+      <div class="quiz-feedback" id="u8q1-feedback"></div>
+    </div>
+
+    <div class="quiz-question" id="u8q2">
+      <span class="question-number">Question 2 of 3</span>
+      <p class="question-text">What was the most common wood used for medieval bookboards, and what alternatives existed?</p>
+      <label class="option-label"><input type="radio" name="u8q2" value="a"> a) Oak was most common; alternatives included beech, pine, walnut, and poplar.</label>
+      <label class="option-label"><input type="radio" name="u8q2" value="b"> b) Beech was most common because it was the hardest European hardwood available.</label>
+      <label class="option-label"><input type="radio" name="u8q2" value="c"> c) Cedar was most common due to its resistance to insects; oak was a cheaper substitute.</label>
+      <label class="option-label"><input type="radio" name="u8q2" value="d"> d) Boards were almost always made of laminated parchment rather than wood.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u8q2','a','Oak boards were most typical for medieval bindings, though beech, pine, walnut, and poplar were all available alternatives. A smaller but notable corpus of medieval bindings uses layered parchment (limp bindings) instead of wood entirely.')">Check Answer</button>
+      <div class="quiz-feedback" id="u8q2-feedback"></div>
+    </div>
+
+    <div class="quiz-question" id="u8q3">
+      <span class="question-number">Question 3 of 3</span>
+      <p class="question-text">When did binders typically attach the wooden boards to the book block in the Gothic period, compared to the Carolingian period?</p>
+      <label class="option-label"><input type="radio" name="u8q3" value="a"> a) In both periods, boards were attached during sewing, before the text was written.</label>
+      <label class="option-label"><input type="radio" name="u8q3" value="b"> b) In the Carolingian period boards were often attached during sewing; in the Gothic period they were attached after the book block had been trimmed.</label>
+      <label class="option-label"><input type="radio" name="u8q3" value="c"> c) In the Gothic period boards were attached during sewing; Carolingian binders always attached them after trimming.</label>
+      <label class="option-label"><input type="radio" name="u8q3" value="d"> d) Boards were never attached until after the covering leather was applied in both periods.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u8q3','b','In the Carolingian period, binders often attached the boards during or immediately after sewing the quires, then trimmed the edges with boards on. From the Gothic period onward the sequence changed: the book block was trimmed first, then the boards were laced on afterwards.')">Check Answer</button>
+      <div class="quiz-feedback" id="u8q3-feedback"></div>
+    </div>
+    <div class="unit-quiz-score" id="u8-score"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ UNIT IX ═══ -->
+<section class="unit" id="unit9">
+  <h2 class="unit-heading"><span class="unit-numeral">Unit IX</span> Covering, Fastenings & Decoration</h2>
+
+  <div class="takeaway">
+    <h4>📜 Key Takeaways</h4>
+    <ul>
+      <li>Boards were covered in leather (calf, sheep, goat, pig, deer, or seal), alum-tawed skin, textiles, or, for limp bindings, parchment.</li>
+      <li>Clasps and straps were a functional necessity: parchment expands and contracts with humidity and had to be kept tightly closed to prevent warping.</li>
+      <li>Cover decoration ranged from blind tooling on tanned leather to precious stones (polished as cabochon gems), gold or silver filigree, and enamel on luxury Gospel books.</li>
+      <li>Bosses and corner pieces protected boards from abrasion; chemise bindings and overcovers provided additional protection for traveling books.</li>
+      <li>Girdle books, with an extended knotted leather cover tucked into the belt, were far more common in the late Middle Ages than surviving examples suggest.</li>
+    </ul>
+  </div>
+
+  <p>A leather or half-leather (
+    <span class="glossary-term">alum-tawed<span class="glossary-def">Alum tawing: a method of preparing animal skin by treating it with alum and salt, producing a white, firm, flexible leather that does not rot in the same way as vegetable-tanned leather. Widely used for sewing supports and some book covers in the Middle Ages.</span></span>) 
+    cover was pasted to the outside of the boards and turned in partially on the inside, sometimes reinforced by sewing. Metal fastenings were outfitted for closing the book tightly, so that the parchment would not expand too much. Bosses could be added to keep the books apart from one another, and other decorations could also be added. Overcovers could be added for enveloping the book in a second protective cover, or girdle books would be fashioned for carrying.</p>
+
+  <p>The board was covered in leather — calf, sheep, goat, deer, pig, even seal — prepared in a variety of ways: alum-tawing, oil tanning, tanning. Sometimes textiles were used in place of a leather product. The covering material was tightly applied and pasted down with vegetable paste or, more commonly in the later Middle Ages, with animal glue. The cover was folded over the inside book board, cut at the corners, and pasted down. They could be 
+    <span class="glossary-term">mitred<span class="glossary-def">Mitring (or mitering): cutting the leather at the corners of the book board at 45° angles so that the folded material meets neatly without bulking or overlapping. Standard practice for a tidy, professional cover finish.</span></span>, 
+    so that the folded material at the right angles was cut to form two 45° angles. They could be sewn together along this angle.</p>
+
+  <p>Covers were decorated with a seemingly endless array of techniques and motifs.
+    <span class="glossary-term">Blind tooling<span class="glossary-def">The impression of heated metal tools or stamps into leather to create decorative designs, without the addition of gold or colour. Common on tanned leather book covers from the Romanesque period onward.</span></span> 
+    — the impression of a pattern or image through heated metal stamps and tools — might be applied to tanned leathers. These designs could include geometric interlace, foliage, rosettes, or small animal motifs. Luxury books, such as Gospel and liturgical books, could be decorated with precious stones and metals. Stones such as garnets, sapphires, amethysts, rock crystal and pearls, had to be polished as 
+    <span class="glossary-term">cabochon<span class="glossary-def">A gemstone shaped by polishing into a smooth, convex, unfaceted form. Standard method for medieval gemstones set into book covers and metalwork before faceting techniques became widespread.</span></span> 
+    gems. Such work required skilled craftspeople and depended on extensive supply chains, which are poorly understood.</p>
+
+  <div class="illustration-block">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Codex_of_Uta.png" alt="Lindau Gospels back cover with metalwork and gems" onerror="this.style.display='none'">
+    <p class="illustration-caption">Cover of a Gospel book called the Uta Codex (c. 1020-1045 C.E.), showing gold plating and gems characteristic of luxury Ottonian bookbinding. München, Bayerische Staatsbibliothek, CLM 13601. Public domain via <a href="https://commons.wikimedia.org/wiki/File:Codex_of_Uta.png" target="_blank">Wikimedia Commons</a>.</p>
+  </div>
+
+  <p>Fastenings were another essential feature. Because medieval manuscripts were written on parchment, a hygroscopic material that expands and contracts with humidity, codices needed to be held tightly closed to prevent warping. In the Carolingian period, a short leather strap with a metal eye, fixed on one cover, was fixed around a metal peg or stud on the opposite cover. The mechanism in the Romanesque period was similar, except that the predominant method used a longer strap, whose fixture was further recessed into the board. This method persisted in the Gothic period but was joined by a new method. The leather joining strap was replaced by a metal clasp attached to leather or fabric straps. One end of the strap was anchored to one cover, while the metal end of the clasp hooked onto a catch plate fixed to the other cover. Clasps could be simple brass hooks or more ornate pieces engraved with decorative patterns. On large choir books, the fastenings were substantial, sometimes featuring multiple clasps along the fore edge.</p>
+
+  <p>Bosses and corner pieces, though primarily protective, also contributed to the cover's appearance. Raised metal <span class="glossary-term">bosses<span class="glossary-def">Convex metal fittings (often brass or bronze) fixed to the front and back covers of a book. When the book was laid flat, bosses protected the leather from abrasion against the table surface.</span></span> could be fixed to the front and back boards. When the book was laid flat on a table, these bosses prevented abrasion of the leather on the table surface. Corner pieces shielded edges from wear and tear. Often made of brass or bronze, they could be plain or embellished, sometimes to match the other metal book furnishings.</p>
+
+  <p>Overcovers provided an additional layer of protection, particularly for books that traveled. These could be made of cloth or secondary leather wrappings. In monastic settings, some books were stored in 
+    <span class="glossary-term">chemise bindings<span class="glossary-def">A secondary leather cover with an extended flap that wraps over the fore edge of the book, sometimes tied shut, protecting the edges from dust and damage. Common in monastic and later medieval contexts.</span></span>, 
+    where an extended leather flap folded over the fore edge and sometimes tied shut. In other cases, embroidered fabric covers were slipped over precious volumes. To judge from their representation in paintings, so-called 
+    <span class="glossary-term">girdle books<span class="glossary-def">Books with a secondary leather cover extended and knotted at the top, allowing them to be tucked into a belt or girdle.</span></span> 
+    must have been far commoner in the late Middle Ages than the surviving examples suggest. Here is an example from about 1471.</p>
+    
+    <div class="illustration-block">
+    <img alt="Girdle book of Hieronymus Kress, c. 1471" onerror="this.style.display='none'">
+    <p class="illustration-caption">Girdle book of Hieronymus Kress (c. 1471), at the Germanisches Nationalmuseum, Nürnberg. Public domain via <a href="https://commons.wikimedia.org/wiki/Category:Girdle_book_of_Hieronymus_Kress_(Germanisches_Nationalmuseum)#/media/File:Girdle_Book_Nuremberg.jpg/2" target="_blank">Wikimedia Commons</a>.</p>
+  </div>
+    
+    <p>These books have a secondary cover of leather that was gathered at the top and knotted; the knot allowed people to keep it tucked inside their belt. Late medieval paintings show many women reading from such books. In the painting below, Catherine of Alexandria, known for her erudition, and for the wheel on which she was to be tortured, holds a girdle book in her left hand.</p>
+
+  <div class="illustration-block">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Santa_Caterina_d%27Alessandria_%28Torino%298244.jpg" alt="Catherine of Alexandria holding a girdle book" onerror="this.style.display='none'">
+    <p class="illustration-caption">Catherine of Alexandria holding a girdle book. Public domain via <a href="https://commons.wikimedia.org/wiki/File:Santa_Caterina_d%27Alessandria_(Torino)8244.jpg" target="_blank">Wikimedia Commons</a>.</p>
+  </div>
+
+  <div class="ref-box">
+    📚 <strong>Literature</strong><br>
+    J.A. Szirmai, <em>The Archaeology of Medieval Bookbinding</em> (Aldershot, 1999), chap. 7-9.<br>
+    🌐 <strong>Websites</strong><br>
+    <a href="https://www.ligatus.org.uk" target="_blank">Ligatus Research Centre — Language of Bindings Thesaurus</a>
+  </div>
+
+  <div class="unit-quiz">
+    <p class="unit-quiz-heading">📝 Unit IX — Check Your Understanding</p>
+
+    <div class="quiz-question" id="u9q1">
+      <span class="question-number">Question 1 of 3</span>
+      <p class="question-text">Why were metal clasps and straps a functional necessity on medieval parchment manuscripts, rather than merely decorative?</p>
+      <label class="option-label"><input type="radio" name="u9q1" value="a"> a) They prevented thieves from opening and copying the contents.</label>
+      <label class="option-label"><input type="radio" name="u9q1" value="b"> b) Parchment expands and contracts with changes in humidity; clasps held the book tightly shut to prevent the pages from warping.</label>
+      <label class="option-label"><input type="radio" name="u9q1" value="c"> c) They reinforced the wooden boards, which would otherwise split along the grain.</label>
+      <label class="option-label"><input type="radio" name="u9q1" value="d"> d) Canon law required liturgical books to be kept sealed when not in use.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u9q1','b','Parchment is hygroscopic — it swells in damp conditions and contracts in dry ones. Without clasps to keep the book firmly shut, the leaves would buckle and warp, deforming the entire codex. This is a functional necessity, even though clasps were also often made decorative.')">Check Answer</button>
+      <div class="quiz-feedback" id="u9q1-feedback"></div>
+    </div>
+
+    <div class="quiz-question" id="u9q2">
+      <span class="question-number">Question 2 of 3</span>
+      <p class="question-text">What is blind tooling, and to which covering material was it typically applied?</p>
+      <label class="option-label"><input type="radio" name="u9q2" value="a"> a) The application of gold leaf through a heated stamp; applied to textile covers.</label>
+      <label class="option-label"><input type="radio" name="u9q2" value="b"> b) The impression of heated metal stamps into leather to create decorative designs without gold or colour; applied to tanned leather covers.</label>
+      <label class="option-label"><input type="radio" name="u9q2" value="c"> c) The incision of patterns into wooden boards using a hot iron; applied before the leather was pasted on.</label>
+      <label class="option-label"><input type="radio" name="u9q2" value="d"> d) Decorative painting applied under a transparent varnish on parchment covers.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u9q2','b','Blind tooling is the impression of heated metal tools or stamps into leather, creating decorative designs — geometric interlace, foliage, rosettes, animal motifs — without the addition of gold or colour. It was applied to tanned (as opposed to alum-tawed) leather covers, and is common from the Romanesque period onward.')">Check Answer</button>
+      <div class="quiz-feedback" id="u9q2-feedback"></div>
+    </div>
+
+    <div class="quiz-question" id="u9q3">
+      <span class="question-number">Question 3 of 3</span>
+      <p class="question-text">What is a girdle book, and how was it worn?</p>
+      <label class="option-label"><input type="radio" name="u9q3" value="a"> a) A very small octavo book light enough to be attached to a neck chain as a pendant.</label>
+      <label class="option-label"><input type="radio" name="u9q3" value="b"> b) A book with a secondary leather cover extended and knotted at the top, allowing it to be tucked into a belt with the spine hanging downward.</label>
+      <label class="option-label"><input type="radio" name="u9q3" value="c"> c) A book sewn into an embroidered pouch worn as part of formal liturgical dress.</label>
+      <label class="option-label"><input type="radio" name="u9q3" value="d"> d) A binding style in which the boards were hinged so the book could be folded flat and slipped into a pocket.</label>
+      <button class="quiz-btn" onclick="checkAnswer('u9q3','b','A girdle book had a secondary cover of leather gathered and knotted at the top, with enough excess material to tuck into a belt or girdle, leaving the book to hang from the waist. They appear frequently in late medieval paintings, especially in the hands of women reading devotional texts, though very few physical examples survive.')">Check Answer</button>
+      <div class="quiz-feedback" id="u9q3-feedback"></div>
+    </div>
+    <div class="unit-quiz-score" id="u9-score"></div>
+  </div>
+</section>
+
+<hr class="ornament">
+
+<!-- ═══════════════════════════════ OVERALL SCORE SUMMARY ═══════════ -->
+<section class="quiz-section" id="quiz">
+  <h2>Overall Progress</h2>
+  <p class="quiz-subtitle">27 questions across 9 units · Complete all unit quizzes above to see your total score</p>
+  <div class="quiz-score" id="overall-score" style="display:block; background:#1a1208; color:var(--gold-light); font-family:'Cinzel',serif; font-size:1rem; padding:16px; text-align:center; border:1px solid #5a4010;">
+    Answer the questions in each unit above to track your score here.
+  </div>
+
+  <!-- H5P Export -->
+  <div class="h5p-block">
+    <h3>H5P Export — Single Choice Set (27 Questions)</h3>
+    <p>All 27 questions are structured for the H5P <strong>Single Choice Set</strong> content type. The correct answer is always listed first in each array (H5P randomises order on display). Click to show the JSON.</p>
+    <button class="toggle-h5p" onclick="toggleH5P()">Show / Hide H5P JSON</button>
+    <pre class="h5p-json" id="h5p-json">{
+  "library": "H5P.SingleChoiceSet 1.11",
+  "params": {
+    "choices": [
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit I&lt;/strong&gt; Which writing support became dominant for books in the European Middle Ages?&lt;/p&gt;",
+        "answers": ["Parchment, because it was more durable and better adapted to the codex format.","Paper, because it was cheaper and faster to produce.","Wax tablets, because they could be erased and reused.","Papyrus remained dominant throughout the Middle Ages."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit I&lt;/strong&gt; According to Pliny, what led to the perfection of parchment as a writing material?&lt;/p&gt;",
+        "answers": ["A trade embargo on papyrus exports from Alexandria to Pergamum.","The destruction of the Library of Alexandria by fire.","A shortage of animal hides across the Roman Empire.","The invention of the printing press."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit I&lt;/strong&gt; What is a palimpsest, and what technology recovers its erased text?&lt;/p&gt;",
+        "answers": ["A parchment from which an older text was scraped so it could be reused; recovered using multispectral imaging.","A luxury binding decorated with gems; recovered using X-ray fluorescence.","A papyrus roll preserved under volcanic ash; recovered by virtual unrolling.","A wax tablet whose text has melted; recovered by infrared photography."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit II&lt;/strong&gt; How many leaves does a single sheet folded once (folio format) yield?&lt;/p&gt;",
+        "answers": ["Two leaves.","One leaf.","Four leaves.","Eight leaves."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit II&lt;/strong&gt; How many parchment skins were typically needed for a quarto quire?&lt;/p&gt;",
+        "answers": ["Two skins.","One skin, folded three times.","Four skins, one per leaf.","Eight skins."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit II&lt;/strong&gt; What does the example of Opicino de Canistris illustrate about medieval parchment?&lt;/p&gt;",
+        "answers": ["That parchment was sold as full unfolded sheets that could in principle be folded into books of any format.","That parchment was too expensive for most medieval writers.","That the octavo format was invented in fourteenth-century Avignon.","That visionary texts required a special grade of parchment."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit III&lt;/strong&gt; What is Gregory's Rule?&lt;/p&gt;",
+        "answers": ["The arrangement of parchment so that hair sides face hair sides and flesh sides face flesh sides within a quire.","The convention that quire signatures go on the last folio.","The principle that every quire must contain exactly four sheets.","The requirement to rule in lead before writing in ink."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit III&lt;/strong&gt; What was the purpose of pricking a quire before writing?&lt;/p&gt;",
+        "answers": ["To make punctures along the edges as reference points for ruling text lines and margins.","To pierce sewing holes for later binding.","To allow air to circulate and prevent mold.","To mark the hair side of the parchment."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit III&lt;/strong&gt; What was tacketing?&lt;/p&gt;",
+        "answers": ["A temporary fastening — a thread or parchment strip through the quire fold — that held leaves together like a staple.","A decorative stitching applied to the spine cover.","The process of applying pounce powder before writing.","The technique of numbering each leaf."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit IV&lt;/strong&gt; What were the two primary functions of the penknife in the scriptorium?&lt;/p&gt;",
+        "answers": ["Sharpening the quill and scraping away mistakes before the ink set.","Cutting parchment to size and applying pounce powder.","Pricking guidelines and trimming the bookblock edges.","Drawing rubrication lines and cutting quire signatures."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit IV&lt;/strong&gt; What does &lt;em&gt;Tres digiti scribunt, totum corpus laborat&lt;/em&gt; describe?&lt;/p&gt;",
+        "answers": ["The three-finger quill grip and the physical effort involved in sustained writing.","A rule requiring three scribes to share each manuscript.","The three steps of preparation: pricking, ruling, and copying.","The three materials of iron gall ink."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit IV&lt;/strong&gt; What was the purpose of quire signatures?&lt;/p&gt;",
+        "answers": ["Numbers or letters on the last folio of a quire indicating its position so quires could be assembled in correct order.","Decorative marks identifying the scribe.","Marginal annotations marking important passages.","Watermarks pressed into parchment by the skinner."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit V&lt;/strong&gt; What is rubrication, and who typically performed it?&lt;/p&gt;",
+        "answers": ["The writing of titles and liturgical cues in red ink, often by a specialist rubricator working separately from the main scribe.","The application of gold leaf to initials, by a gilder.","The undercoat of gesso applied to initials before painting.","Blind-tooled red patterns on leather covers."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit V&lt;/strong&gt; From what source was ultramarine blue derived?&lt;/p&gt;",
+        "answers": ["Lapis lazuli, a semi-precious stone imported from Afghanistan.","Copper compounds mined in the Rhineland.","Woad plants grown across northern Europe.","Indigo extracted from Mediterranean molluscs."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit V&lt;/strong&gt; Which technique best identifies the elemental composition of metallic pigments without damaging the manuscript?&lt;/p&gt;",
+        "answers": ["X-ray fluorescence (XRF).","Raman spectroscopy.","Reflectance Transformation Imaging (RTI).","Multispectral imaging (MSI)."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit VI&lt;/strong&gt; What are sewing supports?&lt;/p&gt;",
+        "answers": ["Cords or thongs stretched across the spine onto which each quire is sewn, forming the binding's structural backbone.","Wooden clamps holding the bookblock flat while glue dries.","Metal rods inserted along the spine to keep it rigid.","Leather strips glued inside bookboards to reinforce the joint."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit VI&lt;/strong&gt; What is the function of a sewing frame?&lt;/p&gt;",
+        "answers": ["To hold sewing supports taut under tension so the binder can sew each quire onto them in sequence.","To hold the finished bookblock in a press while the spine lining dries.","To clamp the bookboards while their channels are drilled.","To stretch the leather evenly over the boards before pasting."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit VI&lt;/strong&gt; What distinguishes integral sewing from standard sewing?&lt;/p&gt;",
+        "answers": ["The thread runs all the way to head or tail and loops around the endband core, combining quire sewing and endband sewing in one pass.","Integral sewing uses metal wire instead of linen thread.","It attaches the bookboards at the same time as sewing the quires.","It uses a herringbone stitch throughout."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit VII&lt;/strong&gt; What is the structural purpose of endbands in their earliest medieval form?&lt;/p&gt;",
+        "answers": ["Sewn through the gatherings at head and tail, stabilizing them and protecting spine edges from wear.","Purely decorative bands of colored silk signaling a book's value.","Linen strips glued over the spine to hold quires together.","Metal clasps riveted to the spine to keep the book closed."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit VII&lt;/strong&gt; How does the spine profile of a Carolingian or Romanesque binding differ from a Gothic binding?&lt;/p&gt;",
+        "answers": ["Carolingian and Romanesque spines tend to be flat or concave; Gothic spines tend to be convex.","Carolingian spines are convex; Gothic spines are flat.","Both periods produced exclusively flat spines.","Gothic spines are concave due to thinner parchment."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit VII&lt;/strong&gt; What tool replaced the drawknife for trimming bookblock edges in the later medieval period?&lt;/p&gt;",
+        "answers": ["The book plough — a vise-like press in which the book block was held while a blade was drawn across the edges.","The penknife, adapted from scribal use.","The gimlet, a rotating blade.","The scalpellum, a variant of the scribal penknife."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit VIII&lt;/strong&gt; What is the defining feature of a medieval laced-board binding?&lt;/p&gt;",
+        "answers": ["The sewing support ends were threaded through channels drilled in the boards and pegged or wedged in place, integrating block and boards.","The boards were attached with animal-hide glue along the spine joint.","The boards were nailed to the spine with metal tacks.","The boards were tied to the book block with cords."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit VIII&lt;/strong&gt; What was the most common wood for medieval bookboards?&lt;/p&gt;",
+        "answers": ["Oak; alternatives included beech, pine, walnut, and poplar.","Beech, the hardest European hardwood.","Cedar, for its insect resistance.","Laminated parchment rather than wood."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit VIII&lt;/strong&gt; When were boards attached in Gothic-period bindings, compared to the Carolingian period?&lt;/p&gt;",
+        "answers": ["In the Gothic period, boards were attached after trimming; in the Carolingian period, often during sewing.","In both periods, boards were attached during sewing.","In the Gothic period, boards were attached during sewing; Carolingian binders attached them after trimming.","Boards were never attached until after the leather cover was applied."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit IX&lt;/strong&gt; Why were clasps a functional necessity on medieval parchment manuscripts?&lt;/p&gt;",
+        "answers": ["Parchment expands and contracts with humidity; clasps held the book shut to prevent warping.","They prevented thieves from copying the contents.","They reinforced wooden boards against splitting.","Canon law required liturgical books to be sealed."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit IX&lt;/strong&gt; What is blind tooling, and to which material was it applied?&lt;/p&gt;",
+        "answers": ["The impression of heated metal stamps into tanned leather to create decorative designs without gold or colour.","The application of gold leaf through a heated stamp onto textile covers.","Incised patterns in wooden boards made with a hot iron.","Decorative painting under a transparent varnish on parchment covers."] },
+      { "question": "&lt;p&gt;&lt;strong&gt;Unit IX&lt;/strong&gt; What is a girdle book and how was it worn?&lt;/p&gt;",
+        "answers": ["A book with a secondary leather cover knotted at the top and tucked into a belt, hanging from the waist.","A very small octavo book worn on a neck chain.","A book sewn into an embroidered pouch worn as liturgical dress.","A binding with hinged boards that folded flat to fit in a pocket."] }
+    ],
+    "overallFeedback": [
+      { "from": 0,  "to": 44,  "feedback": "Keep reviewing — revisit the units whose questions you found difficult." },
+      { "from": 45, "to": 74,  "feedback": "Good progress! A few units still need attention." },
+      { "from": 75, "to": 100, "feedback": "Excellent work — you have a strong grasp of medieval bookbinding." }
+    ],
+    "behaviour": {
+      "autoContinue": false,
+      "timeoutCorrect": 2000,
+      "timeoutWrong": 3000,
+      "soundEffectsEnabled": true,
+      "enableRetry": true,
+      "passPercentage": 60
+    },
+    "l10n": {
+      "nextButtonLabel": "Next question",
+      "showSolutionButtonLabel": "Show solution",
+      "retryButtonLabel": "Retry",
+      "solutionViewTitle": "Solution List"
+    }
+  }
+}</pre>
+  </div>
+</section>
+
+</main>
+</div><!-- /page-wrapper -->
+
+<script>
+// ── Scoring state ─────────────────────────────────────────────────────────
+const unitQuestions = {
+  u1: ['u1q1','u1q2','u1q3'],
+  u2: ['u2q1','u2q2','u2q3'],
+  u3: ['u3q1','u3q2','u3q3'],
+  u4: ['u4q1','u4q2','u4q3'],
+  u5: ['u5q1','u5q2','u5q3'],
+  u6: ['u6q1','u6q2','u6q3'],
+  u7: ['u7q1','u7q2','u7q3'],
+  u8: ['u8q1','u8q2','u8q3'],
+  u9: ['u9q1','u9q2','u9q3'],
+};
+const unitOf = {};
+Object.entries(unitQuestions).forEach(([unit, qs]) => qs.forEach(q => unitOf[q] = unit));
+
+const correctAnswers = {
+  u1q1:'b', u1q2:'b', u1q3:'b',
+  u2q1:'b', u2q2:'b', u2q3:'b',
+  u3q1:'c', u3q2:'b', u3q3:'c',
+  u4q1:'b', u4q2:'c', u4q3:'b',
+  u5q1:'b', u5q2:'c', u5q3:'b',
+  u6q1:'b', u6q2:'b', u6q3:'b',
+  u7q1:'b', u7q2:'b', u7q3:'b',
+  u8q1:'b', u8q2:'a', u8q3:'b',
+  u9q1:'b', u9q2:'b', u9q3:'b',
+};
+
+const answered = {};
+const unitScores = { u1:0,u2:0,u3:0,u4:0,u5:0,u6:0,u7:0,u8:0,u9:0 };
+const unitAnswered = { u1:0,u2:0,u3:0,u4:0,u5:0,u6:0,u7:0,u8:0,u9:0 };
+let totalAnswered = 0;
+let totalCorrect = 0;
+
+function checkAnswer(qid, correct, explanation) {
+  const selected = document.querySelector(`input[name="${qid}"]:checked`);
+  const fb = document.getElementById(`${qid}-feedback`);
+  if (!selected) {
+    fb.style.display = 'block';
+    fb.className = 'quiz-feedback incorrect';
+    fb.textContent = 'Please select an answer before checking.';
+    return;
+  }
+  if (answered[qid]) return;
+  answered[qid] = true;
+  totalAnswered++;
+
+  const isCorrect = selected.value === correct;
+  if (isCorrect) totalCorrect++;
+
+  fb.style.display = 'block';
+  fb.className = `quiz-feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+  fb.innerHTML = `${isCorrect ? '✓ Correct! ' : '✗ Not quite. '}${explanation}`;
+
+  document.querySelectorAll(`input[name="${qid}"]`).forEach(r => r.disabled = true);
+
+  // Update per-unit score
+  const unit = unitOf[qid];
+  if (unit) {
+    if (isCorrect) unitScores[unit]++;
+    unitAnswered[unit]++;
+    if (unitAnswered[unit] === 3) {
+      const s = document.getElementById(`${unit}-score`);
+      if (s) {
+        const score = unitScores[unit];
+        s.style.display = 'block';
+        s.className = `unit-quiz-score ${score >= 2 ? 'pass' : 'fail'}`;
+        s.textContent = `Unit score: ${score} / 3${score === 3 ? ' — Perfect!' : score === 2 ? ' — Good.' : ' — Review this unit.'}`;
+      }
+    }
+  }
+
+  // Update overall score
+  const overall = document.getElementById('overall-score');
+  if (overall) {
+    const pct = Math.round((totalCorrect / 27) * 100);
+    overall.textContent = `Running total: ${totalCorrect} / ${totalAnswered} answered correctly`;
+    if (totalAnswered === 27) {
+      overall.textContent = `Final score: ${totalCorrect} / 27 (${pct}%)`;
+      if (pct >= 75) overall.textContent += ' — Excellent!';
+      else if (pct >= 50) overall.textContent += ' — Good. Review units where you scored 1 or less.';
+      else overall.textContent += ' — Please revisit the tutorial units above.';
+    }
+  }
+}
+
+function toggleH5P() {
+  const el = document.getElementById('h5p-json');
+  el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+</script>
+</body>
+</html>
+

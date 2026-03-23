@@ -1,0 +1,125 @@
+export const bookbindingOverview = {
+  eyebrow: 'Tutorials',
+  title: 'The Creation of a Medieval Codex',
+  lede:
+    'Enter an illustrated workshop and follow the making of a medieval codex from writing supports and quires to sewing, boards, covering, and decoration.',
+  sourceFiles: [
+    'Tutorials/5. Codicology and Bookbinding/medieval_bookbinding_revised2.html',
+    'Tutorials/5. Codicology and Bookbinding/The Creation of a Medieval Codex_ An Interactive Tutorial.pdf',
+  ],
+  introduction: [
+    'Begin with the workshop scene to enter the process spatially, then continue chapter by chapter through the codex-making sequence.',
+    'The reader follows the structure of the finished interactive tutorial, covering support preparation, folding, ruling, writing, decoration, sewing, spine treatment, boards, and covering.',
+  ],
+  workshopImage: '/images/bookbinding/cover.jpeg',
+  secondaryImage: '/images/bookbinding/gall-scriptorium.png',
+}
+
+export const bookbindingChapters = [
+  {
+    unit: 1,
+    numeral: 'I',
+    slug: 'writing-supports',
+    title: 'Writing Supports',
+    description: 'Prepare parchment and other writing supports before the codex takes shape.',
+    sourceLabel: 'Finished HTML tutorial section',
+    sourceFile: 'Tutorials/5. Codicology and Bookbinding/medieval_bookbinding_revised2.html',
+    sourceId: 'unit1',
+  },
+  {
+    unit: 2,
+    numeral: 'II',
+    slug: 'folding-formats',
+    title: 'Folding & Formats',
+    description: 'Learn how folded sheets determine size, format, and the structure of gatherings.',
+    sourceLabel: 'Finished HTML tutorial section',
+    sourceFile: 'Tutorials/5. Codicology and Bookbinding/medieval_bookbinding_revised2.html',
+    sourceId: 'unit2',
+  },
+  {
+    unit: 3,
+    numeral: 'III',
+    slug: 'quires-ruling',
+    title: 'Quires & Ruling',
+    description: 'See how quires are assembled, pricked, and ruled for writing.',
+    sourceLabel: 'Finished HTML tutorial section',
+    sourceFile: 'Tutorials/5. Codicology and Bookbinding/medieval_bookbinding_revised2.html',
+    sourceId: 'unit3',
+  },
+  {
+    unit: 4,
+    numeral: 'IV',
+    slug: 'scribal-tools',
+    title: 'Scribal Tools & Techniques',
+    description: 'Follow the tools, preparation, and writing practices of the medieval scribe.',
+    sourceLabel: 'Finished HTML tutorial section',
+    sourceFile: 'Tutorials/5. Codicology and Bookbinding/medieval_bookbinding_revised2.html',
+    sourceId: 'unit4',
+  },
+  {
+    unit: 5,
+    numeral: 'V',
+    slug: 'ink-pigments-decoration',
+    title: 'Decoration & Pigments',
+    description: 'Trace pigments, initials, and decorative work across the page.',
+    sourceLabel: 'Finished HTML tutorial section',
+    sourceFile: 'Tutorials/5. Codicology and Bookbinding/medieval_bookbinding_revised2.html',
+    sourceId: 'unit5',
+  },
+  {
+    unit: 6,
+    numeral: 'VI',
+    slug: 'sewing-bookblock',
+    title: 'Sewing the Bookblock',
+    description: 'Move into the structural sewing that turns gatherings into a bookblock.',
+    sourceLabel: 'Finished HTML tutorial section',
+    sourceFile: 'Tutorials/5. Codicology and Bookbinding/medieval_bookbinding_revised2.html',
+    sourceId: 'unit6',
+  },
+  {
+    unit: 7,
+    numeral: 'VII',
+    slug: 'spine-endbands-trimming',
+    title: 'Spine Treatment, Endbands & Edge Trimming',
+    description: 'Study spine treatment, endbands, and trimming as the codex gains durability.',
+    sourceLabel: 'Finished HTML tutorial section',
+    sourceFile: 'Tutorials/5. Codicology and Bookbinding/medieval_bookbinding_revised2.html',
+    sourceId: 'unit7',
+  },
+  {
+    unit: 8,
+    numeral: 'VIII',
+    slug: 'bookboards',
+    title: 'Bookboards',
+    description: 'Understand how boards stabilize and protect the finished book.',
+    sourceLabel: 'Finished HTML tutorial section',
+    sourceFile: 'Tutorials/5. Codicology and Bookbinding/medieval_bookbinding_revised2.html',
+    sourceId: 'unit8',
+  },
+  {
+    unit: 9,
+    numeral: 'IX',
+    slug: 'covering-fastenings-decoration',
+    title: 'Covering & Fastenings',
+    description: 'Finish with covering, clasps, and the outer presentation of the codex.',
+    sourceLabel: 'Finished HTML tutorial section',
+    sourceFile: 'Tutorials/5. Codicology and Bookbinding/medieval_bookbinding_revised2.html',
+    sourceId: 'unit9',
+  },
+]
+
+export const workshopHotspots = [
+  { id: 'supports', label: 'Writing Supports', chapter: 'writing-supports', x: 14, y: 30, icon: 'support' },
+  { id: 'folding', label: 'Folding & Formats', chapter: 'folding-formats', x: 28, y: 19, icon: 'fold' },
+  { id: 'ruling', label: 'Quires & Ruling', chapter: 'quires-ruling', x: 44, y: 35, icon: 'ruling' },
+  { id: 'tools', label: 'Scribal Tools', chapter: 'scribal-tools', x: 59, y: 25, icon: 'quill' },
+  { id: 'ink', label: 'Decoration & Pigments', chapter: 'ink-pigments-decoration', x: 75, y: 40, icon: 'ink' },
+  { id: 'sewing', label: 'Sewing the Bookblock', chapter: 'sewing-bookblock', x: 34, y: 61, icon: 'thread' },
+  { id: 'spine', label: 'Spine Treatment & Endbands', chapter: 'spine-endbands-trimming', x: 49, y: 71, icon: 'spine' },
+  { id: 'boards', label: 'Bookboards', chapter: 'bookboards', x: 64, y: 56, icon: 'board' },
+  { id: 'covering', label: 'Covering & Fastenings', chapter: 'covering-fastenings-decoration', x: 79, y: 66, icon: 'clasp' },
+]
+
+export function getBookbindingChapter(slug) {
+  return bookbindingChapters.find((chapter) => chapter.slug === slug)
+}
