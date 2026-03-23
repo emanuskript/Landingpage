@@ -4,10 +4,10 @@ import { appHotspots, landingArtwork, landingIntro, tutorialHotspots } from '../
 
 <template>
   <section class="home-page">
-    <div class="home-page__intro">
-      <p class="home-page__eyebrow">{{ landingIntro.eyebrow }}</p>
-      <h1>{{ landingIntro.title }}</h1>
-      <p class="home-page__lede">{{ landingIntro.lede }}</p>
+    <header class="home-page__topbar">
+      <div class="home-page__topbar-copy">
+        <p class="home-page__eyebrow">{{ landingIntro.eyebrow }}</p>
+      </div>
 
       <div class="home-page__actions">
         <RouterLink class="home-page__action home-page__action--primary" to="/tutorials">
@@ -17,18 +17,7 @@ import { appHotspots, landingArtwork, landingIntro, tutorialHotspots } from '../
           Explore apps
         </RouterLink>
       </div>
-
-      <div class="home-page__legend">
-        <div>
-          <h2>Applications</h2>
-          <p>The apples carry the four project tools.</p>
-        </div>
-        <div>
-          <h2>Tutorial gateways</h2>
-          <p>The smaller growths lead into the tutorial pathways.</p>
-        </div>
-      </div>
-    </div>
+    </header>
 
     <div class="home-page__art">
       <div class="home-page__image-wrap">
@@ -39,6 +28,7 @@ import { appHotspots, landingArtwork, landingIntro, tutorialHotspots } from '../
           :key="hotspot.id"
           :to="hotspot.route"
           class="home-page__hotspot home-page__hotspot--app"
+          :aria-label="`Open ${hotspot.name}`"
           :style="{ left: `${hotspot.x}%`, top: `${hotspot.y}%`, '--hotspot-color': hotspot.color }"
         >
           <span class="home-page__hotspot-name">{{ hotspot.name }}</span>
@@ -50,12 +40,37 @@ import { appHotspots, landingArtwork, landingIntro, tutorialHotspots } from '../
           :key="hotspot.id"
           :to="hotspot.route"
           class="home-page__hotspot home-page__hotspot--tutorial"
+          :aria-label="`Open ${hotspot.name} tutorial`"
           :style="{ left: `${hotspot.x}%`, top: `${hotspot.y}%` }"
         >
           <span class="home-page__hotspot-name">{{ hotspot.name }}</span>
         </RouterLink>
       </div>
     </div>
+
+    <footer class="home-page__bottombar">
+      <div class="home-page__legend">
+        <div>
+          <h2>Applications</h2>
+          <p>The apples carry the four project tools.</p>
+        </div>
+        <div>
+          <h2>Tutorial gateways</h2>
+          <p>The smaller growths lead into the tutorial pathways.</p>
+        </div>
+      </div>
+
+      <nav class="home-page__index" aria-label="Landing page quick links">
+        <p class="home-page__index-title">Project routes</p>
+        <div class="home-page__index-links">
+          <RouterLink to="/apps">Apps</RouterLink>
+          <RouterLink to="/tutorials">Tutorials</RouterLink>
+          <RouterLink to="/bibliography">Bibliography</RouterLink>
+          <RouterLink to="/about">About the Project</RouterLink>
+          <RouterLink to="/team">Team</RouterLink>
+        </div>
+      </nav>
+    </footer>
   </section>
 </template>
 
@@ -63,21 +78,27 @@ import { appHotspots, landingArtwork, landingIntro, tutorialHotspots } from '../
 .home-page {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: minmax(280px, 420px) minmax(0, 1fr);
-  gap: clamp(1rem, 3vw, 2rem);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(0.85rem, 2.4vw, 1.5rem);
   padding: clamp(1rem, 3vw, 2rem);
 }
 
-.home-page__intro {
-  display: grid;
-  align-content: start;
-  gap: 1rem;
-  padding: clamp(1.4rem, 3vw, 2.1rem);
+.home-page__topbar,
+.home-page__bottombar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  padding: clamp(1rem, 2.4vw, 1.45rem) clamp(1.1rem, 2.8vw, 1.75rem);
   background: rgba(255, 250, 241, 0.72);
   backdrop-filter: blur(8px);
   border: 1px solid var(--color-border-strong);
   border-radius: 30px;
   box-shadow: var(--shadow-panel);
+}
+
+.home-page__topbar-copy {
+  min-width: 0;
 }
 
 .home-page__eyebrow {
@@ -87,18 +108,6 @@ import { appHotspots, landingArtwork, landingIntro, tutorialHotspots } from '../
   text-transform: uppercase;
   letter-spacing: 0.18em;
   color: var(--color-primary);
-}
-
-.home-page h1 {
-  margin: 0;
-  font-size: clamp(2.6rem, 5vw, 4.5rem);
-  line-height: 0.98;
-}
-
-.home-page__lede {
-  margin: 0;
-  font-size: 1.05rem;
-  color: var(--color-ink-soft);
 }
 
 .home-page__actions {
@@ -123,9 +132,9 @@ import { appHotspots, landingArtwork, landingIntro, tutorialHotspots } from '../
 }
 
 .home-page__legend {
-  display: grid;
-  gap: 0.8rem;
-  margin-top: 0.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 1.2rem;
 }
 
 .home-page__legend h2 {
@@ -138,13 +147,52 @@ import { appHotspots, landingArtwork, landingIntro, tutorialHotspots } from '../
   color: var(--color-ink-soft);
 }
 
+.home-page__index {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.home-page__index-title {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.home-page__index-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.home-page__index-links a {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.52rem 0.78rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid var(--color-border-soft);
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+}
+
+.home-page__index-links a:hover {
+  background: rgba(255, 255, 255, 0.78);
+}
+
 .home-page__art {
   min-width: 0;
+  display: grid;
+  align-items: center;
 }
 
 .home-page__image-wrap {
   position: relative;
-  max-width: min(900px, 100%);
+  max-width: min(1040px, 100%);
   margin: 0 auto;
 }
 
@@ -198,8 +246,10 @@ import { appHotspots, landingArtwork, landingIntro, tutorialHotspots } from '../
 }
 
 @media (max-width: 980px) {
-  .home-page {
-    grid-template-columns: 1fr;
+  .home-page__topbar,
+  .home-page__bottombar {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .home-page__image-wrap {
@@ -215,6 +265,13 @@ import { appHotspots, landingArtwork, landingIntro, tutorialHotspots } from '../
 
   .home-page__hotspot-summary {
     display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .home-page__actions,
+  .home-page__index-links {
+    width: 100%;
   }
 }
 </style>

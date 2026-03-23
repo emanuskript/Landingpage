@@ -5,7 +5,7 @@ import { appCollection, appOrder, apps } from '../../content/apps/apps'
 </script>
 
 <template>
-  <SiteShell :eyebrow="appCollection.eyebrow" :title="appCollection.title" :lede="appCollection.lede">
+  <SiteShell :eyebrow="appCollection.eyebrow" :title="appCollection.title" :lede="appCollection.lede" :meta="['Mergen', 'Seshat', 'Proteus', 'Fenius']">
     <div class="apps-page">
       <AppCard v-for="appId in appOrder" :key="appId" :app="apps[appId]" />
     </div>

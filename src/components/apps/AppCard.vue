@@ -10,7 +10,7 @@ defineProps({
 </script>
 
 <template>
-  <RouterLink :to="`/apps/${app.id}`" class="app-card">
+  <RouterLink :to="app.route" class="app-card">
     <div class="app-card__dot" :style="{ backgroundColor: app.accent }" />
     <div class="app-card__content">
       <p class="app-card__status">{{ app.statusLabel }}</p>
@@ -20,6 +20,9 @@ defineProps({
       <ul class="app-card__features">
         <li v-for="feature in app.features.slice(0, 3)" :key="feature">{{ feature }}</li>
       </ul>
+      <p class="app-card__action">
+        {{ app.type === 'download' ? 'Open download page' : 'Open launch page' }}
+      </p>
     </div>
   </RouterLink>
 </template>
@@ -82,5 +85,13 @@ defineProps({
 .app-card__features {
   margin: 1rem 0 0;
   padding-left: 1.15rem;
+}
+
+.app-card__action {
+  margin: 1rem 0 0;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-primary);
 }
 </style>

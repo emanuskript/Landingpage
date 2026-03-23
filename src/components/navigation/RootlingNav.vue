@@ -1,6 +1,7 @@
 <script setup>
 import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { rootlingApps } from '../../content/apps/apps'
 
 const route = useRoute()
 const router = useRouter()
@@ -13,12 +14,7 @@ const branches = reactive([
     label: 'Apps',
     to: { name: 'apps' },
     expanded: false,
-    children: [
-      { label: 'Mergen', to: { name: 'app-mergen' } },
-      { label: 'Seshat', to: { name: 'app-seshat' } },
-      { label: 'Proteus', to: { name: 'app-proteus' } },
-      { label: 'Fenius', to: { name: 'app-fenius' } },
-    ],
+    children: rootlingApps,
   },
   { label: 'Tutorials', to: { name: 'tutorials' } },
   { label: 'Bibliography', to: { name: 'bibliography' } },
@@ -96,6 +92,7 @@ watch(
   () => route.path,
   () => {
     syncBranches()
+    close()
   },
   { immediate: true },
 )
@@ -269,6 +266,9 @@ onBeforeUnmount(() => {
   bottom: 64px;
   left: 0;
   min-width: 240px;
+  max-width: min(320px, calc(100vw - 2rem));
+  max-height: min(70vh, 560px);
+  overflow: auto;
   padding: var(--space-md) var(--space-lg);
   background: var(--color-parchment);
   border: 1.5px solid var(--color-gold-muted);
@@ -438,6 +438,7 @@ onBeforeUnmount(() => {
 
   .rootling-menu {
     min-width: 210px;
+    max-width: calc(100vw - 1.5rem);
     padding: var(--space-sm) var(--space-md);
   }
 }

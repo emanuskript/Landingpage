@@ -25,7 +25,7 @@ const isProteus = computed(() => app.value?.type === 'download')
     wide
   >
     <div class="app-detail">
-      <SectionFrame title="Project positioning">
+      <SectionFrame title="Overview">
         <p>{{ app.description }}</p>
         <ul>
           <li v-for="feature in app.features" :key="feature">{{ feature }}</li>
@@ -38,24 +38,38 @@ const isProteus = computed(() => app.value?.type === 'download')
           <div class="app-detail__downloads">
             <div v-for="platform in app.platforms" :key="platform.label" class="app-detail__download-card">
               <strong>{{ platform.label }}</strong>
-              <a v-if="platform.url" :href="platform.url">Download</a>
-              <span v-else>Installer coming soon</span>
+              <a v-if="platform.url" :href="platform.url" target="_blank" rel="noreferrer noopener">Download</a>
+              <span v-else>{{ platform.todo }}</span>
             </div>
           </div>
           <p class="app-detail__note">Release notes: {{ app.releaseNotes || 'Public release information will appear here.' }}</p>
+          <p class="app-detail__todo">{{ app.downloadsNote }}</p>
         </template>
         <template v-else>
-          <p v-if="app.url">Open the public {{ app.name }} environment.</p>
-          <p v-else>The public launch link will appear here when it is available.</p>
-          <a v-if="app.url" :href="app.url" class="app-detail__launch" target="_blank" rel="noreferrer noopener">Launch {{ app.name }}</a>
-          <span v-else class="app-detail__launch app-detail__launch--disabled">Launch link coming soon</span>
+          <p v-if="app.launch.href">Open the public {{ app.name }} environment.</p>
+          <p v-else>{{ app.launch.todo }}</p>
+          <a
+            v-if="app.launch.href"
+            :href="app.launch.href"
+            class="app-detail__launch"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            {{ app.launch.label }}
+          </a>
+          <span v-else class="app-detail__launch app-detail__launch--disabled">{{ app.launch.label }}</span>
         </template>
       </SectionFrame>
 
-      <SectionFrame title="Using this app" tone="muted">
+      <SectionFrame title="Portal notes" tone="muted">
         <ul>
-          <li v-for="highlight in app.highlights" :key="highlight">{{ highlight }}</li>
+          <li v-for="note in app.notes" :key="note">{{ note }}</li>
         </ul>
+      </SectionFrame>
+
+      <SectionFrame v-if="isProteus" title="Screenshots" tone="muted">
+        <p v-if="app.screenshots.length">Screenshots will render here from config.</p>
+        <p v-else class="app-detail__todo">TODO: add Proteus screenshots when approved UI captures are available.</p>
       </SectionFrame>
     </div>
   </SiteShell>
@@ -101,6 +115,12 @@ const isProteus = computed(() => app.value?.type === 'download')
 
 .app-detail__note {
   margin-top: 1rem;
+  font-family: var(--font-sans);
+  color: var(--color-ink-soft);
+}
+
+.app-detail__todo {
+  margin-top: 0.8rem;
   font-family: var(--font-sans);
   color: var(--color-ink-soft);
 }
