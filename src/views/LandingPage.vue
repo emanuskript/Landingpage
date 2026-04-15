@@ -6,7 +6,7 @@ import { landingArtwork, landingCopy, landingHotspots } from '../config/landingH
 const DRAFT_STORAGE_KEY = 'emanuskript-landing-calibration-draft'
 const FINAL_STORAGE_KEY = 'emanuskript-landing-calibration-final'
 const legendArtwork = {
-  src: '/images/legend/guide-panel-trimmed.png',
+  src: '/images/legend/guide-panel-replacement.png',
   alt: 'Legend explaining applications, tutorials, and further information in the eManuSkript tree.',
 }
 
@@ -23,6 +23,7 @@ const imageOverlayStyle = ref({
   width: '100%',
   height: '100%',
 })
+const isCompactHeight = ref(false)
 const resolvedHotspots = ref(cloneHotspots(landingHotspots))
 const rootHotspots = computed(() => resolvedHotspots.value.filter((h) => h.kind === 'root'))
 let pointerQuery
@@ -217,6 +218,10 @@ function updatePointerMode() {
   isCoarsePointer.value = window.matchMedia('(pointer: coarse)').matches
 }
 
+function updateViewportMode() {
+  isCompactHeight.value = window.innerHeight < 940
+}
+
 function handlePointerDown(event) {
   if (treeAreaRef.value && !treeAreaRef.value.contains(event.target)) {
     activeHotspotId.value = null
@@ -233,6 +238,7 @@ onMounted(() => {
   loadSavedHotspots()
   pointerQuery = window.matchMedia('(pointer: coarse)')
   updatePointerMode()
+  updateViewportMode()
 
   nextTick(() => {
     updateOverlayBox()
@@ -260,6 +266,7 @@ onMounted(() => {
   document.addEventListener('keydown', handleEscape)
   window.addEventListener('storage', loadSavedHotspots)
   window.addEventListener('resize', updateOverlayBox)
+  window.addEventListener('resize', updateViewportMode)
 })
 
 onBeforeUnmount(() => {
@@ -277,11 +284,12 @@ onBeforeUnmount(() => {
   document.removeEventListener('keydown', handleEscape)
   window.removeEventListener('storage', loadSavedHotspots)
   window.removeEventListener('resize', updateOverlayBox)
+  window.removeEventListener('resize', updateViewportMode)
 })
 </script>
 
 <template>
-  <section class="landing-page">
+  <section class="landing-page" :class="{ 'landing-page--compact-height': isCompactHeight }">
     <header class="landing-page__masthead">
       <h1 class="landing-page__title">{{ landingCopy.title }}</h1>
     </header>
@@ -311,6 +319,7 @@ onBeforeUnmount(() => {
               class="landing-page__hotspot"
               :class="[
                 `landing-page__hotspot--${hotspot.kind}`,
+                { 'landing-page__hotspot--prefer-below': hotspot.rect.top < 42 },
                 { 'landing-page__hotspot--active': activeHotspotId === hotspot.id },
                 { 'landing-page__hotspot--root-hovered': hotspot.kind === 'root' && hoveredRootId === hotspot.id },
               ]"
@@ -393,6 +402,7 @@ onBeforeUnmount(() => {
   --landing-inline-padding: clamp(0.4rem, 1.1vw, 1rem);
   --landing-tree-width: min(88rem, 99vw, calc((100svh - 1.85rem) * 1279 / 1809));
   --landing-tree-height: calc(var(--landing-tree-width) * 1809 / 1279);
+  --landing-sparkle-time-scale: 1.7;
   position: relative;
   height: 100svh;
   display: grid;
@@ -628,24 +638,25 @@ onBeforeUnmount(() => {
   position: absolute;
   inset: -0.75rem -0.9rem;
   z-index: 1;
+  opacity: 0.82;
   pointer-events: none;
 }
 
 .landing-page__root-label-sparkle {
   position: absolute;
-  width: calc(0.82rem * var(--sparkle-size));
-  height: calc(0.82rem * var(--sparkle-size));
+  width: calc(0.72rem * var(--sparkle-size));
+  height: calc(0.72rem * var(--sparkle-size));
   transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0);
   transform-origin: center;
   pointer-events: none;
   opacity: 0;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.98) 0 24%, rgba(248, 219, 178, 0.94) 25% 50%, transparent 75%);
   filter:
-    drop-shadow(0 0 0.2rem rgba(236, 189, 132, 0.74))
-    drop-shadow(0 0 0.46rem rgba(151, 89, 39, 0.34));
+    drop-shadow(0 0 0.14rem rgba(236, 189, 132, 0.58))
+    drop-shadow(0 0 0.3rem rgba(151, 89, 39, 0.24));
   animation-name: sparkle-gold;
-  animation-delay: var(--sparkle-delay);
-  animation-duration: var(--sparkle-duration);
+  animation-delay: calc(var(--sparkle-delay) * var(--landing-sparkle-time-scale));
+  animation-duration: calc(var(--sparkle-duration) * var(--landing-sparkle-time-scale));
   animation-iteration-count: infinite;
   animation-timing-function: ease-in-out;
   animation-fill-mode: both;
@@ -682,6 +693,7 @@ onBeforeUnmount(() => {
   position: absolute;
   inset: -20% -15%;
   z-index: 3;
+  opacity: 0.78;
   pointer-events: none;
   overflow: visible;
 }
@@ -716,18 +728,18 @@ onBeforeUnmount(() => {
 
 .landing-page__sparkle-particle {
   position: absolute;
-  width: calc(0.9rem * var(--sparkle-size));
-  height: calc(0.9rem * var(--sparkle-size));
+  width: calc(0.78rem * var(--sparkle-size));
+  height: calc(0.78rem * var(--sparkle-size));
   transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0);
   transform-origin: center;
   pointer-events: none;
   opacity: 0;
   background: radial-gradient(circle, rgba(255, 255, 255, 1) 0 24%, var(--sparkle-core) 25% 50%, transparent 75%);
   filter:
-    drop-shadow(0 0 0.35rem var(--sparkle-halo))
-    drop-shadow(0 0 0.8rem var(--sparkle-glow));
-  animation-delay: var(--sparkle-delay);
-  animation-duration: var(--sparkle-duration);
+    drop-shadow(0 0 0.2rem color-mix(in srgb, var(--sparkle-halo) 78%, transparent))
+    drop-shadow(0 0 0.44rem color-mix(in srgb, var(--sparkle-glow) 72%, transparent));
+  animation-delay: calc(var(--sparkle-delay) * var(--landing-sparkle-time-scale));
+  animation-duration: calc(var(--sparkle-duration) * var(--landing-sparkle-time-scale));
   animation-iteration-count: infinite;
   animation-timing-function: ease-in-out;
   animation-fill-mode: both;
@@ -770,22 +782,22 @@ onBeforeUnmount(() => {
 .landing-page__sparkles--parchment .landing-page__sparkle-particle {
   animation-name: sparkle-parchment;
   filter:
-    drop-shadow(0 0 0.18rem var(--sparkle-halo))
-    drop-shadow(0 0 0.4rem var(--sparkle-glow));
+    drop-shadow(0 0 0.14rem color-mix(in srgb, var(--sparkle-halo) 78%, transparent))
+    drop-shadow(0 0 0.3rem color-mix(in srgb, var(--sparkle-glow) 64%, transparent));
 }
 
 .landing-page__sparkles--bronze .landing-page__sparkle-particle {
   animation-name: sparkle-bronze;
   filter:
-    drop-shadow(0 0 0.2rem var(--sparkle-halo))
-    drop-shadow(0 0 0.46rem var(--sparkle-glow));
+    drop-shadow(0 0 0.15rem color-mix(in srgb, var(--sparkle-halo) 76%, transparent))
+    drop-shadow(0 0 0.34rem color-mix(in srgb, var(--sparkle-glow) 64%, transparent));
 }
 
 .landing-page__tutorial-name {
   position: absolute;
   left: 50%;
   bottom: calc(100% + 0.38rem);
-  transform: translateX(-50%);
+  transform: translate(-50%, 0.22rem);
   width: max-content;
   max-width: min(18rem, 32cqw);
   padding: 0.22rem 0.56rem;
@@ -800,7 +812,16 @@ onBeforeUnmount(() => {
   text-align: center;
   white-space: nowrap;
   color: rgba(59, 45, 29, 0.92);
+  opacity: 0;
   pointer-events: none;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.landing-page__hotspot--tutorial:hover .landing-page__tutorial-name,
+.landing-page__hotspot--tutorial:focus-visible .landing-page__tutorial-name,
+.landing-page__hotspot--tutorial.landing-page__hotspot--active .landing-page__tutorial-name {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 .landing-page__tooltip {
@@ -827,6 +848,22 @@ onBeforeUnmount(() => {
   bottom: calc(100% + 2rem);
 }
 
+.landing-page--compact-height .landing-page__hotspot--prefer-below .landing-page__tutorial-name {
+  top: calc(100% + 0.38rem);
+  bottom: auto;
+}
+
+.landing-page--compact-height .landing-page__hotspot--prefer-below .landing-page__tooltip {
+  top: calc(100% + 0.8rem);
+  bottom: auto;
+  transform: translate(-50%, -0.45rem);
+}
+
+.landing-page--compact-height .landing-page__hotspot--tutorial.landing-page__hotspot--prefer-below .landing-page__tooltip {
+  top: calc(100% + 2rem);
+  bottom: auto;
+}
+
 .landing-page__tooltip::after {
   content: '';
   position: absolute;
@@ -838,6 +875,15 @@ onBeforeUnmount(() => {
   border-right: 1px solid rgba(106, 83, 43, 0.16);
   border-bottom: 1px solid rgba(106, 83, 43, 0.16);
   transform: translateX(-50%) rotate(45deg);
+}
+
+.landing-page--compact-height .landing-page__hotspot--prefer-below .landing-page__tooltip::after {
+  top: auto;
+  bottom: 100%;
+  border-right: none;
+  border-bottom: none;
+  border-left: 1px solid rgba(106, 83, 43, 0.16);
+  border-top: 1px solid rgba(106, 83, 43, 0.16);
 }
 
 .landing-page__hotspot:hover .landing-page__tooltip,
@@ -876,23 +922,23 @@ onBeforeUnmount(() => {
   }
 
   4% {
-    opacity: 1;
-    transform: translate(-50%, -50%) rotate(calc(var(--sparkle-rotate) + 8deg)) scale(1.2);
+    opacity: 0.78;
+    transform: translate(-50%, -50%) rotate(calc(var(--sparkle-rotate) + 7deg)) scale(1.02);
   }
 
   8% {
-    opacity: 0.95;
-    transform: translate(calc(-50% + var(--sparkle-drift-x)), calc(-50% + var(--sparkle-drift-y))) rotate(calc(var(--sparkle-rotate) + 6deg)) scale(1);
+    opacity: 0.68;
+    transform: translate(calc(-50% + var(--sparkle-drift-x) * 0.75), calc(-50% + var(--sparkle-drift-y) * 0.75)) rotate(calc(var(--sparkle-rotate) + 5deg)) scale(0.9);
   }
 
   16% {
-    opacity: 0.6;
-    transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0.7);
+    opacity: 0.42;
+    transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0.62);
   }
 
   22% {
     opacity: 0;
-    transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0.2);
+    transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0.18);
   }
 
   48% {
@@ -901,13 +947,13 @@ onBeforeUnmount(() => {
   }
 
   52% {
-    opacity: 0.85;
-    transform: translate(calc(-50% - var(--sparkle-drift-x)), calc(-50% + var(--sparkle-drift-y))) rotate(calc(var(--sparkle-rotate) - 5deg)) scale(0.9);
+    opacity: 0.64;
+    transform: translate(calc(-50% - var(--sparkle-drift-x) * 0.7), calc(-50% + var(--sparkle-drift-y) * 0.7)) rotate(calc(var(--sparkle-rotate) - 4deg)) scale(0.82);
   }
 
   58% {
-    opacity: 0.7;
-    transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0.75);
+    opacity: 0.46;
+    transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0.68);
   }
 
   66% {
@@ -929,18 +975,18 @@ onBeforeUnmount(() => {
   }
 
   5% {
-    opacity: 0.9;
-    transform: translate(calc(-50% + var(--sparkle-drift-x)), calc(-50% + var(--sparkle-drift-y))) rotate(calc(var(--sparkle-rotate) + 4deg)) scale(1.05);
+    opacity: 0.62;
+    transform: translate(calc(-50% + var(--sparkle-drift-x) * 0.65), calc(-50% + var(--sparkle-drift-y) * 0.65)) rotate(calc(var(--sparkle-rotate) + 4deg)) scale(0.9);
   }
 
   12% {
-    opacity: 0.7;
-    transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0.85);
+    opacity: 0.46;
+    transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0.74);
   }
 
-  18% {
-    opacity: 0.15;
-    transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0.35);
+  22% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0.18);
   }
 
   32% {
@@ -949,18 +995,18 @@ onBeforeUnmount(() => {
   }
 
   36% {
-    opacity: 0.65;
-    transform: translate(calc(-50% - var(--sparkle-drift-x)), calc(-50% + var(--sparkle-drift-y))) rotate(calc(var(--sparkle-rotate) - 3deg)) scale(0.8);
+    opacity: 0.44;
+    transform: translate(calc(-50% - var(--sparkle-drift-x) * 0.58), calc(-50% + var(--sparkle-drift-y) * 0.58)) rotate(calc(var(--sparkle-rotate) - 3deg)) scale(0.7);
   }
 
   42% {
-    opacity: 0.4;
-    transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0.6);
+    opacity: 0.28;
+    transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0.54);
   }
 
   48% {
     opacity: 0;
-    transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0.15);
+    transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0.1);
   }
 
   68% {
@@ -969,8 +1015,8 @@ onBeforeUnmount(() => {
   }
 
   72% {
-    opacity: 0.5;
-    transform: translate(calc(-50% + var(--sparkle-drift-x)), calc(-50% - var(--sparkle-drift-y))) rotate(calc(var(--sparkle-rotate) + 2deg)) scale(0.7);
+    opacity: 0.34;
+    transform: translate(calc(-50% + var(--sparkle-drift-x) * 0.5), calc(-50% - var(--sparkle-drift-y) * 0.5)) rotate(calc(var(--sparkle-rotate) + 2deg)) scale(0.62);
   }
 
   78% {
@@ -992,13 +1038,13 @@ onBeforeUnmount(() => {
   }
 
   30% {
-    opacity: 0.45;
-    transform: translate(calc(-50% + var(--sparkle-drift-x)), calc(-50% + var(--sparkle-drift-y))) rotate(calc(var(--sparkle-rotate) + 2deg)) scale(0.7);
+    opacity: 0.3;
+    transform: translate(calc(-50% + var(--sparkle-drift-x) * 0.45), calc(-50% + var(--sparkle-drift-y) * 0.45)) rotate(calc(var(--sparkle-rotate) + 2deg)) scale(0.6);
   }
 
   40% {
-    opacity: 0.1;
-    transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0.35);
+    opacity: 0.08;
+    transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0.3);
   }
 
   68% {
@@ -1007,8 +1053,8 @@ onBeforeUnmount(() => {
   }
 
   74% {
-    opacity: 0.25;
-    transform: translate(calc(-50% - var(--sparkle-drift-x)), calc(-50% + var(--sparkle-drift-y))) rotate(calc(var(--sparkle-rotate) - 2deg)) scale(0.55);
+    opacity: 0.17;
+    transform: translate(calc(-50% - var(--sparkle-drift-x) * 0.42), calc(-50% + var(--sparkle-drift-y) * 0.42)) rotate(calc(var(--sparkle-rotate) - 2deg)) scale(0.46);
   }
 
   82% {
@@ -1024,13 +1070,13 @@ onBeforeUnmount(() => {
   }
 
   29% {
-    opacity: 0.56;
-    transform: translate(calc(-50% + var(--sparkle-drift-x)), calc(-50% + var(--sparkle-drift-y))) rotate(calc(var(--sparkle-rotate) + 3deg)) scale(0.84);
+    opacity: 0.36;
+    transform: translate(calc(-50% + var(--sparkle-drift-x) * 0.52), calc(-50% + var(--sparkle-drift-y) * 0.52)) rotate(calc(var(--sparkle-rotate) + 3deg)) scale(0.68);
   }
 
   38% {
-    opacity: 0.16;
-    transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0.5);
+    opacity: 0.1;
+    transform: translate(-50%, -50%) rotate(var(--sparkle-rotate)) scale(0.42);
   }
 
   68% {
@@ -1039,8 +1085,8 @@ onBeforeUnmount(() => {
   }
 
   75% {
-    opacity: 0.28;
-    transform: translate(calc(-50% - var(--sparkle-drift-x)), calc(-50% + var(--sparkle-drift-y))) rotate(calc(var(--sparkle-rotate) - 2deg)) scale(0.66);
+    opacity: 0.18;
+    transform: translate(calc(-50% - var(--sparkle-drift-x) * 0.42), calc(-50% + var(--sparkle-drift-y) * 0.42)) rotate(calc(var(--sparkle-rotate) - 2deg)) scale(0.5);
   }
 
   84% {

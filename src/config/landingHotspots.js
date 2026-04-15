@@ -105,7 +105,7 @@ export const landingHotspots = [
     to: routePaths.appPages.fenius,
     accent: '#8b4938',
     sparkle: sparkleConfig.fenius,
-    rect: { left: 6.3, top: 33.2, width: 16.9, height: 12.0 },
+    rect: { left: 7.7, top: 33.6, width: 23.0, height: 15.1 },
   },
   {
     id: 'seshat',
@@ -116,7 +116,7 @@ export const landingHotspots = [
     to: routePaths.appPages.seshat,
     accent: '#9d6a34',
     sparkle: sparkleConfig.seshat,
-    rect: { left: 15.3, top: 51.6, width: 16.9, height: 12.0 },
+    rect: { left: 20.2, top: 53.3, width: 23.3, height: 15.7 },
   },
   {
     id: 'mergen',
@@ -127,7 +127,7 @@ export const landingHotspots = [
     to: routePaths.appPages.mergen,
     accent: '#4f6d4d',
     sparkle: sparkleConfig.mergen,
-    rect: { left: 62.0, top: 23.8, width: 16.9, height: 12.0 },
+    rect: { left: 62.2, top: 26.9, width: 22.4, height: 15.8 },
   },
   {
     id: 'proteus',
@@ -138,7 +138,7 @@ export const landingHotspots = [
     to: routePaths.appPages.proteus,
     accent: '#456277',
     sparkle: sparkleConfig.proteus,
-    rect: { left: 66.5, top: 48.1, width: 16.5, height: 11.8 },
+    rect: { left: 70.3, top: 48.6, width: 21.6, height: 15.1 },
   },
   {
     id: 'scripts',
@@ -148,7 +148,7 @@ export const landingHotspots = [
     to: routePaths.tutorialPages.scripts,
     accent: '#80653d',
     sparkle: sparkleConfig.scripts,
-    rect: { left: 31.1, top: 22.0, width: 9.2, height: 6.6 },
+    rect: { left: 40.8, top: 23.1, width: 11.0, height: 7.9 },
   },
   {
     id: 'codicology',
@@ -158,7 +158,7 @@ export const landingHotspots = [
     to: routePaths.tutorialPages.codicology,
     accent: '#715331',
     sparkle: sparkleConfig.codicology,
-    rect: { left: 25.8, top: 35.9, width: 9.2, height: 6.6 },
+    rect: { left: 33.9, top: 37.4, width: 11.9, height: 8.1 },
   },
   {
     id: 'digital-palaeography',
@@ -168,7 +168,7 @@ export const landingHotspots = [
     to: routePaths.tutorialPages.digitalPalaeography,
     accent: '#705b37',
     sparkle: sparkleConfig['digital-palaeography'],
-    rect: { left: 71.4, top: 32.3, width: 9.5, height: 6.8 },
+    rect: { left: 84.7, top: 33.6, width: 12.4, height: 8.2 },
   },
   {
     id: 'msi',
@@ -178,7 +178,7 @@ export const landingHotspots = [
     to: routePaths.tutorialPages.msi,
     accent: '#675338',
     sparkle: sparkleConfig.msi,
-    rect: { left: 54.0, top: 43.9, width: 9.5, height: 6.8 },
+    rect: { left: 58.4, top: 48.9, width: 12.4, height: 8.0 },
   },
 
   // Root navigation hotspots
@@ -190,8 +190,8 @@ export const landingHotspots = [
     to: routePaths.aboutProject,
     accent: '#6f5533',
     sparkle: sparkleConfig['about-project'],
-    rect: { left: 7.8, top: 74.8, width: 24.5, height: 8.8 },
-    labelAnchor: { x: 17.8, y: 72.6 },
+    rect: { left: 19.5, top: 75.8, width: 27.8, height: 5.2 },
+    labelAnchor: { x: 33.2, y: 78.3 },
   },
   {
     id: 'team',
@@ -201,8 +201,8 @@ export const landingHotspots = [
     to: routePaths.team,
     accent: '#654b2e',
     sparkle: sparkleConfig.team,
-    rect: { left: 4.2, top: 82.2, width: 28.5, height: 9.2 },
-    labelAnchor: { x: 16.2, y: 80.7 },
+    rect: { left: 62.0, top: 76.4, width: 24.1, height: 4.7 },
+    labelAnchor: { x: 74.1, y: 78.7 },
   },
   {
     id: 'site-map',
@@ -212,8 +212,8 @@ export const landingHotspots = [
     to: routePaths.siteMap,
     accent: '#6a5437',
     sparkle: sparkleConfig['site-map'],
-    rect: { left: 38.6, top: 82.8, width: 22.4, height: 10.0 },
-    labelAnchor: { x: 49.8, y: 80.9 },
+    rect: { left: 16.9, top: 89.4, width: 16.8, height: 5.5 },
+    labelAnchor: { x: 25.5, y: 92.1 },
   },
   {
     id: 'bibliography',
@@ -223,7 +223,7 @@ export const landingHotspots = [
     to: routePaths.bibliography,
     accent: '#715738',
     sparkle: sparkleConfig.bibliography,
-    rect: { left: 58.6, top: 74.8, width: 23.8, height: 8.8 },
-    labelAnchor: { x: 69.9, y: 72.7 },
+    rect: { left: 78.2, top: 87.9, width: 21.8, height: 6.5 },
+    labelAnchor: { x: 89.2, y: 91.1 },
   },
 ]
