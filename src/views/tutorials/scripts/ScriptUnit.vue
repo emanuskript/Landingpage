@@ -1,10 +1,9 @@
 <script setup>
 import { computed } from 'vue'
 import TutorialShell from '../../../components/tutorials/TutorialShell.vue'
-import SectionFrame from '../../../components/ui/SectionFrame.vue'
 import HtmlArticle from '../../../components/tutorials/HtmlArticle.vue'
 import PrevNextNav from '../../../components/navigation/PrevNextNav.vue'
-import { getScriptUnit, scriptUnits } from '../../../content/tutorials/scripts/scripts'
+import { getScriptUnit, scriptUnits, scriptsOverview } from '../../../content/tutorials/scripts/scripts'
 
 const props = defineProps({
   unitSlug: {
@@ -37,12 +36,12 @@ const routeMap = computed(() =>
 
 const prev = computed(() => {
   const previous = scriptUnits[index.value - 1]
-  return previous ? { label: previous.title, to: `/tutorials/scripts/${previous.slug}` } : { label: 'Scripts overview', to: '/tutorials/scripts' }
+  return previous ? { label: previous.title, to: `/tutorials/scripts/${previous.slug}` } : null
 })
 
 const next = computed(() => {
   const following = scriptUnits[index.value + 1]
-  return following ? { label: following.title, to: `/tutorials/scripts/${following.slug}` } : { label: 'Ductus gallery', to: '/tutorials/scripts/ductus' }
+  return following ? { label: following.title, to: `/tutorials/scripts/${following.slug}` } : null
 })
 </script>
 
@@ -51,33 +50,19 @@ const next = computed(() => {
     v-if="unit"
     :crumbs="[
       { label: 'Tutorials', to: '/tutorials' },
-      { label: 'Scripts', to: '/tutorials/scripts' },
+      { label: scriptsOverview.title, to: '/tutorials/scripts' },
       { label: unit.title, to: `/tutorials/scripts/${unit.slug}` },
     ]"
     :items="sidebarItems"
     sidebar-title="Units"
-    :back-link="{ label: 'Back to Scripts', to: '/tutorials/scripts' }"
-    eyebrow="Scripts"
+    :back-link="{ label: `Back to ${scriptsOverview.title}`, to: '/tutorials/scripts' }"
+    :eyebrow="scriptsOverview.title"
     :title="unit.title"
     :subtitle="unit.dates"
-    :description="unit.summary"
     :meta="[`Unit ${unit.numeral}`]"
   >
     <div class="page-stack">
-      <div class="page-grid">
-        <SectionFrame v-if="unit.timelineSlug" title="Timeline context">
-          <p>Use the Historical Timeline to place this script within its broader political, institutional, and cultural context.</p>
-          <RouterLink :to="`/tutorials/timeline/${unit.timelineSlug}`">Open related timeline entry</RouterLink>
-        </SectionFrame>
-
-        <SectionFrame v-if="unit.ductusImage" title="Ductus companion" tone="muted">
-          <img :src="unit.ductusImage" :alt="unit.ductusLabel" class="page-grid__ductus" />
-          <p>Compare the letter construction here with the ductus gallery to reinforce stroke order and visual recognition.</p>
-          <RouterLink to="/tutorials/scripts/ductus">Open ductus gallery</RouterLink>
-        </SectionFrame>
-      </div>
-
-      <HtmlArticle :source-path="unit.sourcePath" selector="main.content" :route-map="routeMap" />
+      <HtmlArticle :source-path="unit.sourcePath" selector="main.content" :route-map="routeMap" :asset-map="unit.assetMap" />
 
       <PrevNextNav :prev="prev" :next="next" />
     </div>
@@ -88,17 +73,5 @@ const next = computed(() => {
 .page-stack {
   display: grid;
   gap: 1rem;
-}
-
-.page-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1rem;
-}
-
-.page-grid__ductus {
-  width: 100%;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.64);
 }
 </style>

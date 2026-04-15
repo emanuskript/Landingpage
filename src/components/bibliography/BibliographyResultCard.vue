@@ -8,10 +8,10 @@ defineProps({
 </script>
 
 <template>
-  <article class="bibliography-result-card">
+  <article class="bibliography-result-card ui-surface-card">
     <div class="bibliography-result-card__meta">
-      <span>{{ item.itemTypeLabel }}</span>
-      <span>{{ item.year }}</span>
+      <span class="ui-chip ui-chip--soft">{{ item.itemTypeLabel }}</span>
+      <span class="ui-chip ui-chip--soft">{{ item.year }}</span>
     </div>
 
     <h2 class="bibliography-result-card__title">
@@ -23,10 +23,10 @@ defineProps({
     <p v-if="item.abstract" class="bibliography-result-card__abstract">{{ item.abstract }}</p>
 
     <div v-if="item.tags?.length" class="bibliography-result-card__tags">
-      <span v-for="tag in item.tags" :key="tag">{{ tag }}</span>
+      <span v-for="tag in item.tags" :key="tag" class="ui-chip">{{ tag }}</span>
     </div>
 
-    <div class="bibliography-result-card__actions">
+    <div class="bibliography-result-card__actions ui-inline-links">
       <a :href="item.zoteroUrl" target="_blank" rel="noreferrer noopener">Open in Zotero</a>
       <a v-if="item.sourceUrl" :href="item.sourceUrl" target="_blank" rel="noreferrer noopener">Open source</a>
       <a v-else-if="item.doi" :href="`https://doi.org/${item.doi}`" target="_blank" rel="noreferrer noopener">Open DOI</a>
@@ -39,25 +39,12 @@ defineProps({
   display: grid;
   gap: 0.75rem;
   padding: 1.25rem;
-  background: var(--color-panel);
-  border: 1px solid var(--color-border-strong);
-  border-radius: 24px;
-  box-shadow: var(--shadow-panel);
 }
 
 .bibliography-result-card__meta {
   display: flex;
   flex-wrap: wrap;
   gap: 0.55rem;
-}
-
-.bibliography-result-card__meta span {
-  padding: 0.3rem 0.6rem;
-  border-radius: 999px;
-  background: rgba(57, 89, 120, 0.08);
-  color: var(--color-primary);
-  font-family: var(--font-sans);
-  font-size: 0.78rem;
 }
 
 .bibliography-result-card__title {
@@ -92,20 +79,7 @@ defineProps({
   gap: 0.5rem;
 }
 
-.bibliography-result-card__tags span {
-  padding: 0.28rem 0.55rem;
-  border-radius: 999px;
-  background: rgba(212, 182, 113, 0.15);
-  color: var(--color-branch);
-  font-family: var(--font-sans);
-  font-size: 0.76rem;
-}
-
 .bibliography-result-card__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  font-family: var(--font-sans);
-  font-size: 0.92rem;
+  margin-top: 0.15rem;
 }
 </style>

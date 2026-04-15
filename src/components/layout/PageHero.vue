@@ -21,12 +21,12 @@ defineProps({
 
 <template>
   <header class="page-hero">
-    <p v-if="eyebrow" class="page-hero__eyebrow">{{ eyebrow }}</p>
+    <p v-if="eyebrow" class="page-hero__eyebrow ui-eyebrow">{{ eyebrow }}</p>
     <h1 class="page-hero__title">{{ title }}</h1>
     <p v-if="lede" class="page-hero__lede">{{ lede }}</p>
 
     <div v-if="meta.length" class="page-hero__meta">
-      <span v-for="item in meta" :key="item" class="page-hero__meta-item">{{ item }}</span>
+      <span v-for="item in meta" :key="item" class="page-hero__meta-item ui-chip ui-chip--soft">{{ item }}</span>
     </div>
   </header>
 </template>
@@ -48,12 +48,6 @@ defineProps({
 
 .page-hero__eyebrow {
   margin: 0 0 0.4rem;
-  font-family: var(--font-sans);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--color-primary);
 }
 
 .page-hero__title {
@@ -79,12 +73,6 @@ defineProps({
 }
 
 .page-hero__meta-item {
-  padding: 0.4rem 0.7rem;
-  border-radius: 999px;
-  background: rgba(249, 245, 236, 0.72);
-  border: 1px solid var(--color-border-strong);
-  font-family: var(--font-sans);
-  font-size: 0.8rem;
-  color: var(--color-ink-soft);
+  align-self: start;
 }
 </style>

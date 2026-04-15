@@ -1,125 +1,113 @@
+import { appExternalLinks } from '../../config/externalLinks'
+import { routePaths } from '../../config/siteLinks'
+
 export const appCollection = {
   eyebrow: 'Applications',
-  title: 'Four tools, one scholarly ecosystem',
+  title: 'Four tools, one manuscript-focused toolkit',
   lede:
-    'Each application is configured from structured content so public launch links and downloads can be published cleanly when they are ready.',
+    'Each application page is configured from shared route and link data so public launch URLs can be published later without reworking the interface.',
 }
 
-export const apps = {
+const appDefinitions = {
+  fenius: {
+    id: 'fenius',
+    name: 'Fenius',
+    accent: '#8b4938',
+    route: routePaths.appPages.fenius,
+    statusLabel: 'Configured app page',
+    tagline: 'A three-part app for understanding and documenting bookbindings.',
+    description:
+      'Fenius is positioned as a research-facing environment for studying the physical structure of manuscripts, with emphasis on bookbinding observation and documentation.',
+    features: [
+      'Connects directly to codicology-oriented study',
+      'Designed for understanding, describing, and comparing bindings',
+      'Ready for a public launch URL when the live environment is available',
+    ],
+    notes: [
+      'Its access link remains centralized so the public URL can be added later without touching the page layout.',
+      'The GitHub repository is already wired in as a stable reference point.',
+    ],
+  },
   mergen: {
     id: 'mergen',
     name: 'Mergen',
-    tagline: 'Handwritten Text Recognition for manuscript corpora',
-    accent: '#4b7252',
-    route: '/apps/mergen',
-    type: 'web',
-    statusLabel: 'Launch page',
+    accent: '#4f6d4d',
+    route: routePaths.appPages.mergen,
+    statusLabel: 'Configured app page',
+    tagline: 'A segmentation model for page layouts.',
     description:
-      'Mergen is presented as the project environment for handwritten text recognition. It is positioned in the portal as the entry point for model-driven transcription workflows and large-scale manuscript processing.',
-    launch: {
-      href: null,
-      label: 'Launch Mergen',
-      todo: 'Add the public Mergen URL in src/content/apps/apps.js.',
-    },
+      'Mergen focuses on page-layout segmentation for manuscript images and prepares complex pages for more structured analysis downstream.',
     features: [
-      'Custom HTR workflows for manuscript collections',
-      'Batch-oriented recognition and review',
-      'Research-friendly export pathways',
-      'Designed to sit alongside the tutorial system',
+      'Page-region segmentation for manuscript material',
+      'Useful where layout structure matters before deeper processing',
+      'Configured for a future public launch destination',
     ],
     notes: [
-      'Use Mergen after the palaeography and glossary sections to connect script knowledge with transcription practice.',
-      'The launch area is configured for a public destination as soon as it is available.',
-    ],
-  },
-  seshat: {
-    id: 'seshat',
-    name: 'Seshat',
-    tagline: 'Comparative manuscript analysis environment',
-    accent: '#a06e32',
-    route: '/apps/seshat',
-    type: 'web',
-    statusLabel: 'Launch page',
-    description:
-      'Seshat is framed in the project files as a comparative analysis platform for manuscript research. Its portal page positions it as a destination for close study, annotation, and cross-manuscript comparison.',
-    launch: {
-      href: null,
-      label: 'Launch Seshat',
-      todo: 'Add the public Seshat URL in src/content/apps/apps.js.',
-    },
-    features: [
-      'Comparative viewing and analysis workflows',
-      'Support for manuscript-oriented research questions',
-      'Designed to complement the script and glossary units',
-      'Configured as a launch target when the live environment is available',
-    ],
-    notes: [
-      'The launch area is configured for a public destination as soon as it is available.',
-      'The scholarly framing keeps Seshat tied to the tutorial system instead of feeling like a separate product site.',
+      'The internal page keeps the project framing scholarly and concise until the public tool URL is finalized.',
+      'Its GitHub link is already centralized with the other application references.',
     ],
   },
   proteus: {
     id: 'proteus',
     name: 'Proteus',
-    tagline: 'Desktop multispectral image processing',
-    accent: '#395978',
-    route: '/apps/proteus',
-    type: 'download',
-    statusLabel: 'Download-oriented page',
+    accent: '#456277',
+    route: routePaths.appPages.proteus,
+    statusLabel: 'Configured app page',
+    tagline: 'An easy-to-use interface for enhancing digital images.',
     description:
-      'Proteus appears in the MSI materials as a desktop application for advanced image processing. The site therefore treats it as a software product page rather than a live web app.',
-    downloadsNote: 'Add public platform builds and release notes in src/content/apps/apps.js when distribution is ready.',
-    screenshots: [],
-    releaseNotes: null,
-    installGuidance:
-      'Platform-specific installers, release notes, and setup details can be published here as the public software distribution is finalized.',
-    platforms: [
-      { label: 'macOS', url: null, todo: 'Add the macOS build URL.' },
-      { label: 'Windows', url: null, todo: 'Add the Windows build URL.' },
-      { label: 'Linux', url: null, todo: 'Add the Linux build URL.' },
-    ],
+      'Proteus sits alongside the imaging material as an approachable interface for enhancing, comparing, and interpreting manuscript images.',
     features: [
-      'Principal component analysis and related MSI processing steps',
-      'Bridges directly from the MSI tutorial sequence',
-      'Structured platform cards for installers and release notes',
-      'Ready for screenshots when the application UI assets are available',
+      'Closely aligned with multispectral imaging teaching material',
+      'Suited to enhancement and inspection workflows',
+      'Prepared for a future README-based public access link',
     ],
     notes: [
-      'The MSI lesson on Proteus links straight into this page.',
-      'Platform-specific download cards are rendered from config so future URLs can be added without touching the layout.',
+      'The eventual public link should point to the README in the Proteus repository.',
+      'Keeping that link in shared config makes the swap straightforward later.',
     ],
   },
-  fenius: {
-    id: 'fenius',
-    name: 'Fenius',
-    tagline: 'Classification support for script research',
-    accent: '#8f4338',
-    route: '/apps/fenius',
-    type: 'web',
-    statusLabel: 'Launch page',
+  seshat: {
+    id: 'seshat',
+    name: 'Seshat',
+    accent: '#9d6a34',
+    route: routePaths.appPages.seshat,
+    statusLabel: 'Configured app page',
+    tagline: 'A multifaceted tool for analysing scripts.',
     description:
-      'Fenius is introduced on the landing tree as one of the four core applications. The portal frames it as a research-facing environment for script classification and manuscript analysis support.',
-    launch: {
-      href: null,
-      label: 'Launch Fenius',
-      todo: 'Add the public Fenius URL in src/content/apps/apps.js.',
-    },
+      'Seshat is framed as a multifaceted environment for script analysis, comparison, and other close palaeographic work.',
     features: [
-      'Script-oriented research support',
-      'Designed to sit near the Scripts tutorial pathway',
-      'Config-based launch target once the public URL is known',
-      'Consistent app page architecture shared with Mergen and Seshat',
+      'Supports detailed script-focused investigation',
+      'Complements the site’s historical and digital manuscript routes',
+      'Ready for a public launch link when the deployed tool is available',
     ],
     notes: [
-      'The launch area is configured for a public destination as soon as it is available.',
-      'The visual language ties Fenius back to the tree artwork instead of treating it as a generic SaaS card.',
+      'The access link stays configurable so publication timing does not force a layout change.',
+      'Its repository link provides a stable project reference in the meantime.',
     ],
   },
 }
 
-export const appOrder = ['mergen', 'seshat', 'proteus', 'fenius']
+export const appOrder = ['fenius', 'mergen', 'proteus', 'seshat']
 
-export const rootlingApps = appOrder.map((appId) => ({
-  label: apps[appId].name,
-  to: apps[appId].route,
-}))
+export const apps = Object.fromEntries(
+  appOrder.map((appId) => {
+    const app = appDefinitions[appId]
+    const external = appExternalLinks[appId]
+
+    return [
+      appId,
+      {
+        ...app,
+        access: {
+          href: external.launchUrl,
+          label: external.launchLabel,
+          todo: external.launchTodo,
+        },
+        github: {
+          href: external.githubUrl,
+          label: `${app.name} on GitHub`,
+        },
+      },
+    ]
+  }),
+)

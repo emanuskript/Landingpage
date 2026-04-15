@@ -10,19 +10,17 @@ defineProps({
 </script>
 
 <template>
-  <RouterLink :to="app.route" class="app-card">
+  <RouterLink :to="app.route" class="app-card ui-surface-link">
     <div class="app-card__dot" :style="{ backgroundColor: app.accent }" />
     <div class="app-card__content">
-      <p class="app-card__status">{{ app.statusLabel }}</p>
+      <p class="app-card__status ui-eyebrow">{{ app.statusLabel }}</p>
       <h2 class="app-card__title">{{ app.name }}</h2>
       <p class="app-card__tagline">{{ app.tagline }}</p>
       <p class="app-card__description">{{ app.description }}</p>
       <ul class="app-card__features">
         <li v-for="feature in app.features.slice(0, 3)" :key="feature">{{ feature }}</li>
       </ul>
-      <p class="app-card__action">
-        {{ app.type === 'download' ? 'Open download page' : 'Open launch page' }}
-      </p>
+      <p class="app-card__action">Open app page</p>
     </div>
   </RouterLink>
 </template>
@@ -33,19 +31,6 @@ defineProps({
   grid-template-columns: auto 1fr;
   gap: 1rem;
   padding: 1.2rem;
-  border-radius: 24px;
-  background: var(--color-panel);
-  border: 1px solid var(--color-border-strong);
-  box-shadow: var(--shadow-panel);
-  text-decoration: none;
-  color: inherit;
-  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
-}
-
-.app-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 18px 38px rgba(69, 49, 23, 0.13);
-  border-color: var(--color-branch);
 }
 
 .app-card__dot {
@@ -58,12 +43,6 @@ defineProps({
 
 .app-card__status {
   margin: 0 0 0.35rem;
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-primary);
 }
 
 .app-card__title {

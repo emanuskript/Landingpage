@@ -40,6 +40,18 @@ defineProps({
     type: Array,
     default: () => [],
   },
+  coverImage: {
+    type: String,
+    default: '',
+  },
+  coverImageAlt: {
+    type: String,
+    default: '',
+  },
+  coverImageCaption: {
+    type: String,
+    default: '',
+  },
 })
 </script>
 
@@ -47,7 +59,16 @@ defineProps({
   <section class="tutorial-shell">
     <div class="tutorial-shell__inner">
       <TutorialBreadcrumb :crumbs="crumbs" />
-      <TutorialCover :eyebrow="eyebrow" :title="title" :subtitle="subtitle" :description="description" :meta="meta" />
+      <TutorialCover
+        :eyebrow="eyebrow"
+        :title="title"
+        :subtitle="subtitle"
+        :description="description"
+        :meta="meta"
+        :image="coverImage"
+        :image-alt="coverImageAlt"
+        :image-caption="coverImageCaption"
+      />
 
       <div class="tutorial-shell__layout">
         <TutorialSidebar v-if="items.length" :title="sidebarTitle" :items="items" :back-link="backLink" />

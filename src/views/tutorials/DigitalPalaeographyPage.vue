@@ -1,119 +1,216 @@
 <script setup>
-import { computed } from 'vue'
-import TutorialShell from '../../components/tutorials/TutorialShell.vue'
-import SectionFrame from '../../components/ui/SectionFrame.vue'
-import FigureBlock from '../../components/tutorials/FigureBlock.vue'
-import FurtherReadingBlock from '../../components/tutorials/FurtherReadingBlock.vue'
-import GlossaryRichText from '../../components/tutorials/GlossaryRichText.vue'
-import PrevNextNav from '../../components/navigation/PrevNextNav.vue'
-import { digitalPalaeographyContent } from '../../content/tutorials/digitalPalaeography'
-
-const sidebarItems = computed(() =>
-  digitalPalaeographyContent.concepts.map((concept, index) => ({
-    number: index + 1,
-    label: concept.title,
-    to: { path: '/tutorials/digital-palaeography', hash: `#${concept.id}` },
-  })),
-)
+import { digitalPalaeographyPage } from '../../content/tutorials/digitalPalaeography'
 </script>
 
 <template>
-  <TutorialShell
-    :crumbs="[{ label: 'Tutorials', to: '/tutorials' }, { label: 'Digital Palaeography', to: '/tutorials/digital-palaeography' }]"
-    :items="sidebarItems"
-    sidebar-title="Concept map"
-    :back-link="{ label: 'Back to Tutorials', to: '/tutorials' }"
-    eyebrow="Tutorials"
-    :title="digitalPalaeographyContent.title"
-    :description="digitalPalaeographyContent.lede"
-    :meta="['Mind map', 'Digital methods']"
-  >
-    <div class="page-stack">
-      <SectionFrame title="How to read this unit">
-        <GlossaryRichText v-for="paragraph in digitalPalaeographyContent.intro" :key="paragraph" :text="paragraph" />
-      </SectionFrame>
+  <main class="digipal-page">
+    <div class="digipal-page__inner">
+      <details class="digipal-page__panel" open>
+        <summary class="digipal-page__summary">
+          <span>Introduction</span>
+          <span class="digipal-page__summary-icon" aria-hidden="true"></span>
+        </summary>
 
-      <SectionFrame title="Live concept map" eyebrow="OrgPad">
-        <FigureBlock
-          :image="digitalPalaeographyContent.mindMap.image"
-          :alt="digitalPalaeographyContent.mindMap.alt"
-          caption="Digital Palaeography concept map"
-          :detail="digitalPalaeographyContent.mindMap.note"
-        />
-        <p class="page-stack__mindmap-action">
-          <a :href="digitalPalaeographyContent.mindMap.fullScreenUrl" target="_blank" rel="noreferrer noopener">
-            Open the live concept map
-          </a>
-        </p>
-      </SectionFrame>
-
-      <div class="concept-grid">
-        <SectionFrame v-for="concept in digitalPalaeographyContent.concepts" :id="concept.id" :key="concept.id" :title="concept.title">
-          <GlossaryRichText :text="concept.summary" />
-          <ul>
-            <li v-for="bullet in concept.bullets" :key="bullet">{{ bullet }}</li>
-          </ul>
-          <p v-if="concept.bibliographyLink" class="concept-grid__action">
-            <RouterLink :to="concept.bibliographyLink.to">{{ concept.bibliographyLink.label }}</RouterLink>
+        <div class="digipal-page__body">
+          <p v-for="paragraph in digitalPalaeographyPage.introduction" :key="paragraph">
+            {{ paragraph }}
           </p>
-        </SectionFrame>
-      </div>
 
-      <FurtherReadingBlock :items="digitalPalaeographyContent.resources" title="Project resources" />
-      <FurtherReadingBlock :items="digitalPalaeographyContent.furtherReading" title="How to continue" />
-      <PrevNextNav :prev="{ label: 'Palaeography', to: '/tutorials/palaeography' }" :next="{ label: 'MSI', to: '/tutorials/msi' }" />
+          <h2 class="digipal-page__subheading">Topics</h2>
+          <ul class="digipal-page__list">
+            <li v-for="topic in digitalPalaeographyPage.topics" :key="topic">
+              {{ topic }}
+            </li>
+          </ul>
+
+          <h2 class="digipal-page__subheading">How the mind map works</h2>
+          <ul class="digipal-page__list">
+            <li v-for="instruction in digitalPalaeographyPage.instructions" :key="instruction">
+              {{ instruction }}
+            </li>
+          </ul>
+        </div>
+      </details>
+
+      <section class="digipal-page__panel" aria-labelledby="digital-palaeography-heading">
+        <div class="digipal-page__body digipal-page__body--map">
+          <header class="digipal-page__header">
+            <h1 id="digital-palaeography-heading">Digital Palaeography</h1>
+            <p class="digipal-page__topics-line">
+              Topics: {{ digitalPalaeographyPage.topics.join(' · ') }}
+            </p>
+          </header>
+
+          <iframe
+            class="digipal-page__iframe"
+            :src="digitalPalaeographyPage.orgPadEmbedUrl"
+            title="Digital Palaeography OrgPad mind map"
+            frameborder="0"
+            allowfullscreen
+          >
+            This browser cannot display the embedded mind map.
+          </iframe>
+
+          <p class="digipal-page__note">
+            If the embedded view does not load, open the mind map directly in
+            <a :href="digitalPalaeographyPage.orgPadDirectUrl" target="_blank" rel="noreferrer">OrgPad</a>.
+          </p>
+        </div>
+      </section>
+
+      <section class="digipal-page__panel" aria-labelledby="digital-palaeography-references">
+        <div class="digipal-page__body">
+          <h2 id="digital-palaeography-references">References</h2>
+          <p>
+            <a :href="digitalPalaeographyPage.zoteroUrl" target="_blank" rel="noreferrer">
+              Zotero Library
+            </a>
+          </p>
+        </div>
+      </section>
     </div>
-  </TutorialShell>
+  </main>
 </template>
 
 <style scoped>
-.page-stack {
+.digipal-page {
+  padding: clamp(2.6rem, 5vw, 4rem) 0 5rem;
+}
+
+.digipal-page__inner {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
   display: grid;
-  gap: 1rem;
+  gap: 1.1rem;
 }
 
-.page-stack__mindmap-action {
-  margin-top: 1rem;
+.digipal-page__panel {
+  margin: 0;
+  padding: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 252, 246, 0.94), rgba(248, 240, 224, 0.9)),
+    var(--color-panel);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 28px;
+  box-shadow: var(--shadow-panel);
 }
 
-.page-stack__mindmap-action a {
-  display: inline-flex;
+.digipal-page__summary {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 0.8rem 1.1rem;
-  border-radius: 999px;
-  background: var(--color-primary);
-  color: white;
-  text-decoration: none;
-  font-family: var(--font-sans);
-  font-size: 0.92rem;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
-  box-shadow: 0 10px 24px rgba(57, 89, 120, 0.24);
-}
-
-.page-stack__mindmap-action a:hover {
-  transform: translateY(-1px);
-  background: var(--color-branch);
-}
-
-.concept-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  justify-content: space-between;
   gap: 1rem;
+  padding: 1.35rem 1.45rem;
+  cursor: pointer;
+  font-size: clamp(1.2rem, 2vw, 1.45rem);
+  font-weight: 700;
+  list-style: none;
 }
 
-.concept-grid__action {
-  margin-top: 1rem;
+.digipal-page__summary::-webkit-details-marker {
+  display: none;
 }
 
-.concept-grid__action a {
+.digipal-page__summary-icon {
+  flex: 0 0 auto;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-right: 2px solid var(--color-primary);
+  border-bottom: 2px solid var(--color-primary);
+  transform: rotate(45deg);
+  transition: transform var(--transition-base);
+}
+
+.digipal-page__panel[open] .digipal-page__summary-icon {
+  transform: rotate(225deg);
+}
+
+.digipal-page__body {
+  display: grid;
+  gap: 1rem;
+  padding: 0 1.45rem 1.45rem;
+}
+
+.digipal-page__body p,
+.digipal-page__body ul,
+.digipal-page__body h1,
+.digipal-page__body h2 {
+  margin: 0;
+}
+
+.digipal-page__body--map {
+  gap: 1.1rem;
+  padding-top: 1.45rem;
+}
+
+.digipal-page__header {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.digipal-page__header h1 {
+  font-size: clamp(2.1rem, 5vw, 3.7rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.digipal-page__topics-line {
+  max-width: 72ch;
+  color: var(--color-ink-soft);
+}
+
+.digipal-page__subheading {
+  margin-top: 0.3rem;
+  font-size: 1.05rem;
+  letter-spacing: 0.01em;
+}
+
+.digipal-page__list {
+  padding-left: 1.2rem;
+  color: var(--color-ink-soft);
+}
+
+.digipal-page__list li + li {
+  margin-top: 0.5rem;
+}
+
+.digipal-page__iframe {
+  display: block;
+  width: 100%;
+  min-height: clamp(30rem, 78vh, 56rem);
+  border: 0;
+  border-radius: 20px;
+  background: rgba(236, 224, 201, 0.4);
+}
+
+.digipal-page__note {
+  color: var(--color-ink-soft);
+  font-size: 0.96rem;
+}
+
+.digipal-page__note a,
+.digipal-page__body a {
   color: var(--color-primary);
-  font-family: var(--font-sans);
-  font-size: 0.92rem;
-  text-decoration: none;
 }
 
-.concept-grid__action a:hover {
-  text-decoration: underline;
+@media (max-width: 780px) {
+  .digipal-page {
+    padding-top: 2rem;
+  }
+
+  .digipal-page__inner {
+    width: min(1120px, calc(100% - 1rem));
+  }
+
+  .digipal-page__summary,
+  .digipal-page__body {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .digipal-page__iframe {
+    min-height: clamp(24rem, 70vh, 42rem);
+    border-radius: 16px;
+  }
 }
 </style>

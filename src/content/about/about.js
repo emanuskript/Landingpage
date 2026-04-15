@@ -1,77 +1,117 @@
+import { appExternalLinks } from '../../config/externalLinks'
+import { routePaths } from '../../config/siteLinks'
+
 export const aboutContent = {
-  eyebrow: 'About the Project',
-  title: 'About eManuskript',
-  lede:
-    'A structured project page prepared for final editorial copy, implementation links, acknowledgements, and partner identities.',
-  basicInfo: {
-    id: 'basic-info',
-    title: 'Basic info',
-    placeholder:
-      'Placeholder for the public project description. Anna and Jeremy will supply the final overview text with input from the team.',
-    notes: [
-      'Use this section for the concise public explanation of the portal, its research aims, and its relationship to the four applications and tutorial pathways.',
+  eyebrow: '',
+  title: 'About the Project',
+  lede: '',
+  meta: ['April 2024 - March 2026'],
+  overview: {
+    id: 'project-overview',
+    title: '',
+    paragraphs: [
+      [
+        { text: 'This project (April 2024-March 2026) was funded by the ' },
+        { text: 'Stiftung Innovation in der Hochschullehre', href: 'https://stiftung-hochschullehre.de/' },
+        {
+          text:
+            ' and led by Dr. Anna Dorofeeva in the Institute for Digital Humanities at the University of Göttingen. Its goal was to build an extensive platform for learning about medieval western Latin manuscripts in the digital environment in which many students now first encounter them. Despite the growing accessibility of medieval manuscripts through digitisation, the study of these historical artefacts still presumes a high level of specialist knowledge. Moreover, the sciences of palaeography and codicology still largely depend on unbarred access to the physical objects themselves. To this end, the project team developed a concept for a comprehensive pedagogical website outfitted with several apps intended for learning about manuscript study and practising it. Its goal was to build tools that would meet learners and researchers where they are, whether in the classroom, at an archive, or online.',
+        },
+      ],
     ],
   },
-  howToUse: {
-    id: 'how-to-use',
-    title: 'How to use',
-    placeholder:
-      'Placeholder for visitor guidance. Final instructional copy should explain how to move from the landing tree into apps, tutorials, glossary support, and bibliography use.',
-    indexTitle: 'Portal index',
-    indexItems: [
-      { label: 'Landing page', to: '/' },
-      { label: 'Apps', to: '/apps' },
-      { label: 'Tutorials', to: '/tutorials' },
-      { label: 'Bibliography', to: '/bibliography' },
-      { label: 'Team', to: '/team' },
+  applications: {
+    id: 'applications',
+    title: 'Apps',
+    items: [
+      {
+        id: 'mergen',
+        title: 'Mergen',
+        description:
+          'Mergen is an AI-based layout segmentation app for detecting key textual, paratextual and non-textual elements on a manuscript page.',
+        githubHref: appExternalLinks.mergen.githubUrl,
+      },
+      {
+        id: 'proteus',
+        title: 'Proteus',
+        description:
+          'Proteus simplifies multispectral imaging (MSI) workflows for hard-to-read texts and can also enhance regular visible-light images.',
+        githubHref: appExternalLinks.proteus.githubUrl,
+      },
+      {
+        id: 'seshat',
+        title: 'Seshat',
+        description:
+          'Seshat is an annotation tool for marking digital manuscript images in several ways and supporting the analysis of scribal hands.',
+        githubHref: appExternalLinks.seshat.githubUrl,
+      },
+      {
+        id: 'fenius',
+        title: 'Fenius',
+        description:
+          'Fenius is a multi-level application with three tools for understanding and documenting codicology and bookbinding.',
+        githubHref: appExternalLinks.fenius.githubUrl,
+      },
     ],
   },
-  projectLinks: {
-    id: 'project-links',
-    title: 'GitHub and Zenodo',
-    intro:
-      'Project-code and publication links should be maintained from config so Mo can add the final destinations without editing the page layout.',
-    groups: [
+  tutorials: {
+    id: 'tutorials',
+    title: 'Tutorials',
+    intro: 'This suite of apps is accompanied by four tutorials:',
+    items: [
       {
-        id: 'github',
-        title: 'GitHub',
-        note: 'Mo to add the GitHub repository and any project-code links.',
-        links: [
-          { label: 'Main repository', href: null, todo: 'Add public GitHub repository URL.' },
-          { label: 'Project code', href: null, todo: 'Add public code/package URL if separate.' },
-        ],
+        id: 'scripts',
+        title: 'The History of Medieval Scripts',
+        summary: 'a descriptive survey of script types',
+        to: routePaths.tutorialPages.scripts,
       },
       {
-        id: 'zenodo',
-        title: 'Zenodo',
-        note: 'Mo to add Zenodo records, DOI links, and archival references.',
-        links: [
-          { label: 'Zenodo project record', href: null, todo: 'Add Zenodo record URL.' },
-          { label: 'Project DOI', href: null, todo: 'Add DOI link when available.' },
-        ],
+        id: 'digital-palaeography',
+        title: 'Digital Palaeography',
+        summary: 'a mind map exploring the use of digital technologies in palaeography and manuscript studies',
+        to: routePaths.tutorialPages.digitalPalaeography,
       },
       {
-        id: 'bibliography',
-        title: 'Bibliography',
-        note: 'The live project bibliography is already integrated in the portal.',
-        links: [{ label: 'Open bibliography', to: '/bibliography' }],
+        id: 'msi',
+        title: 'Multispectral Imaging for Medieval Manuscripts',
+        summary: 'a guide for understanding and setting up a multispectral imaging workflow',
+        to: routePaths.tutorialPages.msi,
+      },
+      {
+        id: 'codicology',
+        title: 'The Creation of a Medieval Codex',
+        summary: 'a step-by-step description of the process of making a parchment codex in a scriptorium',
+        to: routePaths.tutorialPages.codicology,
       },
     ],
+  },
+  bibliography: {
+    id: 'bibliography-note',
+    title: 'Bibliography',
+    text: 'The website also integrates a comprehensive bibliography built in Zotero.',
   },
   acknowledgements: {
     id: 'acknowledgements',
-    title: 'Acknowledgements',
-    placeholder:
-      'Placeholder for the formal acknowledgements, funding language, and contribution notes supplied by the project team.',
-  },
-  partnerLogos: {
-    id: 'partner-logos',
-    title: 'Partner logos',
-    items: [
-      { id: 'stil', label: 'StIL', image: null, todo: 'Add StIL logo asset.' },
-      { id: 'ugoe', label: 'UGoe', image: null, todo: 'Add UGoe logo asset.' },
-      { id: 'sub', label: 'SUB', image: null, todo: 'Add SUB logo asset.' },
-      { id: 'ifdh', label: 'IfDH', image: null, todo: 'Add IfDH logo asset.' },
+    title: 'Partners and support',
+    logos: [
+      {
+        id: 'stiftung',
+        label: 'Stiftung Innovation in der Hochschullehre',
+        alt: 'Logo of Stiftung Innovation in der Hochschullehre.',
+        src: '/images/partners/stil.svg',
+      },
+      {
+        id: 'sub',
+        label: 'SUB Göttingen',
+        alt: 'Logo of the Göttingen State and University Library.',
+        src: '/images/partners/sub.svg',
+      },
+      {
+        id: 'ifdh',
+        label: 'Institute for Digital Humanities',
+        alt: 'Logo of the Institute for Digital Humanities.',
+        src: '/images/partners/ifdh.png',
+      },
     ],
   },
 }

@@ -20,20 +20,39 @@ defineProps({
     type: Array,
     default: () => [],
   },
+  image: {
+    type: String,
+    default: '',
+  },
+  imageAlt: {
+    type: String,
+    default: '',
+  },
+  imageCaption: {
+    type: String,
+    default: '',
+  },
 })
 </script>
 
 <template>
-  <section class="tutorial-cover">
-    <p v-if="eyebrow" class="tutorial-cover__eyebrow">{{ eyebrow }}</p>
-    <h1 class="tutorial-cover__title">{{ title }}</h1>
-    <p v-if="subtitle" class="tutorial-cover__subtitle">{{ subtitle }}</p>
-    <p v-if="description" class="tutorial-cover__description">{{ description }}</p>
-    <div v-if="meta.length" class="tutorial-cover__meta">
-      <span v-for="item in meta" :key="item">{{ item }}</span>
+  <section class="tutorial-cover" :class="{ 'tutorial-cover--with-media': image }">
+    <div class="tutorial-cover__copy">
+      <p v-if="eyebrow" class="tutorial-cover__eyebrow">{{ eyebrow }}</p>
+      <h1 class="tutorial-cover__title">{{ title }}</h1>
+      <p v-if="subtitle" class="tutorial-cover__subtitle">{{ subtitle }}</p>
+      <p v-if="description" class="tutorial-cover__description">{{ description }}</p>
+      <div v-if="meta.length" class="tutorial-cover__meta">
+        <span v-for="item in meta" :key="item">{{ item }}</span>
+      </div>
     </div>
+
+    <figure v-if="image" class="tutorial-cover__media">
+      <img :src="image" :alt="imageAlt || title" loading="eager" decoding="async" fetchpriority="high" />
+      <figcaption v-if="imageCaption">{{ imageCaption }}</figcaption>
+    </figure>
   </section>
-</template>
+ </template>
 
 <style scoped>
 .tutorial-cover {
@@ -44,6 +63,17 @@ defineProps({
   border: 1px solid var(--color-border-strong);
   border-radius: 28px;
   box-shadow: var(--shadow-panel);
+}
+
+.tutorial-cover--with-media {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(240px, 0.85fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.tutorial-cover__copy {
+  min-width: 0;
 }
 
 .tutorial-cover__eyebrow {
@@ -87,5 +117,32 @@ defineProps({
   color: var(--color-primary);
   font-family: var(--font-sans);
   font-size: 0.8rem;
+}
+
+.tutorial-cover__media {
+  margin: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.tutorial-cover__media img {
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+  border-radius: 22px;
+  border: 1px solid var(--color-border-strong);
+  box-shadow: 0 12px 24px rgba(69, 49, 23, 0.1);
+}
+
+.tutorial-cover__media figcaption {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  color: var(--color-ink-soft);
+}
+
+@media (max-width: 900px) {
+  .tutorial-cover--with-media {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

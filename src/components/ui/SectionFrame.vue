@@ -18,7 +18,7 @@ defineProps({
 <template>
   <section :class="['section-frame', `section-frame--${tone}`]">
     <header v-if="title || eyebrow" class="section-frame__header">
-      <p v-if="eyebrow" class="section-frame__eyebrow">{{ eyebrow }}</p>
+      <p v-if="eyebrow" class="section-frame__eyebrow ui-eyebrow">{{ eyebrow }}</p>
       <h2 v-if="title" class="section-frame__title">{{ title }}</h2>
     </header>
     <div class="section-frame__body">
@@ -36,6 +36,9 @@ defineProps({
   border-radius: 24px;
   box-shadow: var(--shadow-panel);
   overflow: hidden;
+  content-visibility: auto;
+  contain: layout paint style;
+  contain-intrinsic-size: 1px 420px;
 }
 
 .section-frame::before {
@@ -64,12 +67,6 @@ defineProps({
 
 .section-frame__eyebrow {
   margin: 0 0 0.35rem;
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--color-primary);
 }
 
 .section-frame__title {

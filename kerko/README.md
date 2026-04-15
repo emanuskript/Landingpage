@@ -8,7 +8,7 @@ Use the official Kerko documentation:
 
 Use these library values:
 
-- `ZOTERO_LIBRARY_ID=6352684`
+- `ZOTERO_LIBRARY_ID=5499549`
 - `ZOTERO_LIBRARY_TYPE=group`
 
 After your Kerko or KerkoApp service is running, copy its public bibliography URL into:

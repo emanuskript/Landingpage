@@ -34,6 +34,9 @@ defineProps({
 <style scoped>
 .figure-block {
   margin: 0;
+  content-visibility: auto;
+  contain: layout paint style;
+  contain-intrinsic-size: 1px 360px;
 }
 
 .figure-block figcaption {

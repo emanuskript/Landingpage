@@ -2,56 +2,76 @@
 import { computed } from 'vue'
 import TutorialShell from '../../../components/tutorials/TutorialShell.vue'
 import SectionFrame from '../../../components/ui/SectionFrame.vue'
-import FigureBlock from '../../../components/tutorials/FigureBlock.vue'
 import PrevNextNav from '../../../components/navigation/PrevNextNav.vue'
-import { msiLessons, msiOverview } from '../../../content/tutorials/msi/msi'
+import FurtherReadingBlock from '../../../components/tutorials/FurtherReadingBlock.vue'
+import { routePaths } from '../../../config/siteLinks'
+import { getMsiPath, msiLessons, msiOverview } from '../../../content/tutorials/msi/msi'
 
 const sidebarItems = computed(() =>
   msiLessons.map((lesson) => ({
     number: lesson.number,
     label: lesson.title,
-    to: `/tutorials/msi/${lesson.slug}`,
+    to: getMsiPath(lesson.slug),
   })),
 )
 </script>
 
 <template>
   <TutorialShell
-    :crumbs="[{ label: 'Tutorials', to: '/tutorials' }, { label: 'MSI', to: '/tutorials/msi' }]"
+    :crumbs="[
+      { label: 'Tutorials', to: routePaths.tutorialsIndex },
+      { label: msiOverview.title, to: getMsiPath() },
+    ]"
     :items="sidebarItems"
-    sidebar-title="Lesson index"
-    :back-link="{ label: 'Back to Tutorials', to: '/tutorials' }"
+    sidebar-title="MSI units"
+    :back-link="{ label: 'Back to Tutorials', to: routePaths.tutorialsIndex }"
     eyebrow="Tutorials"
     :title="msiOverview.title"
     :description="msiOverview.lede"
-    :meta="['Six lessons', 'Image-rich course']"
+    :meta="['Seven units', 'Equipment, Hoku, Proteus, and future applications']"
+    :cover-image="msiOverview.coverImage"
+    :cover-image-alt="msiOverview.coverAlt"
+    :cover-image-caption="msiOverview.coverCaption"
   >
     <div class="page-stack">
-      <SectionFrame title="Course structure">
+      <SectionFrame title="Tutorial overview" tone="muted">
         <p v-for="paragraph in msiOverview.introduction" :key="paragraph">{{ paragraph }}</p>
         <ul>
           <li v-for="highlight in msiOverview.highlights" :key="highlight">{{ highlight }}</li>
         </ul>
       </SectionFrame>
 
-      <SectionFrame title="Course image">
-        <FigureBlock
-          image="/images/msi/365_baader.png"
-          alt="MSI course figure from the provided local tutorial images."
-          caption="Representative manuscript image from the local MSI source folder"
-          detail="Converted from the supplied TIFF source for responsive web display."
-        />
+      <SectionFrame title="Source set">
+        <p>The MSI tutorial is grounded in the following local source documents and bibliography file:</p>
+        <ul>
+          <li v-for="file in msiOverview.sourceFiles" :key="file">{{ file }}</li>
+        </ul>
       </SectionFrame>
 
       <div class="msi-overview__grid">
-        <RouterLink v-for="lesson in msiLessons" :key="lesson.slug" :to="`/tutorials/msi/${lesson.slug}`" class="msi-overview__card">
-          <p>Lesson {{ lesson.number }}</p>
+        <RouterLink
+          v-for="lesson in msiLessons"
+          :key="lesson.slug"
+          :to="getMsiPath(lesson.slug)"
+          class="msi-overview__card ui-surface-link"
+        >
+          <p class="ui-eyebrow">Unit {{ lesson.numeral }}</p>
           <h2>{{ lesson.title }}</h2>
-          <span>{{ lesson.subtitle }}</span>
+          <span>{{ lesson.description }}</span>
         </RouterLink>
       </div>
 
-      <PrevNextNav :next="{ label: msiLessons[0].title, to: `/tutorials/msi/${msiLessons[0].slug}` }" />
+      <SectionFrame title="Mentioned projects and links">
+        <p>The MSI source set explicitly mentions the following projects and link titles:</p>
+        <ul>
+          <li v-for="project in msiOverview.projects" :key="project">{{ project }}</li>
+          <li v-for="caseStudy in msiOverview.caseStudies" :key="caseStudy">{{ caseStudy }}</li>
+        </ul>
+      </SectionFrame>
+
+      <FurtherReadingBlock title="MSI bibliography" :items="msiOverview.bibliography" />
+
+      <PrevNextNav :next="{ label: msiLessons[0].title, to: getMsiPath(msiLessons[0].slug) }" />
     </div>
   </TutorialShell>
 </template>
@@ -73,28 +93,10 @@ const sidebarItems = computed(() =>
   gap: 0.45rem;
   min-height: 100%;
   padding: 1rem 1.1rem;
-  background: var(--color-panel);
-  border: 1px solid var(--color-border-strong);
-  border-radius: 24px;
-  box-shadow: var(--shadow-panel);
-  color: inherit;
-  text-decoration: none;
-  transition: transform var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
-}
-
-.msi-overview__card:hover {
-  transform: translateY(-3px);
-  border-color: var(--color-branch);
-  box-shadow: 0 18px 38px rgba(69, 49, 23, 0.13);
 }
 
 .msi-overview__card p {
   margin: 0;
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--color-primary);
 }
 
 .msi-overview__card h2,

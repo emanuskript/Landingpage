@@ -1,4 +1,6 @@
 <script setup>
+import { computed } from 'vue'
+
 const props = defineProps({
   member: {
     type: Object,
@@ -6,9 +8,12 @@ const props = defineProps({
   },
 })
 
+const memberLinks = computed(() => props.member.links || [])
+
 function initials(name) {
   return name
-    .split(' ')
+    .split(/\s+/)
+    .filter(Boolean)
     .slice(0, 2)
     .map((part) => part[0] || '')
     .join('')
@@ -18,29 +23,43 @@ function initials(name) {
 
 <template>
   <article class="team-member-card">
-    <div class="team-member-card__identity">
-      <div v-if="member.photo" class="team-member-card__portrait">
-        <img :src="member.photo" :alt="member.photoAlt || `${member.name} portrait`" />
+      <div class="team-member-card__identity ui-surface-card ui-surface-card--soft">
+      <div
+        v-if="member.photo"
+        class="team-member-card__portrait"
+      >
+        <img
+          :src="member.photo"
+          :alt="member.photoAlt || `Portrait of ${member.name}`"
+          :class="{
+            'team-member-card__image--mirrored': member.photoMirror,
+            'team-member-card__image--contain': member.photoContain,
+          }"
+        />
       </div>
-      <div v-else class="team-member-card__portrait team-member-card__portrait--placeholder" aria-hidden="true">
-        {{ initials(member.name) }}
+      <div
+        v-else
+        class="team-member-card__portrait team-member-card__portrait--placeholder"
+        role="img"
+        :aria-label="member.photoAlt || `Photo placeholder for ${member.name}`"
+      >
+        <span>{{ initials(member.name) }}</span>
       </div>
 
       <div class="team-member-card__identity-copy">
-        <h3 class="team-member-card__name">
-          <a v-if="member.profileUrl" :href="member.profileUrl" target="_blank" rel="noreferrer noopener">{{ member.name }}</a>
-          <span v-else>{{ member.name }}</span>
-        </h3>
-        <p class="team-member-card__meta">
-          <span v-if="member.profileUrlTodo">{{ member.profileUrlTodo }}</span>
-          <span v-else-if="!member.photo">Photo placeholder until final image is supplied.</span>
-        </p>
+        <h3 class="team-member-card__name">{{ member.name }}</h3>
+        <p v-if="member.title" class="team-member-card__title">{{ member.title }}</p>
+
+        <ul v-if="memberLinks.length" class="team-member-card__links ui-inline-links" aria-label="Related links">
+          <li v-for="link in memberLinks" :key="`${member.id}-${link.label}`">
+            <a :href="link.href" target="_blank" rel="noreferrer noopener">{{ link.label }}</a>
+          </li>
+        </ul>
       </div>
     </div>
 
-    <div class="team-member-card__summary">
-      <p v-if="member.summary">{{ member.summary }}</p>
-      <p v-else class="team-member-card__placeholder">{{ member.placeholder }}</p>
+    <div class="team-member-card__details ui-surface-card ui-surface-card--soft">
+      <p class="team-member-card__description">{{ member.description }}</p>
     </div>
   </article>
 </template>
@@ -48,10 +67,10 @@ function initials(name) {
 <style scoped>
 .team-member-card {
   display: grid;
-  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
-  gap: 1.2rem;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  gap: 1.5rem;
   align-items: start;
-  padding: 1rem 0;
+  padding: 1.4rem 0;
   border-top: 1px solid var(--color-border-soft);
 }
 
@@ -62,9 +81,10 @@ function initials(name) {
 
 .team-member-card__identity {
   display: grid;
-  grid-template-columns: 92px minmax(0, 1fr);
-  gap: 0.9rem;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 1rem;
   align-items: start;
+  padding: 1rem;
 }
 
 .team-member-card__portrait {
@@ -72,8 +92,10 @@ function initials(name) {
   overflow: hidden;
   border-radius: 20px;
   border: 1px solid var(--color-border-strong);
-  background: rgba(255, 255, 255, 0.62);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.48), rgba(255, 249, 239, 0.86)),
+    rgba(245, 236, 222, 0.86);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .team-member-card__portrait img {
@@ -82,51 +104,75 @@ function initials(name) {
   object-fit: cover;
 }
 
+.team-member-card__image--contain {
+  object-fit: contain;
+  padding: 0.5rem;
+  background: rgba(255, 252, 247, 0.92);
+}
+
+.team-member-card__image--mirrored {
+  transform: scaleX(-1);
+}
+
 .team-member-card__portrait--placeholder {
   display: grid;
   place-items: center;
-  background: linear-gradient(180deg, rgba(57, 89, 120, 0.12), rgba(212, 182, 113, 0.16));
+  color: var(--color-primary-strong);
   font-family: var(--font-display);
-  font-size: 1.65rem;
-  color: var(--color-primary);
+  font-size: 1.55rem;
+  letter-spacing: 0.04em;
+}
+
+.team-member-card__identity-copy {
+  min-width: 0;
 }
 
 .team-member-card__name {
   margin: 0;
-  font-size: 1.14rem;
+  font-size: 1.16rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
 }
 
-.team-member-card__name a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.team-member-card__name a:hover {
-  color: var(--color-primary);
-}
-
-.team-member-card__meta {
+.team-member-card__title {
   margin: 0.35rem 0 0;
   font-family: var(--font-sans);
-  font-size: 0.84rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
   color: var(--color-ink-soft);
 }
 
-.team-member-card__summary {
+.team-member-card__links {
+  margin: 0.7rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.team-member-card__links a {
+  color: var(--color-primary-strong);
+}
+
+.team-member-card__details {
   min-width: 0;
+  padding: 1rem 1.1rem;
 }
 
-.team-member-card__summary p {
+.team-member-card__description {
   margin: 0;
-}
-
-.team-member-card__placeholder {
-  color: var(--color-ink-soft);
+  line-height: 1.7;
 }
 
 @media (max-width: 760px) {
   .team-member-card {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .team-member-card__identity {
+    grid-template-columns: 92px minmax(0, 1fr);
   }
 }
 </style>

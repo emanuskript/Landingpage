@@ -1,18 +1,18 @@
 export const bibliographyContent = {
-  eyebrow: 'Bibliography',
+  eyebrow: '',
   title: 'Bibliography',
   lede:
-    'Search and browse the Digital Palaeography bibliography directly from the public Zotero group library, with a Kerko deployment path ready for a fuller faceted interface.',
+    'Search and browse the eManuSkript bibliography directly from the public Medieval Latin palaeography Zotero group library.',
   kerkoBaseUrl: '',
   kerkoDocsUrl: 'https://whiskyechobravo.github.io/kerko/latest/',
   resultPageSize: 12,
   zotero: {
-    libraryId: '6352684',
+    libraryId: '5499549',
     libraryType: 'group',
-    librarySlug: 'digital_palaeography',
-    title: 'Digital Palaeography Zotero Library',
-    webUrl: 'https://www.zotero.org/groups/6352684/digital_palaeography/library',
-    apiBaseUrl: 'https://api.zotero.org/groups/6352684',
+    librarySlug: 'medieval_latin_palaeography',
+    title: 'Medieval Latin palaeography Zotero Library',
+    webUrl: 'https://www.zotero.org/groups/5499549/medieval_latin_palaeography/library',
+    apiBaseUrl: 'https://api.zotero.org/groups/5499549',
   },
   sortOptions: [
     { value: 'date', label: 'Publication date' },
@@ -31,7 +31,6 @@ export const bibliographyContent = {
     { value: 'webpage', label: 'Webpages' },
   ],
   notes: [
-    'The page uses Zotero’s public Web API for live access to the current library.',
-    'Set `kerkoBaseUrl` when the Kerko service is deployed to enable the advanced bibliography handoff.',
+    'The page uses Zotero’s public Web API for live access to the site bibliography.',
   ],
 }

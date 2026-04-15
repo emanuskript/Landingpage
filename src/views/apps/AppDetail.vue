@@ -12,7 +12,6 @@ const props = defineProps({
 })
 
 const app = computed(() => apps[props.appId])
-const isProteus = computed(() => app.value?.type === 'download')
 </script>
 
 <template>
@@ -32,44 +31,29 @@ const isProteus = computed(() => app.value?.type === 'download')
         </ul>
       </SectionFrame>
 
-      <SectionFrame :title="isProteus ? 'Downloads and installation' : 'Access'">
-        <template v-if="isProteus">
-          <p>{{ app.installGuidance }}</p>
-          <div class="app-detail__downloads">
-            <div v-for="platform in app.platforms" :key="platform.label" class="app-detail__download-card">
-              <strong>{{ platform.label }}</strong>
-              <a v-if="platform.url" :href="platform.url" target="_blank" rel="noreferrer noopener">Download</a>
-              <span v-else>{{ platform.todo }}</span>
-            </div>
-          </div>
-          <p class="app-detail__note">Release notes: {{ app.releaseNotes || 'Public release information will appear here.' }}</p>
-          <p class="app-detail__todo">{{ app.downloadsNote }}</p>
-        </template>
-        <template v-else>
-          <p v-if="app.launch.href">Open the public {{ app.name }} environment.</p>
-          <p v-else>{{ app.launch.todo }}</p>
-          <a
-            v-if="app.launch.href"
-            :href="app.launch.href"
-            class="app-detail__launch"
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            {{ app.launch.label }}
-          </a>
-          <span v-else class="app-detail__launch app-detail__launch--disabled">{{ app.launch.label }}</span>
-        </template>
-      </SectionFrame>
+      <SectionFrame title="Project links">
+        <div class="app-detail__link-grid">
+          <article class="app-detail__link-card ui-surface-card ui-surface-card--soft">
+            <p class="app-detail__label ui-eyebrow">App access</p>
+            <h3>{{ app.access.label }}</h3>
+            <p v-if="app.access.href">
+              <a :href="app.access.href" class="app-detail__launch ui-button-link" target="_blank" rel="noreferrer noopener">
+                {{ app.access.label }}
+              </a>
+            </p>
+            <p v-else class="app-detail__placeholder">{{ app.access.todo }}</p>
+          </article>
 
-      <SectionFrame title="Portal notes" tone="muted">
-        <ul>
-          <li v-for="note in app.notes" :key="note">{{ note }}</li>
-        </ul>
-      </SectionFrame>
-
-      <SectionFrame v-if="isProteus" title="Screenshots" tone="muted">
-        <p v-if="app.screenshots.length">Screenshots will render here from config.</p>
-        <p v-else class="app-detail__todo">TODO: add Proteus screenshots when approved UI captures are available.</p>
+          <article class="app-detail__link-card ui-surface-card ui-surface-card--soft">
+            <p class="app-detail__label ui-eyebrow">GitHub</p>
+            <h3>{{ app.name }} repository</h3>
+            <p>
+              <a :href="app.github.href" class="app-detail__launch ui-button-link ui-button--secondary" target="_blank" rel="noreferrer noopener">
+                {{ app.github.label }}
+              </a>
+            </p>
+          </article>
+        </div>
       </SectionFrame>
     </div>
   </SiteShell>
@@ -81,46 +65,32 @@ const isProteus = computed(() => app.value?.type === 'download')
   gap: 1rem;
 }
 
-.app-detail__downloads {
+.app-detail__link-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 0.8rem;
-  margin-top: 1rem;
 }
 
-.app-detail__download-card {
+.app-detail__link-card {
   display: grid;
-  gap: 0.4rem;
+  gap: 0.55rem;
   padding: 0.95rem;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.58);
-  border: 1px solid var(--color-border-soft);
+}
+
+.app-detail__label {
+  margin: 0;
+}
+
+.app-detail__link-card h3,
+.app-detail__link-card p {
+  margin: 0;
 }
 
 .app-detail__launch {
-  display: inline-flex;
-  margin-top: 1rem;
-  padding: 0.75rem 0.95rem;
-  border-radius: 999px;
-  background: var(--color-primary);
-  color: white;
-  text-decoration: none;
-  font-family: var(--font-sans);
+  width: fit-content;
 }
 
-.app-detail__launch--disabled {
-  background: var(--color-panel-muted);
-  color: var(--color-ink-soft);
-}
-
-.app-detail__note {
-  margin-top: 1rem;
-  font-family: var(--font-sans);
-  color: var(--color-ink-soft);
-}
-
-.app-detail__todo {
-  margin-top: 0.8rem;
+.app-detail__placeholder {
   font-family: var(--font-sans);
   color: var(--color-ink-soft);
 }

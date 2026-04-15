@@ -1,7 +1,7 @@
 <script setup>
-import { ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 
-defineProps({
+const props = defineProps({
   image: {
     type: String,
     required: true,
@@ -13,19 +13,65 @@ defineProps({
 })
 
 const open = ref(false)
+const shouldRender = ref(false)
+const rootRef = ref(null)
+let observer
+
+function ensureVisible() {
+  shouldRender.value = true
+  observer?.disconnect()
+  observer = undefined
+}
+
+function openFigure() {
+  ensureVisible()
+  open.value = true
+}
+
+onMounted(() => {
+  if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+    shouldRender.value = true
+    return
+  }
+
+  observer = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        ensureVisible()
+      }
+    },
+    { rootMargin: '360px 0px' },
+  )
+
+  if (rootRef.value) {
+    observer.observe(rootRef.value)
+  }
+})
+
+onBeforeUnmount(() => {
+  observer?.disconnect()
+})
 </script>
 
 <template>
-  <div class="zoomable-figure">
-    <button class="zoomable-figure__button" type="button" @click="open = true">
-      <img :src="image" :alt="alt" loading="lazy" />
+  <div ref="rootRef" class="zoomable-figure">
+    <button class="zoomable-figure__button" type="button" @click="openFigure">
+      <img
+        v-if="shouldRender"
+        :src="props.image"
+        :alt="props.alt"
+        loading="lazy"
+        decoding="async"
+        fetchpriority="low"
+      />
+      <div v-else class="zoomable-figure__placeholder" aria-hidden="true"></div>
       <span>Zoom</span>
     </button>
 
     <teleport to="body">
       <div v-if="open" class="zoomable-figure__overlay" @click.self="open = false">
         <button class="zoomable-figure__close" type="button" @click="open = false">Close</button>
-        <img :src="image" :alt="alt" />
+        <img :src="props.image" :alt="props.alt" decoding="async" />
       </div>
     </teleport>
   </div>
@@ -50,8 +96,20 @@ const open = ref(false)
 
 .zoomable-figure__button img {
   width: 100%;
+  display: block;
   border-radius: 18px;
   border: 1px solid var(--color-border-strong);
+  background: rgba(255, 251, 243, 0.72);
+}
+
+.zoomable-figure__placeholder {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 18px;
+  border: 1px solid var(--color-border-strong);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.24), transparent 48%),
+    rgba(244, 236, 221, 0.78);
 }
 
 .zoomable-figure__overlay {

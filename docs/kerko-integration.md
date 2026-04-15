@@ -7,8 +7,8 @@ It is also prepared for a full Kerko deployment.
 ## Current library
 
 - Zotero library type: `group`
-- Zotero library id: `6352684`
-- Zotero group URL: `https://www.zotero.org/groups/6352684/digital_palaeography/library`
+- Zotero library id: `5499549`
+- Zotero group URL: `https://www.zotero.org/groups/5499549/medieval_latin_palaeography/library`
 
 ## Front-end switch
 
@@ -29,7 +29,7 @@ Kerko requires a separate Flask service. The Kerko docs state that Kerko works w
 Use these values in your Kerko or KerkoApp configuration:
 
 ```toml
-ZOTERO_LIBRARY_ID = "6352684"
+ZOTERO_LIBRARY_ID = "5499549"
 ZOTERO_LIBRARY_TYPE = "group"
 ```
 

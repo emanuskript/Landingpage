@@ -92,11 +92,11 @@ async function handleLinkClick(item, event) {
       <span class="sidebar-toggle-text">{{ title }}</span>
     </button>
 
-    <div class="sidebar-content">
+    <div class="sidebar-content ui-surface-card">
       <RouterLink
         v-if="backLink"
         :to="backLink.to"
-        class="sidebar-back"
+        class="sidebar-back ui-chip ui-chip--soft"
       >
         <span class="sidebar-back-arrow" aria-hidden="true">&larr;</span>
         {{ backLink.label }}
@@ -135,7 +135,7 @@ async function handleLinkClick(item, event) {
 .tutorial-sidebar {
   width: 100%;
   min-width: 0;
-  font-family: var(--font-sans);
+  font-family: var(--font-serif);
 }
 
 .sidebar-toggle {
@@ -147,28 +147,25 @@ async function handleLinkClick(item, event) {
   top: var(--space-lg);
   max-height: calc(100vh - (var(--space-lg) * 2));
   overflow-y: auto;
-  padding: var(--space-md);
-  background: var(--color-panel);
-  border: 1px solid var(--color-border-strong);
-  border-radius: 22px;
-  box-shadow: var(--shadow-panel);
+  padding: 1rem;
 }
 
-/* Back link */
 .sidebar-back {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-xs);
-  font-size: 0.8125rem;
-  color: var(--color-ink-muted);
-  text-decoration: none;
-  margin-bottom: var(--space-md);
-  padding: var(--space-xs) 0;
-  transition: color var(--transition-fast);
+  gap: 0.45rem;
+  width: fit-content;
+  margin-bottom: 0.95rem;
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
 }
 
 .sidebar-back:hover {
-  color: var(--color-gold);
+  color: var(--color-primary-strong);
 }
 
 .sidebar-back:focus-visible {
@@ -178,46 +175,47 @@ async function handleLinkClick(item, event) {
 }
 
 .sidebar-back-arrow {
-  font-size: 0.875rem;
+  font-size: 0.95rem;
 }
 
-/* Title */
 .sidebar-title {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 600;
   color: var(--color-ink);
-  margin: 0 0 var(--space-md) 0;
-  padding-bottom: var(--space-sm);
+  margin: 0 0 0.95rem 0;
+  padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--color-border-light);
 }
 
-/* List */
 .sidebar-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0.3rem;
 }
 
 .sidebar-link {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-sm);
-  padding: var(--space-sm) var(--space-sm);
+  gap: 0.75rem;
+  padding: 0.75rem 0.8rem;
   text-decoration: none;
-  border-radius: var(--radius-sm);
+  border-radius: 16px;
   transition:
     background var(--transition-fast),
-    color var(--transition-fast);
-  color: var(--color-ink-muted);
+    color var(--transition-fast),
+    border-color var(--transition-fast);
+  color: var(--color-ink-soft);
   position: relative;
+  border: 1px solid transparent;
 }
 
 .sidebar-link:hover {
-  background: var(--color-panel-hover);
+  background: rgba(255, 250, 242, 0.9);
+  border-color: var(--color-border-light);
   color: var(--color-ink);
 }
 
@@ -228,6 +226,7 @@ async function handleLinkClick(item, event) {
 
 .sidebar-link.active {
   background: rgba(255, 252, 246, 0.96);
+  border-color: var(--color-border-light);
   color: var(--color-ink);
   font-weight: 600;
 }
@@ -245,12 +244,13 @@ async function handleLinkClick(item, event) {
 
 .sidebar-number {
   flex-shrink: 0;
-  width: 22px;
-  height: 22px;
+  width: 1.9rem;
+  height: 1.9rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
   font-weight: 600;
   color: var(--color-ink-muted);
   background: var(--color-parchment-dark);
@@ -264,12 +264,11 @@ async function handleLinkClick(item, event) {
 }
 
 .sidebar-label {
-  font-size: 0.8125rem;
-  line-height: 1.4;
+  font-size: 0.96rem;
+  line-height: 1.42;
   padding-top: 2px;
 }
 
-/* Mobile: collapsible */
 @media (max-width: 768px) {
   .tutorial-sidebar {
     width: 100%;
@@ -282,13 +281,15 @@ async function handleLinkClick(item, event) {
     align-items: center;
     gap: var(--space-sm);
     width: 100%;
-    padding: var(--space-sm) var(--space-md);
-    background: var(--color-panel);
+    padding: 0.85rem 1rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.28), transparent 56%),
+      var(--color-panel);
     border: 1px solid var(--color-border-light);
-    border-radius: var(--radius-md);
+    border-radius: 18px;
     cursor: pointer;
     font-family: var(--font-display);
-    font-size: 0.875rem;
+    font-size: 1rem;
     color: var(--color-ink);
   }
 
@@ -297,7 +298,6 @@ async function handleLinkClick(item, event) {
     outline-offset: 2px;
   }
 
-  /* Hamburger icon */
   .sidebar-toggle-icon {
     display: flex;
     flex-direction: column;
@@ -349,6 +349,14 @@ async function handleLinkClick(item, event) {
     border-top: none;
     border-radius: 0 0 22px 22px;
     margin-top: -1px;
+  }
+
+  .sidebar-title {
+    font-size: 1.08rem;
+  }
+
+  .sidebar-label {
+    font-size: 0.92rem;
   }
 }
 </style>

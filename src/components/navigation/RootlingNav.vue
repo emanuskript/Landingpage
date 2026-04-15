@@ -1,445 +1,173 @@
 <script setup>
-import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { rootlingApps } from '../../content/apps/apps'
+import { onMounted, ref } from 'vue'
+import { routePaths } from '../../config/siteLinks'
 
-const route = useRoute()
-const router = useRouter()
-const expanded = ref(false)
-const showPulse = ref(true)
-const rootlingRef = ref(null)
+const rootImage = '/images/navigation/back-to-tree-root.webp'
+const imageRef = ref(null)
+const pointerHot = ref(false)
+let hitAlpha = null
+let hitWidth = 0
+let hitHeight = 0
 
-const branches = reactive([
-  {
-    label: 'Apps',
-    to: { name: 'apps' },
-    expanded: false,
-    children: rootlingApps,
-  },
-  { label: 'Tutorials', to: { name: 'tutorials' } },
-  { label: 'Bibliography', to: { name: 'bibliography' } },
-  { label: 'About the Project', to: { name: 'about' } },
-  { label: 'Team', to: { name: 'team' } },
-])
+function buildHitMap() {
+  const image = imageRef.value
+  if (!image?.naturalWidth || !image?.naturalHeight) return
 
-function resolveTarget(target) {
-  return router.resolve(target)
+  const canvas = document.createElement('canvas')
+  canvas.width = image.naturalWidth
+  canvas.height = image.naturalHeight
+
+  const context = canvas.getContext('2d', { willReadFrequently: true })
+  if (!context) return
+
+  context.drawImage(image, 0, 0)
+  const { data, width, height } = context.getImageData(0, 0, canvas.width, canvas.height)
+
+  hitAlpha = data
+  hitWidth = width
+  hitHeight = height
 }
 
-function isRouteActive(target) {
-  const resolved = resolveTarget(target)
-  return route.path === resolved.path || route.path.startsWith(`${resolved.path}/`)
-}
+function eventHitsOpaquePixel(event) {
+  const image = imageRef.value
+  if (!image || !hitAlpha || !hitWidth || !hitHeight) return true
 
-function hasActiveChild(branch) {
-  return branch.children?.some((child) => isRouteActive(child.to)) ?? false
-}
+  const rect = image.getBoundingClientRect()
+  if (!rect.width || !rect.height) return false
 
-function syncBranches() {
-  branches.forEach((branch) => {
-    if (branch.children) {
-      branch.expanded = hasActiveChild(branch)
-    }
-  })
-}
+  const x = event.clientX - rect.left
+  const y = event.clientY - rect.top
 
-function toggle() {
-  expanded.value = !expanded.value
-  showPulse.value = false
-}
-
-function close() {
-  expanded.value = false
-}
-
-function toggleSubBranch(index) {
-  const branch = branches[index]
-  if (!branch?.children) return
-  branch.expanded = !branch.expanded
-}
-
-function branchStyle(index) {
-  const total = branches.length
-  const spreadAngle = 100
-  const startAngle = -spreadAngle / 2
-  const angle = startAngle + (index / (total - 1)) * spreadAngle
-  return {
-    '--branch-delay': `${index * 60}ms`,
-    '--branch-angle': `${angle}deg`,
+  if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
+    return false
   }
+
+  const pixelX = Math.min(hitWidth - 1, Math.max(0, Math.floor((x / rect.width) * hitWidth)))
+  const pixelY = Math.min(hitHeight - 1, Math.max(0, Math.floor((y / rect.height) * hitHeight)))
+  const alphaIndex = ((pixelY * hitWidth) + pixelX) * 4 + 3
+
+  return hitAlpha[alphaIndex] > 10
 }
 
-function branchPath(index) {
-  const total = branches.length
-  const t = index / (total - 1)
-  const curveX = 30 + t * 60
-  return `M60 58 Q${curveX} 30 ${20 + t * 80} 5`
+function updatePointerState(event) {
+  pointerHot.value = eventHitsOpaquePixel(event)
 }
 
-function handleClickOutside(event) {
-  if (rootlingRef.value && !rootlingRef.value.contains(event.target)) {
-    close()
-  }
+function clearPointerState() {
+  pointerHot.value = false
 }
 
-function handleKeydown(event) {
-  if (event.key === 'Escape' && expanded.value) {
-    close()
-  }
-}
+function handleClick(event) {
+  if (event.detail === 0) return
+  if (eventHitsOpaquePixel(event)) return
 
-watch(
-  () => route.path,
-  () => {
-    syncBranches()
-    close()
-  },
-  { immediate: true },
-)
+  event.preventDefault()
+  pointerHot.value = false
+}
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-  document.addEventListener('keydown', handleKeydown)
-
-  window.setTimeout(() => {
-    showPulse.value = false
-  }, 4000)
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
-  document.removeEventListener('keydown', handleKeydown)
+  if (imageRef.value?.complete) {
+    buildHitMap()
+  }
 })
 </script>
 
 <template>
-  <div ref="rootlingRef" class="rootling" :class="{ expanded }">
-    <button
-      class="rootling-trigger"
-      :class="{ pulsing: showPulse }"
-      :aria-expanded="expanded"
-      aria-label="Site navigation"
-      @click="toggle"
-    >
-      <svg class="rootling-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
-        <path d="M20 38 L20 20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" />
-        <path d="M20 30 Q14 26 8 28" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" />
-        <path d="M20 32 Q26 28 32 30" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" />
-        <path d="M20 20 Q14 14 10 6" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" />
-        <path d="M20 20 Q26 14 30 6" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" />
-        <circle cx="10" cy="6" r="2" fill="currentColor" opacity="0.6" />
-        <circle cx="30" cy="6" r="2" fill="currentColor" opacity="0.6" />
-        <circle cx="8" cy="28" r="1.5" fill="currentColor" opacity="0.5" />
-        <circle cx="32" cy="30" r="1.5" fill="currentColor" opacity="0.5" />
-      </svg>
-    </button>
-
-    <transition name="roots">
-      <nav v-if="expanded" class="rootling-menu" aria-label="Main site navigation" @keydown.escape="close">
-        <div v-for="(branch, index) in branches" :key="branch.label" class="root-branch" :style="branchStyle(index)">
-          <svg class="branch-line" viewBox="0 0 120 60" preserveAspectRatio="none" aria-hidden="true">
-            <path :d="branchPath(index)" stroke="var(--color-gold-muted)" stroke-width="1.5" fill="none" stroke-linecap="round" />
-          </svg>
-
-          <template v-if="branch.children">
-            <div class="branch-parent">
-              <RouterLink
-                :to="branch.to"
-                class="branch-label"
-                :class="{ 'branch-label--active': isRouteActive(branch.to) }"
-                @click="close"
-              >
-                {{ branch.label }}
-              </RouterLink>
-
-              <button
-                class="branch-toggle"
-                :aria-expanded="branch.expanded"
-                :aria-label="`${branch.expanded ? 'Collapse' : 'Expand'} ${branch.label}`"
-                @click="toggleSubBranch(index)"
-              >
-                <span class="branch-caret" :class="{ open: branch.expanded }">&#9656;</span>
-              </button>
-            </div>
-
-            <transition name="sub-roots">
-              <div v-if="branch.expanded" class="sub-branches">
-                <RouterLink
-                  v-for="child in branch.children"
-                  :key="child.label"
-                  :to="child.to"
-                  class="sub-branch-label"
-                  :class="{ 'sub-branch-label--active': isRouteActive(child.to) }"
-                  @click="close"
-                >
-                  {{ child.label }}
-                </RouterLink>
-              </div>
-            </transition>
-          </template>
-
-          <RouterLink
-            v-else
-            :to="branch.to"
-            class="branch-label"
-            :class="{ 'branch-label--active': isRouteActive(branch.to) }"
-            @click="close"
-          >
-            {{ branch.label }}
-          </RouterLink>
-        </div>
-      </nav>
-    </transition>
-  </div>
+  <RouterLink
+    :class="['root-home', { 'root-home--hot': pointerHot }]"
+    :to="routePaths.landing"
+    aria-label="Back to Tree"
+    @pointermove="updatePointerState"
+    @pointerdown="updatePointerState"
+    @pointerleave="clearPointerState"
+    @pointercancel="clearPointerState"
+    @click="handleClick"
+  >
+    <img
+      ref="imageRef"
+      class="root-home__image"
+      :src="rootImage"
+      alt="Back to Tree"
+      loading="eager"
+      decoding="async"
+      fetchpriority="low"
+      draggable="false"
+      @load="buildHitMap"
+    />
+  </RouterLink>
 </template>
 
 <style scoped>
-.rootling {
+.root-home {
   position: fixed;
-  bottom: var(--space-lg);
-  left: var(--space-lg);
+  top: calc(env(safe-area-inset-top, 0px) - clamp(1.35rem, 3vw, 1.9rem));
+  left: -44px;
   z-index: var(--z-rootling);
-  font-family: var(--font-serif);
-}
-
-.rootling-trigger {
-  position: relative;
-  z-index: 2;
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid var(--color-gold);
-  border-radius: var(--radius-round);
-  background: var(--color-parchment);
-  color: var(--color-ink);
-  cursor: pointer;
-  transition:
-    background var(--transition-base),
-    border-color var(--transition-base),
-    box-shadow var(--transition-base),
-    transform var(--transition-fast);
-  box-shadow:
-    0 2px 8px var(--color-shadow-medium),
-    0 0 0 0 rgba(184, 150, 12, 0);
-}
-
-.rootling-trigger:hover {
-  background: var(--color-parchment-light);
-  border-color: var(--color-gold-light);
-  transform: scale(1.05);
-}
-
-.rootling-trigger:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 3px;
-}
-
-.rootling-trigger.pulsing {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow:
-      0 2px 8px var(--color-shadow-medium),
-      0 0 0 0 rgba(184, 150, 12, 0.4);
-  }
-  50% {
-    box-shadow:
-      0 2px 8px var(--color-shadow-medium),
-      0 0 16px 6px rgba(184, 150, 12, 0.15);
-  }
-}
-
-.rootling-icon {
-  transition: transform var(--transition-base);
-}
-
-.expanded .rootling-icon {
-  transform: rotate(180deg);
-}
-
-.rootling-menu {
-  position: absolute;
-  bottom: 64px;
-  left: 0;
-  min-width: 240px;
-  max-width: min(320px, calc(100vw - 2rem));
-  max-height: min(70vh, 560px);
-  overflow: auto;
-  padding: var(--space-md) var(--space-lg);
-  background: var(--color-parchment);
-  border: 1.5px solid var(--color-gold-muted);
-  border-radius: var(--radius-md);
-  box-shadow: 0 4px 20px var(--color-shadow-medium);
-}
-
-.root-branch {
-  position: relative;
-  padding: var(--space-xs) 0;
-  opacity: 1;
-  animation: branch-grow 300ms ease-out backwards;
-  animation-delay: var(--branch-delay);
-}
-
-@keyframes branch-grow {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-}
-
-.branch-line {
-  position: absolute;
-  left: -20px;
-  bottom: 0;
-  width: 20px;
-  height: 30px;
-  opacity: 0.4;
-  pointer-events: none;
-}
-
-.branch-parent {
-  display: flex;
-  align-items: stretch;
-  gap: 0.35rem;
-}
-
-.branch-label {
-  display: inline-flex;
-  flex: 1 1 auto;
-  align-items: center;
-  gap: var(--space-xs);
-  padding: var(--space-xs) var(--space-sm);
-  border: none;
-  border-radius: var(--radius-sm);
-  background: none;
-  color: var(--color-ink);
-  cursor: pointer;
-  text-align: left;
-  text-decoration: none;
-  transition: color var(--transition-fast), background var(--transition-fast);
-}
-
-.branch-label:hover,
-.branch-toggle:hover,
-.sub-branch-label:hover {
-  color: var(--color-gold);
-  background: var(--color-panel-hover);
-}
-
-.branch-label:focus-visible,
-.branch-toggle:focus-visible,
-.sub-branch-label:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 1px;
-}
-
-.branch-label--active {
-  background: rgba(255, 252, 246, 0.96);
-  color: var(--color-gold);
-  font-weight: 600;
-}
-
-.branch-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.2rem;
-  flex: 0 0 2.2rem;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: none;
-  color: var(--color-ink);
-  cursor: pointer;
-  transition: color var(--transition-fast), background var(--transition-fast);
-}
-
-.branch-caret {
-  display: inline-block;
-  font-size: 0.75rem;
-  transition: transform var(--transition-fast);
-}
-
-.branch-caret.open {
-  transform: rotate(90deg);
-}
-
-.sub-branches {
-  display: grid;
-  gap: 2px;
-  margin-top: var(--space-xs);
-  margin-left: calc(var(--space-sm) + 0.35rem);
-  padding-left: var(--space-md);
-  border-left: 1.5px solid var(--color-border-light);
-}
-
-.sub-branch-label {
   display: block;
-  padding: var(--space-xs) var(--space-sm);
-  border-radius: var(--radius-sm);
-  color: var(--color-ink-muted);
+  width: clamp(176px, 17.6vw, 264px);
   text-decoration: none;
-  transition: color var(--transition-fast), background var(--transition-fast);
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+  contain: layout paint;
 }
 
-.sub-branch-label--active {
-  color: var(--color-gold);
-  font-weight: 600;
+.root-home--hot,
+.root-home:focus-visible {
+  cursor: pointer;
 }
 
-.roots-enter-active {
-  transition: opacity var(--transition-base), transform var(--transition-base);
+.root-home__image {
+  width: 100%;
+  height: auto;
+  display: block;
+  transform-origin: 24% 6%;
+  transition: transform var(--transition-base);
+  will-change: transform;
 }
 
-.roots-leave-active {
-  transition: opacity var(--transition-fast), transform var(--transition-fast);
+.root-home--hot .root-home__image,
+.root-home:focus-visible .root-home__image {
+  animation: root-home-sway 1.55s ease-in-out infinite;
 }
 
-.roots-enter-from {
-  opacity: 0;
-  transform: translateY(12px) scale(0.95);
+.root-home:focus-visible {
+  outline: none;
 }
 
-.roots-leave-to {
-  opacity: 0;
-  transform: translateY(8px) scale(0.97);
-}
-
-.sub-roots-enter-active,
-.sub-roots-leave-active {
-  overflow: hidden;
-  transition: opacity var(--transition-fast), max-height var(--transition-base);
-}
-
-.sub-roots-enter-from,
-.sub-roots-leave-to {
-  opacity: 0;
-  max-height: 0;
-}
-
-.sub-roots-enter-to,
-.sub-roots-leave-from {
-  max-height: 240px;
-}
-
-@media (max-width: 600px) {
-  .rootling {
-    bottom: var(--space-md);
-    left: var(--space-md);
+@keyframes root-home-sway {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1.02);
   }
 
-  .rootling-trigger {
-    width: 48px;
-    height: 48px;
+  20% {
+    transform: translate3d(1px, -2px, 0) rotate(-2deg) scale(1.045);
   }
 
-  .rootling-menu {
-    min-width: 210px;
-    max-width: calc(100vw - 1.5rem);
-    padding: var(--space-sm) var(--space-md);
+  45% {
+    transform: translate3d(-1px, -1px, 0) rotate(1.8deg) scale(1.055);
+  }
+
+  70% {
+    transform: translate3d(1px, 0, 0) rotate(-1.2deg) scale(1.045);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0.8deg) scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root-home--hot .root-home__image,
+  .root-home:focus-visible .root-home__image {
+    animation: none;
+    transform: scale(1.03);
+  }
+}
+
+@media (max-width: 760px) {
+  .root-home {
+    top: calc(env(safe-area-inset-top, 0px) - 1rem);
+    width: clamp(132px, 34vw, 188px);
   }
 }
 </style>

@@ -14,6 +14,7 @@ const searchInput = ref('')
 const selectedCollection = ref('')
 const selectedType = ref('')
 const selectedSort = ref(bibliographyContent.sortOptions[0]?.value || 'date')
+const filterNotice = ref('')
 
 function syncFormWithRoute() {
   searchInput.value = typeof route.query.q === 'string' ? route.query.q : ''
@@ -37,7 +38,7 @@ const currentPage = computed(() => {
 
 const params = computed(() => ({
   q: typeof route.query.q === 'string' ? route.query.q : '',
-  collection: typeof route.query.collection === 'string' ? route.query.collection : '',
+  collection: selectedCollection.value,
   itemType: typeof route.query.type === 'string' ? route.query.type : '',
   sort: typeof route.query.sort === 'string' ? route.query.sort : bibliographyContent.sortOptions[0]?.value || 'date',
   direction: 'desc',
@@ -51,12 +52,19 @@ const { collections, error, items, loading, loadingCollections, totalPages, tota
 )
 
 const activeCollection = computed(() =>
-  collections.value.find((collection) => collection.key === (typeof route.query.collection === 'string' ? route.query.collection : '')),
+  collections.value.find((collection) => collection.key === selectedCollection.value),
 )
 
 const activeType = computed(() =>
   bibliographyContent.quickTypes.find((type) => type.value === (typeof route.query.type === 'string' ? route.query.type : '')),
 )
+
+const hasKerko = computed(() => Boolean(bibliographyContent.kerkoBaseUrl))
+
+const heroMeta = computed(() => [
+  'Live Zotero library',
+  ...(hasKerko.value ? ['Kerko available'] : []),
+])
 
 const resultsLabel = computed(() => {
   if (loading.value) return 'Loading bibliography...'
@@ -68,6 +76,8 @@ const resultsLabel = computed(() => {
 })
 
 function replaceQuery(page = 1) {
+  filterNotice.value = ''
+
   const nextQuery = {
     ...(searchInput.value.trim() ? { q: searchInput.value.trim() } : {}),
     ...(selectedCollection.value ? { collection: selectedCollection.value } : {}),
@@ -109,6 +119,26 @@ function goToPage(page) {
   replaceQuery(page)
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
+
+watch(
+  [collections, loadingCollections, () => route.query.collection],
+  ([nextCollections, isLoading, collectionKey]) => {
+    if (isLoading || typeof collectionKey !== 'string' || !collectionKey) return
+
+    const collectionExists = nextCollections.some((collection) => collection.key === collectionKey)
+    if (collectionExists) return
+
+    filterNotice.value =
+      'The requested collection filter is not available in the current Zotero bibliography and has been cleared.'
+    selectedCollection.value = ''
+
+    const nextQuery = { ...route.query }
+    delete nextQuery.collection
+    delete nextQuery.page
+    router.replace({ query: nextQuery })
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
@@ -116,25 +146,37 @@ function goToPage(page) {
     :eyebrow="bibliographyContent.eyebrow"
     :title="bibliographyContent.title"
     :lede="bibliographyContent.lede"
-    :meta="['Live Zotero browser', 'Kerko-ready integration']"
+    :meta="heroMeta"
     wide
   >
     <div class="bibliography-page">
       <SectionFrame title="Bibliography access" tone="muted">
         <p>
-          This page searches the public Zotero group library directly so the bibliography is usable immediately inside the
-          eManuskript interface.
+          This page searches the public Zotero group library specified for the eManuSkript bibliography so the references
+          remain usable directly inside the site.
+        </p>
+        <p class="bibliography-page__status">
+          <strong>Zotero source:</strong> {{ bibliographyContent.zotero.title }}
+        </p>
+        <p v-if="hasKerko" class="bibliography-page__status">
+          <strong>Kerko:</strong>
+          <span>A public Kerko endpoint is available for this deployment.</span>
         </p>
         <div class="bibliography-page__actions">
-          <a :href="bibliographyContent.zotero.webUrl" target="_blank" rel="noreferrer noopener">
-            Open the Zotero library
+          <a :href="bibliographyContent.zotero.webUrl" class="ui-button-link" target="_blank" rel="noreferrer noopener">
+            Open the Zotero group library
           </a>
-          <a v-if="bibliographyContent.kerkoBaseUrl" :href="bibliographyContent.kerkoBaseUrl" target="_blank" rel="noreferrer noopener">
+          <a
+            v-if="bibliographyContent.kerkoBaseUrl"
+            :href="bibliographyContent.kerkoBaseUrl"
+            class="ui-button-link ui-button--secondary"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
             Open the Kerko bibliography
           </a>
-          <a :href="bibliographyContent.kerkoDocsUrl" target="_blank" rel="noreferrer noopener">Kerko documentation</a>
         </div>
-        <ul>
+        <ul class="bibliography-page__notes">
           <li v-for="note in bibliographyContent.notes" :key="note">{{ note }}</li>
         </ul>
       </SectionFrame>
@@ -144,13 +186,13 @@ function goToPage(page) {
           <SectionFrame title="Refine the bibliography">
             <form class="bibliography-filters" @submit.prevent="submitSearch">
               <label class="bibliography-field">
-                <span>Keyword search</span>
-                <input v-model="searchInput" type="search" placeholder="Search title, author, or year" />
+                <span class="ui-field-label">Keyword search</span>
+                <input v-model="searchInput" class="ui-field-control" type="search" placeholder="Search title, author, or year" />
               </label>
 
               <label class="bibliography-field">
-                <span>Sort by</span>
-                <select v-model="selectedSort" @change="changeSort">
+                <span class="ui-field-label">Sort by</span>
+                <select v-model="selectedSort" class="ui-field-control" @change="changeSort">
                   <option v-for="option in bibliographyContent.sortOptions" :key="option.value" :value="option.value">
                     {{ option.label }}
                   </option>
@@ -158,8 +200,8 @@ function goToPage(page) {
               </label>
 
               <div class="bibliography-filters__buttons">
-                <button type="submit">Apply search</button>
-                <button type="button" class="bibliography-filters__clear" @click="clearFilters">Clear</button>
+                <button type="submit" class="ui-button">Apply search</button>
+                <button type="button" class="ui-button ui-button--secondary bibliography-filters__clear" @click="clearFilters">Clear</button>
               </div>
             </form>
           </SectionFrame>
@@ -170,7 +212,7 @@ function goToPage(page) {
                 v-for="type in bibliographyContent.quickTypes"
                 :key="type.value"
                 type="button"
-                :class="['bibliography-chip', { 'bibliography-chip--active': selectedType === type.value }]"
+                :class="['bibliography-chip', 'ui-chip', { 'ui-chip--active': selectedType === type.value }]"
                 :aria-pressed="selectedType === type.value"
                 @click="toggleType(type.value)"
               >
@@ -186,7 +228,7 @@ function goToPage(page) {
                 v-for="collection in collections"
                 :key="collection.key"
                 type="button"
-                :class="['bibliography-collection', { 'bibliography-collection--active': selectedCollection === collection.key }]"
+                :class="['bibliography-collection', 'ui-select-card', { 'ui-select-card--active': selectedCollection === collection.key }]"
                 :aria-pressed="selectedCollection === collection.key"
                 @click="toggleCollection(collection.key)"
               >
@@ -210,6 +252,8 @@ function goToPage(page) {
               </div>
             </div>
 
+            <p v-if="filterNotice && !loading" class="bibliography-results__notice ui-callout">{{ filterNotice }}</p>
+
             <p v-if="error" class="bibliography-results__error">{{ error }}</p>
             <p v-else-if="loading" class="bibliography-results__empty">Loading bibliography records...</p>
             <p v-else-if="!items.length" class="bibliography-results__empty">
@@ -221,9 +265,9 @@ function goToPage(page) {
             </div>
 
             <div v-if="totalPages > 1" class="bibliography-pagination">
-              <button type="button" :disabled="currentPage <= 1" @click="goToPage(currentPage - 1)">Previous</button>
+              <button type="button" class="ui-button ui-button--secondary" :disabled="currentPage <= 1" @click="goToPage(currentPage - 1)">Previous</button>
               <span>Page {{ currentPage }} of {{ totalPages }}</span>
-              <button type="button" :disabled="currentPage >= totalPages" @click="goToPage(currentPage + 1)">Next</button>
+              <button type="button" class="ui-button ui-button--secondary" :disabled="currentPage >= totalPages" @click="goToPage(currentPage + 1)">Next</button>
             </div>
           </SectionFrame>
         </div>
@@ -242,8 +286,25 @@ function goToPage(page) {
   display: flex;
   flex-wrap: wrap;
   gap: 0.9rem;
-  margin: 1rem 0;
-  font-family: var(--font-sans);
+  margin: 1rem 0 0.15rem;
+}
+
+.bibliography-page__status {
+  margin: 0.55rem 0 0;
+  line-height: 1.65;
+}
+
+.bibliography-page__status strong {
+  color: var(--color-ink);
+}
+
+.bibliography-page__notes {
+  margin: 1rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.bibliography-page__notes li + li {
+  margin-top: 0.35rem;
 }
 
 .bibliography-layout {
@@ -269,51 +330,10 @@ function goToPage(page) {
   gap: 0.45rem;
 }
 
-.bibliography-field span {
-  font-family: var(--font-sans);
-  font-size: 0.88rem;
-  color: var(--color-ink-soft);
-}
-
-.bibliography-field input,
-.bibliography-field select {
-  width: 100%;
-  padding: 0.85rem 0.95rem;
-  border-radius: 18px;
-  border: 1px solid var(--color-border-strong);
-  background: rgba(255, 255, 255, 0.72);
-}
-
 .bibliography-filters__buttons {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.7rem;
-}
-
-.bibliography-filters__buttons button,
-.bibliography-pagination button,
-.bibliography-chip,
-.bibliography-collection {
-  transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
-}
-
-.bibliography-filters__buttons button,
-.bibliography-pagination button {
-  padding: 0.7rem 0.95rem;
-  border: 1px solid var(--color-border-strong);
-  border-radius: 999px;
-  background: var(--color-primary);
-  color: white;
-  font-family: var(--font-sans);
-}
-
-.bibliography-filters__buttons button:hover,
-.bibliography-pagination button:hover:not(:disabled) {
-  transform: translateY(-1px);
-}
-
-.bibliography-filters__clear {
-  background: rgba(255, 255, 255, 0.7) !important;
-  color: var(--color-ink) !important;
 }
 
 .bibliography-chips {
@@ -323,17 +343,7 @@ function goToPage(page) {
 }
 
 .bibliography-chip {
-  padding: 0.5rem 0.75rem;
-  border-radius: 999px;
-  border: 1px solid var(--color-border-strong);
-  background: rgba(255, 255, 255, 0.68);
-  font-family: var(--font-sans);
-  font-size: 0.84rem;
-}
-
-.bibliography-chip--active {
-  background: var(--color-primary);
-  color: white;
+  cursor: pointer;
 }
 
 .bibliography-collections {
@@ -342,21 +352,7 @@ function goToPage(page) {
 }
 
 .bibliography-collection {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  width: 100%;
-  padding: 0.75rem 0.9rem;
-  border-radius: 18px;
-  border: 1px solid var(--color-border-strong);
-  background: rgba(255, 255, 255, 0.64);
-  text-align: left;
-}
-
-.bibliography-collection--active {
-  border-color: var(--color-primary);
-  background: rgba(57, 89, 120, 0.08);
+  cursor: pointer;
 }
 
 .bibliography-collection span {
@@ -372,6 +368,7 @@ function goToPage(page) {
 .bibliography-page__sidebar-note,
 .bibliography-results__count,
 .bibliography-results__context,
+.bibliography-results__notice,
 .bibliography-results__empty,
 .bibliography-results__error {
   margin: 0;
@@ -399,6 +396,10 @@ function goToPage(page) {
 .bibliography-results__empty,
 .bibliography-results__error {
   color: var(--color-ink-soft);
+}
+
+.bibliography-results__notice {
+  margin-bottom: 1rem;
 }
 
 .bibliography-results__error {

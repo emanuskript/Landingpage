@@ -5,169 +5,178 @@ import { aboutContent } from '../content/about/about'
 </script>
 
 <template>
-  <SiteShell :eyebrow="aboutContent.eyebrow" :title="aboutContent.title" :lede="aboutContent.lede" wide>
-    <div class="about-layout">
-      <aside class="about-layout__sidebar">
-        <SectionFrame title="Page index" tone="muted">
-          <nav aria-label="About page index">
-            <ul class="about-index">
-              <li><a :href="`#${aboutContent.basicInfo.id}`">{{ aboutContent.basicInfo.title }}</a></li>
-              <li><a :href="`#${aboutContent.howToUse.id}`">{{ aboutContent.howToUse.title }}</a></li>
-              <li><a :href="`#${aboutContent.projectLinks.id}`">{{ aboutContent.projectLinks.title }}</a></li>
-              <li><a :href="`#${aboutContent.acknowledgements.id}`">{{ aboutContent.acknowledgements.title }}</a></li>
-              <li><a :href="`#${aboutContent.partnerLogos.id}`">{{ aboutContent.partnerLogos.title }}</a></li>
-            </ul>
-          </nav>
-        </SectionFrame>
-      </aside>
+  <SiteShell
+    :eyebrow="aboutContent.eyebrow"
+    :title="aboutContent.title"
+    :lede="aboutContent.lede"
+    :meta="aboutContent.meta"
+    wide
+  >
+    <div class="about-page">
+      <SectionFrame :id="aboutContent.overview.id" :title="aboutContent.overview.title">
+        <div class="about-page__prose">
+          <p
+            v-for="(paragraph, paragraphIndex) in aboutContent.overview.paragraphs"
+            :key="`${aboutContent.overview.id}-${paragraphIndex}`"
+            class="about-page__paragraph"
+          >
+            <template v-for="(segment, segmentIndex) in paragraph" :key="`${paragraphIndex}-${segmentIndex}`">
+              <a
+                v-if="segment.href"
+                :href="segment.href"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                {{ segment.text }}
+              </a>
+              <span v-else>{{ segment.text }}</span>
+            </template>
+          </p>
+        </div>
+      </SectionFrame>
 
-      <div class="about-stack">
-        <SectionFrame :id="aboutContent.basicInfo.id" :title="aboutContent.basicInfo.title">
-          <p>{{ aboutContent.basicInfo.placeholder }}</p>
-          <ul>
-            <li v-for="note in aboutContent.basicInfo.notes" :key="note">{{ note }}</li>
-          </ul>
-        </SectionFrame>
+      <SectionFrame :id="aboutContent.applications.id" :title="aboutContent.applications.title">
+        <div class="about-page__app-grid">
+          <article
+            v-for="app in aboutContent.applications.items"
+            :key="app.id"
+            class="about-page__app-block ui-surface-card"
+          >
+            <h3>{{ app.title }}</h3>
+            <p class="about-page__paragraph">{{ app.description }}</p>
+            <p class="about-page__link-row ui-inline-links" aria-label="Project links">
+              <a :href="app.githubHref" class="ui-button-link ui-button--secondary" target="_blank" rel="noreferrer noopener">GitHub</a>
+            </p>
+          </article>
+        </div>
+      </SectionFrame>
 
-        <SectionFrame :id="aboutContent.howToUse.id" :title="aboutContent.howToUse.title">
-          <p>{{ aboutContent.howToUse.placeholder }}</p>
-          <div class="about-index-grid">
-            <RouterLink v-for="item in aboutContent.howToUse.indexItems" :key="item.label" :to="item.to" class="about-index-grid__item">
-              {{ item.label }}
-            </RouterLink>
-          </div>
-        </SectionFrame>
+      <SectionFrame :id="aboutContent.tutorials.id" :title="aboutContent.tutorials.title">
+        <p class="about-page__paragraph">{{ aboutContent.tutorials.intro }}</p>
+        <div class="about-page__tutorial-grid">
+          <RouterLink
+            v-for="tutorial in aboutContent.tutorials.items"
+            :key="tutorial.id"
+            :to="tutorial.to"
+            class="about-page__tutorial-card ui-surface-link"
+          >
+            <h3>{{ tutorial.title }}</h3>
+            <p class="about-page__paragraph">{{ tutorial.summary }}</p>
+          </RouterLink>
+        </div>
+      </SectionFrame>
 
-        <SectionFrame :id="aboutContent.projectLinks.id" :title="aboutContent.projectLinks.title">
-          <p>{{ aboutContent.projectLinks.intro }}</p>
-          <div class="about-link-groups">
-            <article v-for="group in aboutContent.projectLinks.groups" :key="group.id" class="about-link-group">
-              <h3>{{ group.title }}</h3>
-              <p>{{ group.note }}</p>
-              <ul class="about-link-list">
-                <li v-for="link in group.links" :key="link.label">
-                  <RouterLink v-if="link.to" :to="link.to">{{ link.label }}</RouterLink>
-                  <a v-else-if="link.href" :href="link.href" target="_blank" rel="noreferrer noopener">{{ link.label }}</a>
-                  <span v-else>{{ link.label }}</span>
-                  <span v-if="link.todo" class="about-link-list__todo">{{ link.todo }}</span>
-                </li>
-              </ul>
-            </article>
-          </div>
-        </SectionFrame>
+      <SectionFrame :id="aboutContent.bibliography.id" :title="aboutContent.bibliography.title" tone="muted">
+        <p class="about-page__paragraph">{{ aboutContent.bibliography.text }}</p>
+      </SectionFrame>
 
-        <SectionFrame :id="aboutContent.acknowledgements.id" :title="aboutContent.acknowledgements.title">
-          <p>{{ aboutContent.acknowledgements.placeholder }}</p>
-        </SectionFrame>
-
-        <SectionFrame :id="aboutContent.partnerLogos.id" :title="aboutContent.partnerLogos.title">
-          <div class="about-logos">
-            <div v-for="logo in aboutContent.partnerLogos.items" :key="logo.id" class="about-logo-card">
-              <img v-if="logo.image" :src="logo.image" :alt="`${logo.label} logo`" />
-              <div v-else class="about-logo-card__placeholder" aria-hidden="true">{{ logo.label }}</div>
-              <p>{{ logo.todo }}</p>
-            </div>
-          </div>
-        </SectionFrame>
-      </div>
+      <SectionFrame :id="aboutContent.acknowledgements.id" :title="aboutContent.acknowledgements.title" tone="muted">
+        <div class="about-page__logo-grid">
+          <figure
+            v-for="logo in aboutContent.acknowledgements.logos"
+            :key="logo.id"
+            class="about-page__logo-card ui-surface-card ui-surface-card--soft"
+          >
+            <img :src="logo.src" :alt="logo.alt" />
+            <figcaption>{{ logo.label }}</figcaption>
+          </figure>
+        </div>
+      </SectionFrame>
     </div>
   </SiteShell>
 </template>
 
 <style scoped>
-.about-layout {
+.about-page {
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
-.about-layout__sidebar {
-  position: sticky;
-  top: 1rem;
-  align-self: start;
+.about-page__prose {
+  max-width: 76ch;
 }
 
-.about-stack {
-  display: grid;
-  gap: 1rem;
-}
-
-.about-index {
-  display: grid;
-  gap: 0.55rem;
+.about-page__paragraph {
   margin: 0;
-  padding-left: 1rem;
+  line-height: 1.75;
 }
 
-.about-index-grid,
-.about-link-groups,
-.about-logos {
-  display: grid;
-  gap: 0.9rem;
-}
-
-.about-index-grid {
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+.about-page__paragraph + .about-page__paragraph {
   margin-top: 1rem;
 }
 
-.about-index-grid__item,
-.about-link-group,
-.about-logo-card {
-  padding: 1rem;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.56);
-  border: 1px solid var(--color-border-soft);
-  text-decoration: none;
+.about-page__paragraph:last-child {
+  margin-bottom: 0;
 }
 
-.about-link-group h3 {
-  margin: 0 0 0.35rem;
-}
-
-.about-link-group p {
-  color: var(--color-ink-soft);
-}
-
-.about-link-list {
-  margin: 0;
-  padding-left: 1rem;
-}
-
-.about-link-list__todo {
-  display: block;
-  margin-top: 0.2rem;
-  font-family: var(--font-sans);
-  font-size: 0.82rem;
-  color: var(--color-ink-soft);
-}
-
-.about-logos {
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-}
-
-.about-logo-card {
-  text-align: center;
-}
-
-.about-logo-card__placeholder {
+.about-page__app-grid,
+.about-page__tutorial-grid {
   display: grid;
-  place-items: center;
-  min-height: 110px;
-  border-radius: 18px;
-  border: 1px dashed var(--color-border-strong);
-  background: rgba(57, 89, 120, 0.08);
-  font-family: var(--font-display);
-  font-size: 1.2rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
 }
 
-@media (max-width: 880px) {
-  .about-layout {
-    grid-template-columns: 1fr;
-  }
+.about-page__app-block {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1.1rem 1.15rem;
+}
 
-  .about-layout__sidebar {
-    position: static;
+.about-page__app-block h3 {
+  margin: 0;
+}
+
+.about-page__link-row {
+  margin-top: 0.15rem;
+}
+
+.about-page__tutorial-card {
+  display: grid;
+  gap: 0.65rem;
+  padding: 1rem 1.05rem;
+}
+
+.about-page__tutorial-card h3 {
+  margin: 0;
+}
+
+.about-page__tutorial-card p {
+  margin: 0;
+  color: var(--color-ink-soft);
+}
+
+.about-page__logo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.95rem;
+}
+
+.about-page__logo-card {
+  display: grid;
+  gap: 0.85rem;
+  place-items: center;
+  text-align: center;
+  padding: 1rem;
+}
+
+.about-page__logo-card img {
+  width: auto;
+  max-width: 100%;
+  max-height: 82px;
+  object-fit: contain;
+}
+
+.about-page__logo-card figcaption {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--color-ink-soft);
+}
+
+@media (max-width: 720px) {
+  .about-page__app-grid,
+  .about-page__tutorial-grid,
+  .about-page__logo-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>

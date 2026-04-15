@@ -1,9 +1,10 @@
 <script setup>
 import { computed } from 'vue'
 import TutorialShell from '../../../components/tutorials/TutorialShell.vue'
-import HtmlArticle from '../../../components/tutorials/HtmlArticle.vue'
+import TutorialContentRenderer from '../../../components/tutorials/TutorialContentRenderer.vue'
 import PrevNextNav from '../../../components/navigation/PrevNextNav.vue'
-import { bookbindingChapters, getBookbindingChapter } from '../../../content/tutorials/bookbinding/bookbinding'
+import { getCodicologyPath, routePaths } from '../../../config/siteLinks'
+import { bookbindingChapters, bookbindingOverview, getBookbindingChapter } from '../../../content/tutorials/bookbinding/bookbinding'
 
 const props = defineProps({
   chapterSlug: {
@@ -13,25 +14,35 @@ const props = defineProps({
 })
 
 const chapter = computed(() => getBookbindingChapter(props.chapterSlug))
-const index = computed(() => bookbindingChapters.findIndex((item) => item.slug === props.chapterSlug))
+const index = computed(() => bookbindingChapters.findIndex((item) => item.slug === chapter.value?.slug))
 
 const sidebarItems = computed(() =>
   bookbindingChapters.map((item) => ({
     number: item.unit,
     label: item.title,
-    to: `/tutorials/bookbinding/${item.slug}`,
-    active: item.slug === props.chapterSlug,
+    to: getCodicologyPath(item.slug),
+    active: item.slug === chapter.value?.slug,
   })),
 )
 
 const prev = computed(() => {
   const previous = bookbindingChapters[index.value - 1]
-  return previous ? { label: previous.title, to: `/tutorials/bookbinding/${previous.slug}` } : { label: 'Bookbinding workshop', to: '/tutorials/bookbinding' }
+  return previous ? { label: previous.title, to: getCodicologyPath(previous.slug) } : { label: 'Tutorial overview', to: getCodicologyPath() }
 })
 
 const next = computed(() => {
   const following = bookbindingChapters[index.value + 1]
-  return following ? { label: following.title, to: `/tutorials/bookbinding/${following.slug}` } : null
+  return following ? { label: following.title, to: getCodicologyPath(following.slug) } : null
+})
+
+const unitMeta = computed(() => {
+  if (!chapter.value) return []
+
+  const meta = [`Unit ${chapter.value.numeral}`]
+  if (chapter.value.author) {
+    meta.push(`Contributed by ${chapter.value.author}`)
+  }
+  return meta
 })
 </script>
 
@@ -39,20 +50,21 @@ const next = computed(() => {
   <TutorialShell
     v-if="chapter"
     :crumbs="[
-      { label: 'Tutorials', to: '/tutorials' },
-      { label: 'Bookbinding', to: '/tutorials/bookbinding' },
-      { label: chapter.title, to: `/tutorials/bookbinding/${chapter.slug}` },
+      { label: 'Tutorials', to: routePaths.tutorialsIndex },
+      { label: 'The Creation of a Medieval Codex', to: getCodicologyPath() },
+      { label: chapter.title, to: getCodicologyPath(chapter.slug) },
     ]"
     :items="sidebarItems"
-    sidebar-title="Chapters"
-    :back-link="{ label: 'Back to workshop', to: '/tutorials/bookbinding' }"
-    eyebrow="Bookbinding"
+    sidebar-title="Tutorial units"
+    :back-link="{ label: 'Back to scriptorium', to: getCodicologyPath() }"
+    eyebrow="Codicology"
     :title="chapter.title"
     :description="chapter.description"
-    :meta="[`Unit ${chapter.numeral}`]"
+    :subtitle="bookbindingOverview.title"
+    :meta="unitMeta"
   >
     <div class="page-stack">
-      <HtmlArticle source-path="/source/bookbinding/tutorial.html" :selector="`section#${chapter.sourceId}`" />
+      <TutorialContentRenderer :blocks="chapter.blocks" />
 
       <PrevNextNav :prev="prev" :next="next" />
     </div>

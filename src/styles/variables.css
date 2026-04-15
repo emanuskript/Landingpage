@@ -1,13 +1,14 @@
 :root {
-  --color-parchment: #efe4cf;
-  --color-parchment-light: #f8f3e7;
-  --color-parchment-dark: #dcccad;
+  --color-page: #d3c3b1;
+  --color-parchment: #e5d7c6;
+  --color-parchment-light: #f5ecde;
+  --color-parchment-dark: #ccb9a3;
   --color-parchment-deep: #c7b38b;
 
-  --color-panel: rgba(248, 241, 229, 0.9);
-  --color-panel-muted: rgba(241, 233, 219, 0.86);
-  --color-panel-alt: #e8dcc4;
-  --color-panel-hover: rgba(247, 241, 230, 0.98);
+  --color-panel: rgba(248, 241, 229, 0.82);
+  --color-panel-muted: rgba(241, 233, 219, 0.8);
+  --color-panel-alt: #e6d7be;
+  --color-panel-hover: rgba(248, 243, 235, 0.96);
 
   --color-ink: #271d12;
   --color-ink-light: #3c2d1e;

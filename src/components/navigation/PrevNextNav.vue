@@ -7,11 +7,11 @@
     <RouterLink
       v-if="prev"
       :to="prev.to"
-      class="prev-next-card prev-next-card--prev"
+      class="prev-next-card prev-next-card--prev ui-surface-link"
     >
       <span class="prev-next-arrow" aria-hidden="true">&larr;</span>
       <span class="prev-next-body">
-        <span class="prev-next-direction">Previous</span>
+        <span class="prev-next-direction ui-eyebrow">Previous</span>
         <span class="prev-next-label">{{ prev.label }}</span>
       </span>
     </RouterLink>
@@ -20,10 +20,10 @@
     <RouterLink
       v-if="next"
       :to="next.to"
-      class="prev-next-card prev-next-card--next"
+      class="prev-next-card prev-next-card--next ui-surface-link"
     >
       <span class="prev-next-body">
-        <span class="prev-next-direction">Next</span>
+        <span class="prev-next-direction ui-eyebrow">Next</span>
         <span class="prev-next-label">{{ next.label }}</span>
       </span>
       <span class="prev-next-arrow" aria-hidden="true">&rarr;</span>
@@ -53,7 +53,6 @@ defineProps({
   margin-top: var(--space-2xl);
   padding-top: var(--space-lg);
   border-top: 1px solid var(--color-border-light);
-  font-family: var(--font-sans);
 }
 
 .prev-next-spacer {
@@ -64,22 +63,8 @@ defineProps({
   display: flex;
   align-items: center;
   gap: var(--space-md);
-  padding: var(--space-md) var(--space-lg);
-  background: var(--color-panel);
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-md);
-  text-decoration: none;
+  padding: 1rem 1.15rem;
   color: var(--color-ink);
-  transition:
-    border-color var(--transition-base),
-    box-shadow var(--transition-base),
-    background var(--transition-fast);
-}
-
-.prev-next-card:hover {
-  border-color: var(--color-gold-muted);
-  background: var(--color-panel-hover);
-  box-shadow: 0 0 12px rgba(184, 150, 12, 0.12);
 }
 
 .prev-next-card:focus-visible {
@@ -116,21 +101,16 @@ defineProps({
 }
 
 .prev-next-direction {
-  font-size: 0.6875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
   color: var(--color-ink-muted);
-  font-weight: 600;
 }
 
 .prev-next-label {
-  font-family: var(--font-serif);
-  font-size: 0.9375rem;
-  line-height: 1.3;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1.25;
   color: var(--color-ink);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  text-wrap: balance;
 }
 
 @media (max-width: 600px) {
@@ -146,11 +126,11 @@ defineProps({
   }
 
   .prev-next-card {
-    padding: var(--space-sm) var(--space-md);
+    padding: 0.9rem 1rem;
   }
 
   .prev-next-label {
-    font-size: 0.875rem;
+    font-size: 0.95rem;
   }
 }
 </style>

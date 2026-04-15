@@ -4,16 +4,14 @@ import { RouterView, useRoute } from 'vue-router'
 import RootlingNav from './components/navigation/RootlingNav.vue'
 
 const route = useRoute()
-const showRootling = computed(() => route.name !== 'home')
+const showRootling = computed(() => route.meta.showRootling !== false)
 </script>
 
 <template>
   <div id="emanuskript-app">
     <RootlingNav v-if="showRootling" />
     <RouterView v-slot="{ Component }">
-      <transition name="fade" mode="out-in">
-        <component :is="Component" />
-      </transition>
+      <component :is="Component" />
     </RouterView>
   </div>
 </template>
@@ -21,15 +19,5 @@ const showRootling = computed(() => route.name !== 'home')
 <style>
 #emanuskript-app {
   min-height: 100vh;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 180ms ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>
