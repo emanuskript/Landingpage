@@ -16,15 +16,6 @@ const props = defineProps({
 const chapter = computed(() => getBookbindingChapter(props.chapterSlug))
 const index = computed(() => bookbindingChapters.findIndex((item) => item.slug === chapter.value?.slug))
 
-const sidebarItems = computed(() =>
-  bookbindingChapters.map((item) => ({
-    number: item.unit,
-    label: item.title,
-    to: getCodicologyPath(item.slug),
-    active: item.slug === chapter.value?.slug,
-  })),
-)
-
 const prev = computed(() => {
   const previous = bookbindingChapters[index.value - 1]
   return previous ? { label: previous.title, to: getCodicologyPath(previous.slug) } : { label: 'Tutorial overview', to: getCodicologyPath() }
@@ -54,9 +45,6 @@ const unitMeta = computed(() => {
       { label: 'The Creation of a Medieval Codex', to: getCodicologyPath() },
       { label: chapter.title, to: getCodicologyPath(chapter.slug) },
     ]"
-    :items="sidebarItems"
-    sidebar-title="Tutorial units"
-    :back-link="{ label: 'Back to scriptorium', to: getCodicologyPath() }"
     eyebrow="Codicology"
     :title="chapter.title"
     :description="chapter.description"

@@ -14,6 +14,10 @@ export const digitalPalaeographyPage = {
   orgPadEmbedUrl: 'https://orgpad.info/s/EqHdVl9S3mq?embed=true',
   orgPadDirectUrl: 'https://orgpad.info/s/EqHdVl9S3mq',
   zoteroUrl: 'https://www.zotero.org/groups/6352684/digital_palaeography/library',
+  sourceFiles: [
+    'Digital Palaeography Tutorial/Introduction.docx',
+    'Digital Palaeography Tutorial/Information.docx',
+  ],
   introduction: [
     'This tutorial introduces the broad field of Digital Palaeography and is part of a series of tutorials from the project eManuSkript.',
     'Digital Palaeography combines the traditional analysis of historical handwriting with the capabilities of digital technologies. By incorporating computational tools, manuscript studies can expand their scope through new knowledge, research questions and interdisciplinary work.',

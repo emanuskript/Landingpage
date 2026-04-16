@@ -6,9 +6,9 @@ function createPlaceholderFigure(document, label, href = '') {
   const wrapper = document.createElement('figure')
   wrapper.className = 'source-placeholder-figure'
   wrapper.innerHTML = `
-    <strong>Source image not embedded here</strong>
+    <strong>Image preview unavailable in this view</strong>
     <span>${label}</span>
-    ${href ? `<a href="${href}" target="_blank" rel="noreferrer noopener">Open source image</a>` : ''}
+    ${href ? `<a href="${href}" target="_blank" rel="noreferrer noopener">View image</a>` : ''}
   `
   return wrapper
 }
@@ -93,11 +93,51 @@ function parseCheckAnswerCall(expression) {
     : null
 }
 
+function sanitizeImageInlineStyle(styleText = '') {
+  const allowedProperties = new Set([
+    'width',
+    'max-width',
+    'min-width',
+    'height',
+    'max-height',
+    'min-height',
+    'margin',
+    'margin-inline',
+    'margin-inline-start',
+    'margin-inline-end',
+    'display',
+    'object-fit',
+    'object-position',
+  ])
+
+  const blockedValuePattern = /(url\(|expression\(|javascript:)/i
+  const sanitizedDeclarations = []
+
+  styleText
+    .split(';')
+    .map((declaration) => declaration.trim())
+    .filter(Boolean)
+    .forEach((declaration) => {
+      const separatorIndex = declaration.indexOf(':')
+      if (separatorIndex <= 0) return
+
+      const property = declaration.slice(0, separatorIndex).trim().toLowerCase()
+      const value = declaration.slice(separatorIndex + 1).trim()
+
+      if (!allowedProperties.has(property)) return
+      if (!value || blockedValuePattern.test(value)) return
+
+      sanitizedDeclarations.push(`${property}: ${value}`)
+    })
+
+  return sanitizedDeclarations.join('; ')
+}
+
 export async function fetchHtmlFragment(sourcePath, selector, routeMap = {}, assetMap = {}) {
   const response = await fetch(sourcePath)
 
   if (!response.ok) {
-    throw new Error(`Failed to load source fragment from ${sourcePath}`)
+    throw new Error('Unable to load tutorial content.')
   }
 
   const raw = await response.text()
@@ -106,7 +146,7 @@ export async function fetchHtmlFragment(sourcePath, selector, routeMap = {}, ass
   const fragment = selector ? document.querySelector(selector) : document.body
 
   if (!fragment) {
-    throw new Error(`Could not find selector "${selector}" in ${sourcePath}`)
+    throw new Error('Unable to render this tutorial section.')
   }
 
   fragment.querySelectorAll('script, style, .site-nav, .site-footer, .pager').forEach((node) => {
@@ -130,7 +170,17 @@ export async function fetchHtmlFragment(sourcePath, selector, routeMap = {}, ass
     })
 
     if (node.hasAttribute('style')) {
-      node.removeAttribute('style')
+      if (node.tagName === 'IMG') {
+        const sanitizedStyle = sanitizeImageInlineStyle(node.getAttribute('style') || '')
+
+        if (sanitizedStyle) {
+          node.setAttribute('style', sanitizedStyle)
+        } else {
+          node.removeAttribute('style')
+        }
+      } else {
+        node.removeAttribute('style')
+      }
     }
   })
 
@@ -169,7 +219,7 @@ export async function fetchHtmlFragment(sourcePath, selector, routeMap = {}, ass
   fragment.querySelectorAll('img').forEach((image) => {
     const originalSrc = image.getAttribute('src') || ''
     const src = resolveMappedValue(originalSrc, assetMap)
-    const alt = image.getAttribute('alt') || src || 'Missing image'
+    const alt = image.getAttribute('alt') || src || 'Illustration'
     const isRemote = src.startsWith('http://') || src.startsWith('https://')
     const isRootRelative = src.startsWith('/')
     const sourceHref =

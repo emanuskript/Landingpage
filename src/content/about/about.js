@@ -29,6 +29,7 @@ export const aboutContent = {
         title: 'Mergen',
         description:
           'Mergen is an AI-based layout segmentation app for detecting key textual, paratextual and non-textual elements on a manuscript page.',
+        to: routePaths.appPages.mergen,
         githubHref: appExternalLinks.mergen.githubUrl,
       },
       {
@@ -36,6 +37,7 @@ export const aboutContent = {
         title: 'Proteus',
         description:
           'Proteus simplifies multispectral imaging (MSI) workflows for hard-to-read texts and can also enhance regular visible-light images.',
+        to: routePaths.appPages.proteus,
         githubHref: appExternalLinks.proteus.githubUrl,
       },
       {
@@ -43,6 +45,7 @@ export const aboutContent = {
         title: 'Seshat',
         description:
           'Seshat is an annotation tool for marking digital manuscript images in several ways and supporting the analysis of scribal hands.',
+        to: routePaths.appPages.seshat,
         githubHref: appExternalLinks.seshat.githubUrl,
       },
       {
@@ -50,6 +53,7 @@ export const aboutContent = {
         title: 'Fenius',
         description:
           'Fenius is a multi-level application with three tools for understanding and documenting codicology and bookbinding.',
+        to: routePaths.appPages.fenius,
         githubHref: appExternalLinks.fenius.githubUrl,
       },
     ],
@@ -62,25 +66,25 @@ export const aboutContent = {
       {
         id: 'scripts',
         title: 'The History of Medieval Scripts',
-        summary: 'a descriptive survey of script types',
+        summary: 'Descriptive survey of script types',
         to: routePaths.tutorialPages.scripts,
       },
       {
         id: 'digital-palaeography',
         title: 'Digital Palaeography',
-        summary: 'a mind map exploring the use of digital technologies in palaeography and manuscript studies',
+        summary: 'Mind map exploring the use of digital technologies in palaeography and manuscript studies',
         to: routePaths.tutorialPages.digitalPalaeography,
       },
       {
         id: 'msi',
         title: 'Multispectral Imaging for Medieval Manuscripts',
-        summary: 'a guide for understanding and setting up a multispectral imaging workflow',
+        summary: 'Guide for understanding and setting up a multispectral imaging workflow',
         to: routePaths.tutorialPages.msi,
       },
       {
         id: 'codicology',
         title: 'The Creation of a Medieval Codex',
-        summary: 'a step-by-step description of the process of making a parchment codex in a scriptorium',
+        summary: 'Step-by-step description of the process of making a parchment codex in a scriptorium',
         to: routePaths.tutorialPages.codicology,
       },
     ],
@@ -89,10 +93,12 @@ export const aboutContent = {
     id: 'bibliography-note',
     title: 'Bibliography',
     text: 'The website also integrates a comprehensive bibliography built in Zotero.',
+    to: routePaths.bibliography,
+    linkLabel: 'Open the bibliography page',
   },
   acknowledgements: {
     id: 'acknowledgements',
-    title: 'Partners and support',
+    title: 'Partners and Support',
     logos: [
       {
         id: 'stiftung',

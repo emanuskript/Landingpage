@@ -41,7 +41,9 @@ const app = computed(() => apps[props.appId])
                 {{ app.access.label }}
               </a>
             </p>
-            <p v-else class="app-detail__placeholder">{{ app.access.todo }}</p>
+            <p v-else class="app-detail__placeholder">
+              <span class="ui-chip">Coming soon!</span>
+            </p>
           </article>
 
           <article class="app-detail__link-card ui-surface-card ui-surface-card--soft">

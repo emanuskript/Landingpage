@@ -63,7 +63,7 @@ import { digitalPalaeographyPage } from '../../content/tutorials/digitalPalaeogr
           <h2 id="digital-palaeography-references">References</h2>
           <p>
             <a :href="digitalPalaeographyPage.zoteroUrl" target="_blank" rel="noreferrer">
-              Zotero Library
+              Tutorial library on Zotero
             </a>
           </p>
         </div>

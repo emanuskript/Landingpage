@@ -1,5 +1,6 @@
 const annaPersonnelUrl = 'https://www.uni-goettingen.de/en/675451.html'
 const jeremyPersonnelUrl = 'https://www.uni-goettingen.de/en/dr.%2Bjeremy%2Bthompson/688808.html'
+const mohamedPersonnelUrl = 'https://www.uni-goettingen.de/en/mohamed+basuony/688963.html'
 
 export const teamContent = {
   eyebrow: 'Team',
@@ -53,7 +54,12 @@ export const teamContent = {
           photo: '/images/team/mo.jpg',
           photoAlt: 'Portrait of Mohamed Basuony',
           photoMirror: true,
-          links: [],
+          links: [
+            {
+              label: 'Personnel page',
+              href: mohamedPersonnelUrl,
+            },
+          ],
         },
         {
           id: 'sergio-gonzalez-orjuela',
@@ -179,7 +185,9 @@ export const teamContent = {
           id: 'natalia-brockey',
           name: 'Natalia Brockey',
           description: 'Bookbinding and scriptorium illustrations',
-          photo: null,
+          photo: '/images/team/natalia-brockey.png',
+          photoAlt: 'Natalia Illustration logo',
+          photoContain: true,
           links: [],
         },
         {

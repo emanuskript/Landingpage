@@ -2,7 +2,7 @@ export const bibliographyContent = {
   eyebrow: '',
   title: 'Bibliography',
   lede:
-    'Search and browse the eManuSkript bibliography directly from the public Medieval Latin palaeography Zotero group library.',
+    'Search and browse the Zotero Digital Palaeography bibliography of over 2,500 entries directly on eManuSkript.',
   kerkoBaseUrl: '',
   kerkoDocsUrl: 'https://whiskyechobravo.github.io/kerko/latest/',
   resultPageSize: 12,
@@ -10,7 +10,8 @@ export const bibliographyContent = {
     libraryId: '5499549',
     libraryType: 'group',
     librarySlug: 'medieval_latin_palaeography',
-    title: 'Medieval Latin palaeography Zotero Library',
+    title:
+      'Reference collection focused on research into medieval Latin manuscripts produced by Prof. Dr. Georg Vogeler and his team, and kindly shared with the Göttingen Digital Palaeography team. This library has been combined with a smaller library and made available here. It may contain errors or duplicates. The tags are in both English and German, and do not follow a single consistent system.',
     webUrl: 'https://www.zotero.org/groups/5499549/medieval_latin_palaeography/library',
     apiBaseUrl: 'https://api.zotero.org/groups/5499549',
   },

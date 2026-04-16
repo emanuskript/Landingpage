@@ -41,13 +41,6 @@ const sidebarItems = computed(() =>
         </ul>
       </SectionFrame>
 
-      <SectionFrame title="Source set">
-        <p>The MSI tutorial is grounded in the following local source documents and bibliography file:</p>
-        <ul>
-          <li v-for="file in msiOverview.sourceFiles" :key="file">{{ file }}</li>
-        </ul>
-      </SectionFrame>
-
       <div class="msi-overview__grid">
         <RouterLink
           v-for="lesson in msiLessons"
@@ -62,7 +55,7 @@ const sidebarItems = computed(() =>
       </div>
 
       <SectionFrame title="Mentioned projects and links">
-        <p>The MSI source set explicitly mentions the following projects and link titles:</p>
+        <p>The MSI tutorial highlights the following projects and case studies:</p>
         <ul>
           <li v-for="project in msiOverview.projects" :key="project">{{ project }}</li>
           <li v-for="caseStudy in msiOverview.caseStudies" :key="caseStudy">{{ caseStudy }}</li>

@@ -350,6 +350,28 @@ ul.body-list li, ol.body-list li { margin-bottom: 4px; }
 
 .illustration-caption a { color: var(--blue-ink); }
 
+.source-indent-block {
+  margin: 14px 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--border);
+  background: rgba(232, 217, 184, 0.35);
+  border-radius: 0 6px 6px 0;
+}
+
+.source-indent-block p {
+  margin: 0 0 8px;
+}
+
+.source-indent-block p:last-child {
+  margin-bottom: 0;
+}
+
+.source-indent-block__translation {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.92rem;
+  color: #4c4c4c;
+}
+
 /* ── Letter feature table ────────────────── */
 .letter-table {
   width: 100%;

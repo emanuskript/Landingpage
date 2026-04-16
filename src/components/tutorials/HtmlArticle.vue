@@ -140,8 +140,8 @@ async function loadFragment() {
 
   try {
     html.value = await fetchHtmlFragment(props.sourcePath, props.selector, props.routeMap, props.assetMap)
-  } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Could not load source content.'
+  } catch {
+    error.value = 'Could not load tutorial content.'
   } finally {
     loading.value = false
   }
@@ -175,7 +175,7 @@ onUpdated(() => {
 
 <template>
   <div class="html-article">
-    <p v-if="loading" class="html-article__status">Loading source material…</p>
+    <p v-if="loading" class="html-article__status">Loading tutorial content…</p>
     <p v-else-if="error" class="html-article__status html-article__status--error">{{ error }}</p>
     <article v-else ref="articleRef" class="source-article" v-html="html" />
   </div>
@@ -303,6 +303,27 @@ onUpdated(() => {
 .source-article :deep(.body-list) {
   padding-left: 1.25rem;
   font-family: var(--font-sans);
+}
+
+.source-article :deep(.source-indent-block) {
+  margin: 1rem 0 0;
+  padding: 0.8rem 1rem;
+  border-left: 3px solid rgba(106, 83, 43, 0.42);
+  border-radius: 0 14px 14px 0;
+  background: rgba(106, 83, 43, 0.08);
+}
+
+.source-article :deep(.source-indent-block p) {
+  margin: 0 0 0.55rem;
+}
+
+.source-article :deep(.source-indent-block p:last-child) {
+  margin-bottom: 0;
+}
+
+.source-article :deep(.source-indent-block__translation) {
+  font-family: var(--font-sans);
+  color: var(--color-ink-soft);
 }
 
 .source-article :deep(.source-table-wrap) {

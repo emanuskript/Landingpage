@@ -69,11 +69,14 @@ defineProps({
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(240px, 0.85fr);
   gap: 1.25rem;
-  align-items: start;
+  align-items: stretch;
 }
 
 .tutorial-cover__copy {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
 }
 
 .tutorial-cover__eyebrow {
@@ -99,7 +102,8 @@ defineProps({
 }
 
 .tutorial-cover__description {
-  max-width: 65ch;
+  width: 100%;
+  max-width: none;
   margin: 1rem 0 0;
 }
 
@@ -107,7 +111,8 @@ defineProps({
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin-top: 1rem;
+  margin-top: auto;
+  padding-top: 1.5rem;
 }
 
 .tutorial-cover__meta span {

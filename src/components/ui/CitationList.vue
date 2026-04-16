@@ -9,6 +9,21 @@ defineProps({
     default: () => [],
   },
 })
+
+function normalizeCitationQuotes(text) {
+  if (typeof text !== 'string' || !text.length) return text
+
+  return text
+    .replace(/”([^”]+)“/g, '“$1”')
+    .replace(/"([^"\n]+)"/g, '“$1”')
+    .replace(/(^|[\s([\{])”/g, '$1“')
+}
+
+function citationLabel(item) {
+  if (typeof item === 'string') return normalizeCitationQuotes(item)
+  if (!item || typeof item !== 'object') return ''
+  return normalizeCitationQuotes(item.label)
+}
 </script>
 
 <template>
@@ -16,10 +31,10 @@ defineProps({
     <h3 class="citation-list__title">{{ title }}</h3>
     <ul class="citation-list__items">
       <li v-for="item in items" :key="item.label || item">
-        <template v-if="typeof item === 'string'">{{ item }}</template>
-        <RouterLink v-else-if="item.to" :to="item.to">{{ item.label }}</RouterLink>
-        <a v-else-if="item.href" :href="item.href" target="_blank" rel="noreferrer noopener">{{ item.label }}</a>
-        <span v-else>{{ item.label }}</span>
+        <template v-if="typeof item === 'string'">{{ citationLabel(item) }}</template>
+        <RouterLink v-else-if="item.to" :to="item.to">{{ citationLabel(item) }}</RouterLink>
+        <a v-else-if="item.href" :href="item.href" target="_blank" rel="noreferrer noopener">{{ citationLabel(item) }}</a>
+        <span v-else>{{ citationLabel(item) }}</span>
       </li>
     </ul>
   </div>

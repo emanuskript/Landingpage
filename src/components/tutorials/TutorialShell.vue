@@ -70,7 +70,7 @@ defineProps({
         :image-caption="coverImageCaption"
       />
 
-      <div class="tutorial-shell__layout">
+      <div class="tutorial-shell__layout" :class="{ 'tutorial-shell__layout--no-sidebar': !items.length }">
         <TutorialSidebar v-if="items.length" :title="sidebarTitle" :items="items" :back-link="backLink" />
         <main class="tutorial-shell__content">
           <slot />
@@ -96,6 +96,10 @@ defineProps({
   gap: 1.6rem;
   margin-top: 1.6rem;
   align-items: start;
+}
+
+.tutorial-shell__layout--no-sidebar {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .tutorial-shell__content {

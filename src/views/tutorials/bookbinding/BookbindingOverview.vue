@@ -1,43 +1,20 @@
 <script setup>
-import { computed } from 'vue'
 import TutorialShell from '../../../components/tutorials/TutorialShell.vue'
-import SectionFrame from '../../../components/ui/SectionFrame.vue'
 import BookbindingWorkshop from '../../../components/tutorials/BookbindingWorkshop.vue'
 import PrevNextNav from '../../../components/navigation/PrevNextNav.vue'
 import { getCodicologyPath, routePaths } from '../../../config/siteLinks'
 import { bookbindingChapters, bookbindingOverview, workshopHotspots } from '../../../content/tutorials/bookbinding/bookbinding'
-
-const sidebarItems = computed(() =>
-  bookbindingChapters.map((chapter) => ({
-    number: chapter.unit,
-    label: chapter.title,
-    to: getCodicologyPath(chapter.slug),
-  })),
-)
 </script>
 
 <template>
   <TutorialShell
     :crumbs="[{ label: 'Tutorials', to: routePaths.tutorialsIndex }, { label: bookbindingOverview.title, to: getCodicologyPath() }]"
-    :items="sidebarItems"
-    sidebar-title="Workshop chapters"
-    :back-link="{ label: 'Back to Tutorials', to: routePaths.tutorialsIndex }"
     eyebrow="Tutorials"
     :title="bookbindingOverview.title"
     :description="bookbindingOverview.lede"
-    :meta="['Interactive workshop', 'Ten units', 'Includes Islamic codicology unit']"
-    :cover-image="bookbindingOverview.coverImage"
-    :cover-image-alt="bookbindingOverview.coverAlt"
-    :cover-image-caption="bookbindingOverview.coverCaption"
   >
     <div class="page-stack">
-      <SectionFrame title="How to use this tutorial" tone="muted">
-        <p v-for="paragraph in bookbindingOverview.introduction" :key="paragraph">{{ paragraph }}</p>
-      </SectionFrame>
-
-      <SectionFrame title="Scriptorium scene">
-        <BookbindingWorkshop :image="bookbindingOverview.workshopImage" :hotspots="workshopHotspots" />
-      </SectionFrame>
+      <BookbindingWorkshop :image="bookbindingOverview.workshopImage" :hotspots="workshopHotspots" />
 
       <div class="chapter-grid">
         <RouterLink
@@ -66,15 +43,19 @@ const sidebarItems = computed(() =>
 
 .chapter-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1rem;
 }
 
 .chapter-grid__card {
   display: grid;
-  gap: 0.45rem;
+  grid-template-rows: auto auto 1fr;
+  gap: 0.55rem;
+  align-content: start;
+  text-align: left;
+  min-width: 0;
   min-height: 100%;
-  padding: 1rem;
+  padding: 1.2rem;
 }
 
 .chapter-grid__card p {
@@ -86,9 +67,17 @@ const sidebarItems = computed(() =>
   margin: 0;
 }
 
+.chapter-grid__card h2 {
+  font-size: 1.2rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
 .chapter-grid__card span {
+  display: block;
   line-height: 1.55;
   color: var(--color-ink-soft);
+  overflow-wrap: anywhere;
 }
 
 .chapter-grid__card--feature {

@@ -151,9 +151,10 @@ watch(
   >
     <div class="bibliography-page">
       <SectionFrame title="Bibliography access" tone="muted">
-        <p>
-          This page searches the public Zotero group library specified for the eManuSkript bibliography so the references
-          remain usable directly inside the site.
+        <p class="bibliography-page__access-intro">
+          This page represents a search interface for the public Zotero group library used for Digital Palaeography at
+          the University of Göttingen. It enables users to search for and explore references without leaving the
+          eManuSkript website.
         </p>
         <p class="bibliography-page__status">
           <strong>Zotero source:</strong> {{ bibliographyContent.zotero.title }}
@@ -221,21 +222,39 @@ watch(
             </div>
           </SectionFrame>
 
-          <SectionFrame title="Collections" tone="muted">
+          <SectionFrame title="Browse collections" tone="muted">
             <p v-if="loadingCollections" class="bibliography-page__sidebar-note">Loading collection list...</p>
-            <div v-else class="bibliography-collections">
-              <button
-                v-for="collection in collections"
-                :key="collection.key"
-                type="button"
-                :class="['bibliography-collection', 'ui-select-card', { 'ui-select-card--active': selectedCollection === collection.key }]"
-                :aria-pressed="selectedCollection === collection.key"
-                @click="toggleCollection(collection.key)"
-              >
-                <span>{{ collection.name }}</span>
-                <strong>{{ collection.numItems }}</strong>
-              </button>
-            </div>
+            <template v-else>
+              <p class="bibliography-page__sidebar-note">
+                Use these Zotero collections to narrow the bibliography by thematic groupings from the Zotero library.
+              </p>
+              <div class="bibliography-collections">
+                <button
+                  type="button"
+                  :class="[
+                    'bibliography-collection',
+                    'ui-select-card',
+                    { 'ui-select-card--active': !selectedCollection },
+                  ]"
+                  :aria-pressed="!selectedCollection"
+                  @click="toggleCollection('')"
+                >
+                  <span class="bibliography-collection__name">All references</span>
+                  <strong class="bibliography-collection__count">Reset filter</strong>
+                </button>
+                <button
+                  v-for="collection in collections"
+                  :key="collection.key"
+                  type="button"
+                  :class="['bibliography-collection', 'ui-select-card', { 'ui-select-card--active': selectedCollection === collection.key }]"
+                  :aria-pressed="selectedCollection === collection.key"
+                  @click="toggleCollection(collection.key)"
+                >
+                  <span class="bibliography-collection__name">{{ collection.name }}</span>
+                  <strong class="bibliography-collection__count">{{ collection.numItems }} items</strong>
+                </button>
+              </div>
+            </template>
           </SectionFrame>
         </aside>
 
@@ -289,6 +308,10 @@ watch(
   margin: 1rem 0 0.15rem;
 }
 
+.bibliography-page__access-intro {
+  margin: 0;
+}
+
 .bibliography-page__status {
   margin: 0.55rem 0 0;
   line-height: 1.65;
@@ -305,6 +328,12 @@ watch(
 
 .bibliography-page__notes li + li {
   margin-top: 0.35rem;
+}
+
+.bibliography-page__sidebar-note {
+  margin: 0 0 0.75rem;
+  color: var(--color-ink-muted);
+  line-height: 1.55;
 }
 
 .bibliography-layout {
@@ -353,10 +382,21 @@ watch(
 
 .bibliography-collection {
   cursor: pointer;
+  display: grid;
+  gap: 0.3rem;
+  text-align: left;
 }
 
-.bibliography-collection span {
+.bibliography-collection__name {
   min-width: 0;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.bibliography-collection__count {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-ink-muted);
 }
 
 .bibliography-collection strong {

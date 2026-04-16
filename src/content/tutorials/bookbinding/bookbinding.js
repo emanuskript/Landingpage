@@ -1,18 +1,60 @@
 const bookbindingSourcePath = '/source/bookbinding/tutorial.html'
 
 export const bookbindingSourceAssetMap = {
+  // Remote sources remapped to local copies for stable rendering.
   'https://nbn-resolving.org/urn:nbn:de:bvb:22-dtl-0000025604': '/images/bookbinding/bamberger-schreiberbild.jpg',
+  'http://digital.bib-bvb.de/webclient/StreamGate?folder_id=0&dvs=1773092214098~122':
+    '/images/bookbinding/bamberger-schreiberbild.jpg',
   'https://bibliotheque-numerique.ville-laon.fr/idviewer/1465/26': '/images/bookbinding/laon-diagram.png',
   'https://digi.vatlib.it/view/MSS_Pal.lat.1993/0005': '/images/bookbinding/opicinus-sheet.jpg',
   'https://books.google.de/books/content?id=mNOBekGmmpQC&pg=PA22&img=1&zoom=3&hl=en&sig=ACfU3U0mCh32-yLR1V6CWJbjSnlfuS_1TQ&w=1025':
     '/images/bookbinding/tagliente-scribal-tools.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/c/c8/Busto_maschile.JPG': '/images/bookbinding/Busto_maschile.JPG',
+  'https://upload.wikimedia.org/wikipedia/commons/a/ab/Mendel_I_034_v.jpg': '/images/bookbinding/Mendel_I_034_v.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/8/8c/Folio-Quarto-Octavo_Compared.svg':
+    '/images/bookbinding/Folio-Quarto-Octavo_Compared.svg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Marie_de_France_1.tif/lossy-page1-714px-Marie_de_France_1.tif.jpg?_=20120509143945':
+    '/images/bookbinding/Marie%20de%20France.jpg',
+  'https://www.e-codices.unifr.ch/en/fmb/cb-0127/244r': '/images/bookbinding/Henry%20Gospel.jpg',
+  'https://www.conservation-wiki.com/wiki/File:Sewing-frame.jpg': '/images/bookbinding/Sewing-frame.jpg',
+  'https://www.conservation-wiki.com/w/images/1/15/Sewing-frame.jpg': '/images/bookbinding/Sewing-frame.jpg',
+  'https://www.conservation-wiki.com/w/images/8/83/SecondaryEndband01.JPG':
+    '/images/bookbinding/SecondaryEndband01.JPG',
+  'https://www.conservation-wiki.com/w/images/b/bc/Germanforedlg.jpg': '/images/bookbinding/Germanforedlg.jpg',
+  'https://www.conservation-wiki.com/w/images/d/d6/Fragmentarium_F-boql_1r.jpg_medium.jpg':
+    '/images/bookbinding/Fragmentarium_F-boql_1r.jpg_medium.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/4/4a/Buchbinder-1568.png': '/images/bookbinding/Buchbinder-1568.png',
+  'https://upload.wikimedia.org/wikipedia/commons/2/2a/Codex_of_Uta.png': '/images/bookbinding/Codex_of_Uta.png',
+  'https://upload.wikimedia.org/wikipedia/commons/5/5a/Landauer_I_021_v.jpg': '/images/bookbinding/Landauer_I_021_v.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/0/0b/Santa_Caterina_d%27Alessandria_%28Torino%298244.jpg':
+    '/images/bookbinding/Santa_Caterina_d%27Alessandria_%28Torino%298244.jpg',
+
+  // Relative references from the source export.
+  '15 Herringbone Stitch Slit Leather Thong copy.svg':
+    '/images/bookbinding/15%20Herringbone%20Stitch%20Slit%20Leather%20Thong%20copy.svg',
+  '17 Straight Stitch Slit Leather Thong copy.svg':
+    '/images/bookbinding/17%20Straight%20Stitch%20Slit%20Leather%20Thong%20copy.svg',
+  '18 Packed Straight Slit Leather Thong copy.svg':
+    '/images/bookbinding/18%20Packed%20Straight%20Slit%20Leather%20Thong%20copy.svg',
+  '32 Carolingian Type 1 Variant A (visible) copy.svg':
+    '/images/bookbinding/32%20Carolingian%20Type%201%20Variant%20A%20%28visible%29%20copy.svg',
+  '43 Spine Lining, free copy.svg': '/images/bookbinding/43%20Spine%20Lining%2C%20free%20copy.svg',
+  '44 Spin Lining, glued to outside board copy.svg':
+    '/images/bookbinding/44%20Spin%20Lining%2C%20glued%20to%20outside%20board%20copy.svg',
+  '45 Spine Lining, glued to inside board copy.svg':
+    '/images/bookbinding/45%20Spine%20Lining%2C%20glued%20to%20inside%20board%20copy.svg',
+  '46 Spine Lining, glued to inside and outside board copy.svg':
+    '/images/bookbinding/46%20Spine%20Lining%2C%20glued%20to%20inside%20and%20outside%20board%20copy.svg',
+  '58 Mitred Corners with stitching copy.svg': '/images/bookbinding/58%20Mitred%20Corners%20with%20stitching%20copy.svg',
+  '    58 Mitred Corners with stitching copy.svg':
+    '/images/bookbinding/58%20Mitred%20Corners%20with%20stitching%20copy.svg',
 }
 
 export const bookbindingOverview = {
   eyebrow: 'Tutorials',
   title: 'The Creation of a Medieval Codex',
   lede:
-    'Move through a medieval scriptorium, open the full unit sequence, and finish with an added comparative chapter on Islamic codicology and bookbinding.',
+    'Move through a medieval scriptorium and trace the full process of making a medieval codex, from writing supports and page preparation to sewing, board attachment, covering, and final embellishment. Follow the complete sequence of units to see how each stage of the manuscript is built, described, and understood in relation to the wider craft of codicology and bookbinding.',
   introduction: [
     'From the oak gall on the landing page, the codicology tutorial opens onto a workshop scene. You can follow a guided tour through the numbered zones or explore the scriptorium freely and open fuller lessons from each region.',
     'Units I to IX trace the making of a western medieval codex from writing supports to covering and decoration. Unit X extends the tutorial with a comparative introduction to Islamic codicology and bookbinding by Narges Pourmohammadian Roudsari.',
@@ -498,8 +540,8 @@ export const workshopHotspots = [
     numeral: 'I',
     label: 'Writing Supports',
     chapter: 'writing-supports',
-    x: 14,
-    y: 30,
+    x: 22.2,
+    y: 29.6,
     summary:
       'Ancient and medieval writing appears on many supports, from tablets and papyrus to parchment and, later, paper. In the European Middle Ages, parchment dominated until paper spread more widely from the late thirteenth century onward.',
   },
@@ -509,8 +551,8 @@ export const workshopHotspots = [
     numeral: 'II',
     label: 'Page Folding & Formats',
     chapter: 'page-folding-formats',
-    x: 28,
-    y: 19,
+    x: 60.4,
+    y: 49.7,
     summary:
       'Trimmed parchment sheets were cut and folded into leaves and gatherings. The number of folds determined whether a sheet produced folio, quarto, or octavo formats, while the size of the original skin still shaped the final page.',
   },
@@ -520,8 +562,8 @@ export const workshopHotspots = [
     numeral: 'III',
     label: 'Making & Ruling Quires',
     chapter: 'making-ruling-quires',
-    x: 44,
-    y: 35,
+    x: 61.3,
+    y: 59.1,
     summary:
       'Sheets formed quires, often with matching hair and flesh sides facing one another. The leaves were then pricked and ruled to establish margins and writing lines, and they could be temporarily tacketed together before copying.',
   },
@@ -531,8 +573,8 @@ export const workshopHotspots = [
     numeral: 'IV',
     label: 'Scribal Tools & Techniques',
     chapter: 'scribal-tools-techniques',
-    x: 59,
-    y: 25,
+    x: 25.7,
+    y: 68.9,
     summary:
       'Once the quire was prepared, the scribe worked with a quill, a penknife, ink, and a dusting powder that helped control the behavior of the writing surface. The copying desk was a technical workspace as much as an intellectual one.',
   },
@@ -542,8 +584,8 @@ export const workshopHotspots = [
     numeral: 'V',
     label: 'Ink, Pigments, & Page Decoration',
     chapter: 'ink-pigments-page-decoration',
-    x: 75,
-    y: 40,
+    x: 43.0,
+    y: 28.1,
     summary:
       'Medieval inks and pigments came from different mineral, vegetable, and mixed recipes. Rubrication and decoration could be added later, which is why many manuscripts still preserve blank spaces for headings, initials, or illustrations.',
   },
@@ -553,8 +595,8 @@ export const workshopHotspots = [
     numeral: 'VI',
     label: 'Sewing the Bookblock',
     chapter: 'sewing-the-bookblock',
-    x: 34,
-    y: 61,
+    x: 80.3,
+    y: 49.2,
     summary:
       'After copying, the quires were stacked into a bookblock and sewn through holes or slits at the fold. Sewing supports and, from the High Middle Ages onward, sewing frames helped bind the gatherings into a stable volume.',
   },
@@ -564,8 +606,8 @@ export const workshopHotspots = [
     numeral: 'VII',
     label: 'Spine Treatment, Endbands & Edge Trimming',
     chapter: 'spine-treatment-endbands-edge-trimming',
-    x: 49,
-    y: 71,
+    x: 70.5,
+    y: 28.7,
     summary:
       'Endbands, spine linings, and edge trimming reinforced the structure of the sewn bookblock. These operations strengthened the spine and prepared the codex for the later attachment of its boards and covering.',
   },
@@ -575,8 +617,8 @@ export const workshopHotspots = [
     numeral: 'VIII',
     label: 'Bookboards',
     chapter: 'bookboards',
-    x: 64,
-    y: 56,
+    x: 80.9,
+    y: 62.2,
     summary:
       'Wooden boards were shaped, drilled, and attached to the bookblock by lacing the ends of the sewing supports through them. They turned the sewn textblock into a protected and durable object.',
   },
@@ -586,8 +628,8 @@ export const workshopHotspots = [
     numeral: 'IX',
     label: 'Covering, Fastenings & Embellishment',
     chapter: 'covering-fastenings-embellishment',
-    x: 79,
-    y: 66,
+    x: 79.2,
+    y: 82.5,
     summary:
       'The finished boards were covered in leather or half-leather and fitted with fastenings to keep parchment leaves under control. Additional bosses, decorations, overcovers, or girdle structures could refine the codex further.',
   },
