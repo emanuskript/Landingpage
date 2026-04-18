@@ -3,6 +3,7 @@ import { routePaths } from '../config/siteLinks'
 
 const routes = [
   { path: routePaths.landing, name: 'home', component: () => import('../views/LandingPage.vue'), meta: { showRootling: false } },
+  { path: routePaths.landingCalibration, name: 'landing-calibration', component: () => import('../views/LandingCalibrationPage.vue'), meta: { showRootling: false } },
   { path: routePaths.apps, name: 'apps', component: () => import('../views/apps/AppsPage.vue') },
   { path: routePaths.appPages.mergen, name: 'app-mergen', component: () => import('../views/apps/AppDetail.vue'), props: { appId: 'mergen' } },
   { path: routePaths.appPages.seshat, name: 'app-seshat', component: () => import('../views/apps/AppDetail.vue'), props: { appId: 'seshat' } },

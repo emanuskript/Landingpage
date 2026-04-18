@@ -97,7 +97,13 @@ const sidebarItems = computed(() =>
   margin: 0;
 }
 
+.msi-overview__card h2 {
+  font-size: 1.08rem;
+  line-height: 1.32;
+}
+
 .msi-overview__card span {
+  font-size: 0.96rem;
   line-height: 1.55;
   color: var(--color-ink-soft);
 }

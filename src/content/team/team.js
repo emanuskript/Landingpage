@@ -184,7 +184,7 @@ export const teamContent = {
         {
           id: 'natalia-brockey',
           name: 'Natalia Brockey',
-          description: 'Bookbinding and scriptorium illustrations',
+          description: 'Bookbinding and scriptorium illustrations; all illustrations are copyrighted under the CC BY-NC license',
           photo: '/images/team/natalia-brockey.png',
           photoAlt: 'Natalia Illustration logo',
           photoContain: true,
@@ -215,6 +215,13 @@ export const teamContent = {
           id: 'cornelia-ripplinger',
           name: 'Cornelia Ripplinger (SUB)',
           description: 'Consultation on bookbinding apps',
+          photo: null,
+          links: [],
+        },
+        {
+          id: 'georg-vogeler',
+          name: 'Prof. Dr. Georg Vogeler',
+          description: 'Zotero Bibliography',
           photo: null,
           links: [],
         },

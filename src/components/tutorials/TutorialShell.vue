@@ -58,7 +58,7 @@ defineProps({
 <template>
   <section class="tutorial-shell">
     <div class="tutorial-shell__inner">
-      <TutorialBreadcrumb :crumbs="crumbs" />
+      <TutorialBreadcrumb class="tutorial-shell__breadcrumb" :crumbs="crumbs" />
       <TutorialCover
         :eyebrow="eyebrow"
         :title="title"
@@ -90,6 +90,10 @@ defineProps({
   margin: 0 auto;
 }
 
+.tutorial-shell__breadcrumb {
+  margin-bottom: 1.1rem;
+}
+
 .tutorial-shell__layout {
   display: grid;
   grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
@@ -109,6 +113,25 @@ defineProps({
 @media (max-width: 900px) {
   .tutorial-shell__layout {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .tutorial-shell {
+    padding: 1.25rem 0 3rem;
+  }
+
+  .tutorial-shell__inner {
+    width: min(1180px, calc(100% - 1rem));
+  }
+
+  .tutorial-shell__breadcrumb {
+    margin-bottom: 0.8rem;
+  }
+
+  .tutorial-shell__layout {
+    gap: 1rem;
+    margin-top: 1rem;
   }
 }
 </style>

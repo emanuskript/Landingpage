@@ -154,6 +154,16 @@ defineProps({
 
 .tutorial-content-renderer__list {
   margin: 0;
+  padding-left: 1.15rem;
+  font-size: 0.96rem;
+  line-height: 1.7;
+}
+
+.tutorial-content-renderer__subsection ul,
+.tutorial-content-renderer__links ul {
+  padding-left: 1.15rem;
+  font-size: 0.96rem;
+  line-height: 1.7;
 }
 
 .tutorial-content-renderer__quote {
@@ -195,6 +205,10 @@ defineProps({
   color: var(--color-ink-soft);
 }
 
+.tutorial-content-renderer__links {
+  margin-top: 0.7rem;
+}
+
 .tutorial-content-renderer__links ul,
 .tutorial-content-renderer__checklist {
   margin: 0;
@@ -227,6 +241,8 @@ defineProps({
   border-radius: 18px;
   background: rgba(255, 251, 243, 0.72);
   border: 1px solid var(--color-border-soft);
+  font-size: 0.96rem;
+  line-height: 1.7;
 }
 
 .tutorial-content-renderer__checklist li p {
@@ -238,5 +254,10 @@ defineProps({
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
+  align-items: stretch;
+}
+
+.tutorial-content-renderer__figure-grid > * {
+  height: 100%;
 }
 </style>

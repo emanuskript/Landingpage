@@ -24,7 +24,11 @@ defineProps({
         :key="crumb.label"
         class="breadcrumb-item"
       >
-        <span class="breadcrumb-separator" aria-hidden="true">&#9656;</span>
+        <span class="breadcrumb-separator" aria-hidden="true">
+          <svg viewBox="0 0 16 16" width="10" height="10" fill="currentColor">
+            <path d="M5.5 3L11.5 8L5.5 13V3Z"></path>
+          </svg>
+        </span>
         <RouterLink
           v-if="index < crumbs.length - 1"
           :to="crumb.to"
@@ -34,7 +38,7 @@ defineProps({
         </RouterLink>
         <span
           v-else
-          class="breadcrumb-current ui-chip ui-chip--soft"
+          class="breadcrumb-current"
           aria-current="page"
         >
           {{ crumb.label }}
@@ -46,8 +50,7 @@ defineProps({
 
 <style scoped>
 .breadcrumb {
-  margin-bottom: 1.1rem;
-  padding: 0.95rem 1.15rem;
+  padding: 0.95rem 1.4rem;
 }
 
 .breadcrumb-list {
@@ -58,24 +61,28 @@ defineProps({
   list-style: none;
   margin: 0;
   padding: 0;
+  min-width: 0;
 }
 
 .breadcrumb-item {
   display: flex;
   align-items: center;
   gap: 0.55rem;
+  min-width: 0;
+  flex-wrap: wrap;
 }
 
 .breadcrumb-separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--color-branch);
-  font-size: 0.82rem;
-  line-height: 1;
-  opacity: 0.82;
+  opacity: 0.65;
+  transform: translateY(1px);
 }
 
 .breadcrumb-link {
-  display: inline-flex;
-  align-items: center;
+  display: inline;
   min-height: 2rem;
   padding: 0.2rem 0;
   font-family: var(--font-serif);
@@ -84,6 +91,7 @@ defineProps({
   color: var(--color-ink-soft);
   text-decoration: none;
   transition: color var(--transition-fast), transform var(--transition-fast);
+  overflow-wrap: anywhere;
 }
 
 .breadcrumb-link:hover {
@@ -101,14 +109,15 @@ defineProps({
 }
 
 .breadcrumb-current {
-  display: inline-flex;
-  align-items: center;
+  display: inline;
   min-height: 2rem;
   font-family: var(--font-display);
   font-size: 0.98rem;
   letter-spacing: 0.01em;
   color: var(--color-ink);
   font-weight: 600;
+  padding: 0.2rem 0;
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 600px) {
@@ -117,13 +126,17 @@ defineProps({
     border-radius: 18px;
   }
 
+  .breadcrumb-list {
+    gap: 0.3rem 0.45rem;
+  }
+
+  .breadcrumb-item {
+    gap: 0.4rem;
+  }
+
   .breadcrumb-link,
   .breadcrumb-current {
     font-size: 0.88rem;
-  }
-
-  .breadcrumb-current {
-    padding-inline: 0.6rem;
   }
 }
 </style>

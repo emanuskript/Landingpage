@@ -9,6 +9,11 @@ export const aboutContent = {
   overview: {
     id: 'project-overview',
     title: '',
+    resources: {
+      id: 'ai-safety-resources',
+      label: 'Resources about AI Safety and Best Practices',
+      href: 'https://owncloud.gwdg.de/index.php/s/PyQ2nN6aKpypKfG?path=%2FWebsite%2FResources%20on%20AI%20Policies',
+    },
     paragraphs: [
       [
         { text: 'This project (April 2024-March 2026) was funded by the ' },
@@ -105,18 +110,28 @@ export const aboutContent = {
         label: 'Stiftung Innovation in der Hochschullehre',
         alt: 'Logo of Stiftung Innovation in der Hochschullehre.',
         src: '/images/partners/stil.svg',
+        href: 'https://stiftung-hochschullehre.de/',
       },
       {
         id: 'sub',
         label: 'SUB Göttingen',
         alt: 'Logo of the Göttingen State and University Library.',
         src: '/images/partners/sub.svg',
+        href: 'https://www.sub.uni-goettingen.de/sub-aktuell/',
+      },
+      {
+        id: 'uni-goettingen',
+        label: 'Universität Göttingen',
+        alt: 'Logo of Georg-August-Universität Göttingen.',
+        src: '/images/partners/ugoe.svg',
+        href: 'https://www.uni-goettingen.de/',
       },
       {
         id: 'ifdh',
         label: 'Institute for Digital Humanities',
         alt: 'Logo of the Institute for Digital Humanities.',
         src: '/images/partners/ifdh.png',
+        href: 'https://www.uni-goettingen.de/de/597374.html',
       },
     ],
   },

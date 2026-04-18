@@ -2,11 +2,13 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { landingArtwork, landingCopy, landingHotspots } from '../config/landingHotspots'
+import { clipPathPolygon, normalizeHotspot } from '../utils/landingShapes'
 
 const DRAFT_STORAGE_KEY = 'emanuskript-landing-calibration-draft'
 const FINAL_STORAGE_KEY = 'emanuskript-landing-calibration-final'
+const HOTSPOTS_UPDATED_EVENT = 'emanuskript:landing-hotspots-updated'
 const legendArtwork = {
-  src: '/images/legend/guide-panel-replacement.png',
+  src: '/images/legend/guide-panel-replacement.png?v=2',
   alt: 'Legend explaining applications, tutorials, and further information in the eManuSkript tree.',
 }
 
@@ -53,6 +55,18 @@ const rootLabelSparkleMap = {
 }
 
 function hotspotStyle(hotspot) {
+  if (hotspot.kind === 'root') {
+    const center = rootLabelCenter(hotspot)
+
+    return {
+      left: `${center.x - hotspot.rect.width / 2}%`,
+      top: `${center.y - hotspot.rect.height / 2}%`,
+      width: `${hotspot.rect.width}%`,
+      height: `${hotspot.rect.height}%`,
+      '--hotspot-accent': hotspot.accent,
+    }
+  }
+
   return {
     left: `${hotspot.rect.left}%`,
     top: `${hotspot.rect.top}%`,
@@ -62,14 +76,42 @@ function hotspotStyle(hotspot) {
   }
 }
 
-function rootLabelStyle(hotspot) {
+function hotspotShapeStyle(hotspot) {
+  if (hotspot.kind === 'root') {
+    return {}
+  }
+
+  return {
+    clipPath: clipPathPolygon(hotspot),
+    WebkitClipPath: clipPathPolygon(hotspot),
+  }
+}
+
+function rootLabelCenter(hotspot) {
   const anchor = hotspot.labelAnchor ?? {
     x: hotspot.rect.left + hotspot.rect.width / 2,
     y: hotspot.rect.top - 2.4,
   }
+
+  if (hotspot.id === 'about-project' || hotspot.id === 'team') {
+    const teamHotspot = resolvedHotspots.value.find((entry) => entry.id === 'team')
+    const teamAnchor = teamHotspot?.labelAnchor ?? {
+      x: teamHotspot ? teamHotspot.rect.left + teamHotspot.rect.width / 2 : anchor.x,
+      y: teamHotspot ? teamHotspot.rect.top - 2.4 : anchor.y,
+    }
+
+    return { x: anchor.x, y: teamAnchor.y }
+  }
+
+  return { x: anchor.x, y: anchor.y }
+}
+
+function rootLabelStyle(hotspot) {
+  const center = rootLabelCenter(hotspot)
+
   return {
-    left: `${anchor.x}%`,
-    top: `${anchor.y}%`,
+    left: `${center.x}%`,
+    top: `${center.y}%`,
   }
 }
 
@@ -123,11 +165,7 @@ function updateOverlayBox() {
 }
 
 function cloneHotspots(source) {
-  return source.map((hotspot) => ({
-    ...hotspot,
-    rect: { ...hotspot.rect },
-    labelAnchor: hotspot.labelAnchor ? { ...hotspot.labelAnchor } : undefined,
-  }))
+  return source.map(normalizeHotspot)
 }
 
 function mergeSavedHotspots(baseHotspots, savedPayload) {
@@ -137,18 +175,24 @@ function mergeSavedHotspots(baseHotspots, savedPayload) {
     const saved = savedById.get(hotspot.id)
     if (!saved) return hotspot
 
-    return {
+    const merged = normalizeHotspot({
       ...hotspot,
       rect: {
         ...hotspot.rect,
         ...(saved.rect ?? {}),
       },
+      points: saved.points ?? hotspot.points,
+      curveMode: saved.curveMode ?? hotspot.curveMode,
       labelAnchor: hotspot.labelAnchor
         ? {
             ...hotspot.labelAnchor,
             ...(saved.labelAnchor ?? {}),
           }
         : undefined,
+    })
+
+    return {
+      ...merged,
     }
   })
 }
@@ -265,6 +309,7 @@ onMounted(() => {
   document.addEventListener('pointerdown', handlePointerDown)
   document.addEventListener('keydown', handleEscape)
   window.addEventListener('storage', loadSavedHotspots)
+  window.addEventListener(HOTSPOTS_UPDATED_EVENT, loadSavedHotspots)
   window.addEventListener('resize', updateOverlayBox)
   window.addEventListener('resize', updateViewportMode)
 })
@@ -283,6 +328,7 @@ onBeforeUnmount(() => {
   document.removeEventListener('pointerdown', handlePointerDown)
   document.removeEventListener('keydown', handleEscape)
   window.removeEventListener('storage', loadSavedHotspots)
+  window.removeEventListener(HOTSPOTS_UPDATED_EVENT, loadSavedHotspots)
   window.removeEventListener('resize', updateOverlayBox)
   window.removeEventListener('resize', updateViewportMode)
 })
@@ -333,12 +379,11 @@ onBeforeUnmount(() => {
               @blur="setActiveHotspot()"
             >
               <span
-                v-if="hotspot.kind === 'tutorial'"
-                class="landing-page__tutorial-name"
+                class="landing-page__hotspot-shape"
+                :class="`landing-page__hotspot-shape--${hotspot.kind}`"
+                :style="hotspotShapeStyle(hotspot)"
                 aria-hidden="true"
-              >
-                {{ hotspot.title }}
-              </span>
+              ></span>
 
               <span
                 v-if="hotspot.sparkle"
@@ -411,7 +456,8 @@ onBeforeUnmount(() => {
   align-content: stretch;
   gap: clamp(0.35rem, 1vw, 0.8rem);
   padding: clamp(0.5rem, 1.3vw, 1rem) var(--landing-inline-padding) clamp(0.6rem, 1.4vw, 1rem);
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .landing-page__masthead {
@@ -509,20 +555,28 @@ onBeforeUnmount(() => {
   pointer-events: auto;
 }
 
-.landing-page__hotspot--app,
-.landing-page__hotspot--tutorial {
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at 30% 28%, rgba(255, 249, 236, 0.08) 0 10%, transparent 28%),
-    radial-gradient(circle at 58% 62%, rgba(47, 30, 12, 0.14) 0 52%, rgba(28, 18, 8, 0.26) 78%, rgba(18, 11, 4, 0.34) 100%);
+.landing-page__hotspot-shape {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 
-.landing-page__hotspot--root {
+.landing-page__hotspot-shape--app,
+.landing-page__hotspot-shape--tutorial {
+  border-radius: 999px;
+  background: transparent;
+  -webkit-backdrop-filter: saturate(1.14) contrast(1.14) brightness(1.04);
+  backdrop-filter: saturate(1.14) contrast(1.14) brightness(1.04);
+  transition: background var(--transition-base), -webkit-backdrop-filter var(--transition-base), backdrop-filter var(--transition-base);
+}
+
+.landing-page__hotspot-shape--root {
+  inset: -0.08rem;
   border-radius: 1.5rem;
   cursor: pointer;
 }
 
-.landing-page__hotspot--root::before {
+.landing-page__hotspot-shape--root::before {
   display: block;
   inset: -0.18rem -0.3rem;
   border-radius: 1.55rem;
@@ -532,31 +586,38 @@ onBeforeUnmount(() => {
     0 10px 24px rgba(69, 49, 23, 0.08);
 }
 
-.landing-page__hotspot--app::after {
+.landing-page__hotspot-shape::before,
+.landing-page__hotspot-shape::after {
   content: '';
   position: absolute;
-  inset: 10% 16% 54% 18%;
-  border-radius: inherit;
-  background: radial-gradient(ellipse at 30% 30%, rgba(255, 233, 168, 0.55), rgba(255, 233, 168, 0));
-  mix-blend-mode: screen;
-  opacity: 0.42;
   pointer-events: none;
 }
 
-.landing-page__hotspot--tutorial::after {
+.landing-page__hotspot-shape--app::after {
   content: '';
   position: absolute;
-  inset: 12% 18% 52% 18%;
+  inset: 8% 14% 50% 16%;
   border-radius: inherit;
-  background: radial-gradient(ellipse at 30% 30%, rgba(238, 242, 248, 0.5), rgba(238, 242, 248, 0));
+  background: radial-gradient(ellipse at 28% 28%, rgba(255, 241, 174, 0.86), rgba(255, 233, 168, 0.26) 38%, rgba(255, 233, 168, 0) 72%);
   mix-blend-mode: screen;
-  opacity: 0.36;
+  opacity: 0.72;
+  filter: blur(0.02rem);
   pointer-events: none;
 }
 
-.landing-page__hotspot::before {
+.landing-page__hotspot-shape--tutorial::after {
   content: '';
   position: absolute;
+  inset: 10% 16% 50% 16%;
+  border-radius: inherit;
+  background: radial-gradient(ellipse at 30% 28%, rgba(244, 248, 255, 0.82), rgba(224, 236, 249, 0.22) 40%, rgba(238, 242, 248, 0) 74%);
+  mix-blend-mode: screen;
+  opacity: 0.64;
+  filter: blur(0.02rem);
+  pointer-events: none;
+}
+
+.landing-page__hotspot-shape::before {
   inset: -0.2rem;
   border-radius: inherit;
   background: rgba(255, 248, 238, 0.22);
@@ -567,25 +628,68 @@ onBeforeUnmount(() => {
   transition: opacity var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
 }
 
+.landing-page__hotspot-shape--app::before,
+.landing-page__hotspot-shape--tutorial::before {
+  inset: -0.08rem;
+  background: transparent;
+  opacity: 1;
+  box-shadow:
+    inset 0.46rem 0.4rem 0.92rem rgba(33, 20, 8, 0.2),
+    inset -0.28rem -0.22rem 0.72rem rgba(255, 250, 242, 0.28),
+    0 0.14rem 0.58rem rgba(34, 21, 9, 0.1);
+}
+
 .landing-page__hotspot:focus-visible {
   outline: none;
 }
 
-.landing-page__hotspot:hover::before,
-.landing-page__hotspot:focus-visible::before,
-.landing-page__hotspot--active::before,
-.landing-page__hotspot--root-hovered::before {
+.landing-page__hotspot:hover .landing-page__hotspot-shape::before,
+.landing-page__hotspot:focus-visible .landing-page__hotspot-shape::before,
+.landing-page__hotspot--active .landing-page__hotspot-shape::before,
+.landing-page__hotspot--root-hovered .landing-page__hotspot-shape::before {
   opacity: 1;
   background: rgba(255, 248, 238, 0.3);
 }
 
-.landing-page__hotspot--app:hover::after,
-.landing-page__hotspot--app:focus-visible::after,
-.landing-page__hotspot--app.landing-page__hotspot--active::after,
-.landing-page__hotspot--tutorial:hover::after,
-.landing-page__hotspot--tutorial:focus-visible::after,
-.landing-page__hotspot--tutorial.landing-page__hotspot--active::after {
+.landing-page__hotspot--app:hover .landing-page__hotspot-shape--app::before,
+.landing-page__hotspot--app:focus-visible .landing-page__hotspot-shape--app::before,
+.landing-page__hotspot--app.landing-page__hotspot--active .landing-page__hotspot-shape--app::before,
+.landing-page__hotspot--tutorial:hover .landing-page__hotspot-shape--tutorial::before,
+.landing-page__hotspot--tutorial:focus-visible .landing-page__hotspot-shape--tutorial::before,
+.landing-page__hotspot--tutorial.landing-page__hotspot--active .landing-page__hotspot-shape--tutorial::before {
+  background: rgba(255, 248, 238, 0.3);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--hotspot-accent) 34%, transparent),
+    0 8px 20px color-mix(in srgb, var(--hotspot-accent) 18%, transparent);
+}
+
+.landing-page__hotspot--app:hover .landing-page__hotspot-shape--app::after,
+.landing-page__hotspot--app:focus-visible .landing-page__hotspot-shape--app::after,
+.landing-page__hotspot--app.landing-page__hotspot--active .landing-page__hotspot-shape--app::after,
+.landing-page__hotspot--tutorial:hover .landing-page__hotspot-shape--tutorial::after,
+.landing-page__hotspot--tutorial:focus-visible .landing-page__hotspot-shape--tutorial::after,
+.landing-page__hotspot--tutorial.landing-page__hotspot--active .landing-page__hotspot-shape--tutorial::after {
   opacity: 0.52;
+}
+
+.landing-page__hotspot--app:hover .landing-page__hotspot-shape--app,
+.landing-page__hotspot--app:focus-visible .landing-page__hotspot-shape--app,
+.landing-page__hotspot--app.landing-page__hotspot--active .landing-page__hotspot-shape--app {
+  background:
+    radial-gradient(circle at 30% 28%, rgba(255, 249, 236, 0.08) 0 10%, transparent 28%),
+    radial-gradient(circle at 58% 62%, rgba(47, 30, 12, 0.14) 0 52%, rgba(28, 18, 8, 0.26) 78%, rgba(18, 11, 4, 0.34) 100%);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.landing-page__hotspot--tutorial:hover .landing-page__hotspot-shape--tutorial,
+.landing-page__hotspot--tutorial:focus-visible .landing-page__hotspot-shape--tutorial,
+.landing-page__hotspot--tutorial.landing-page__hotspot--active .landing-page__hotspot-shape--tutorial {
+  background:
+    radial-gradient(circle at 30% 28%, rgba(255, 249, 236, 0.08) 0 10%, transparent 28%),
+    radial-gradient(circle at 58% 62%, rgba(47, 30, 12, 0.14) 0 52%, rgba(28, 18, 8, 0.26) 78%, rgba(18, 11, 4, 0.34) 100%);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 .landing-page__root-label {
@@ -652,6 +756,7 @@ onBeforeUnmount(() => {
   opacity: 0;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.98) 0 24%, rgba(248, 219, 178, 0.94) 25% 50%, transparent 75%);
   filter:
+    drop-shadow(0 0 0.035rem rgba(72, 39, 14, 0.7))
     drop-shadow(0 0 0.14rem rgba(236, 189, 132, 0.58))
     drop-shadow(0 0 0.3rem rgba(151, 89, 39, 0.24));
   animation-name: sparkle-gold;
@@ -678,14 +783,14 @@ onBeforeUnmount(() => {
   width: 220%;
   height: 18%;
   background:
-    linear-gradient(90deg, transparent 0 4%, rgba(191, 122, 58, 0.96) 18% 82%, transparent 96% 100%);
+    linear-gradient(90deg, transparent 0 4%, rgba(110, 65, 23, 0.98) 14% 86%, transparent 96% 100%);
 }
 
 .landing-page__root-label-sparkle::after {
   width: 18%;
   height: 220%;
   background:
-    linear-gradient(180deg, transparent 0 4%, rgba(191, 122, 58, 0.96) 18% 82%, transparent 96% 100%);
+    linear-gradient(180deg, transparent 0 4%, rgba(110, 65, 23, 0.98) 14% 86%, transparent 96% 100%);
 }
 
 /* ---- Sparkle particles ---- */
@@ -693,23 +798,27 @@ onBeforeUnmount(() => {
   position: absolute;
   inset: -20% -15%;
   z-index: 3;
-  opacity: 0.78;
+  opacity: 0.94;
   pointer-events: none;
   overflow: visible;
 }
 
 .landing-page__sparkles--gold {
-  --sparkle-core: rgba(255, 248, 200, 1);
-  --sparkle-line: rgba(255, 215, 80, 1);
-  --sparkle-halo: rgba(255, 230, 140, 1);
-  --sparkle-glow: rgba(230, 175, 50, 0.7);
+  --sparkle-core: rgba(255, 252, 214, 1);
+  --sparkle-line: rgba(255, 226, 92, 1);
+  --sparkle-edge: rgba(140, 95, 24, 0.96);
+  --sparkle-halo: rgba(255, 238, 158, 1);
+  --sparkle-glow: rgba(230, 175, 50, 0.9);
+  --sparkle-rim: rgba(88, 56, 12, 0.46);
 }
 
 .landing-page__sparkles--silver {
-  --sparkle-core: rgba(240, 248, 255, 1);
-  --sparkle-line: rgba(200, 220, 245, 1);
-  --sparkle-halo: rgba(220, 235, 255, 1);
-  --sparkle-glow: rgba(170, 195, 230, 0.6);
+  --sparkle-core: rgba(248, 252, 255, 1);
+  --sparkle-line: rgba(214, 232, 255, 1);
+  --sparkle-edge: rgba(103, 126, 156, 0.94);
+  --sparkle-halo: rgba(232, 242, 255, 1);
+  --sparkle-glow: rgba(170, 195, 230, 0.82);
+  --sparkle-rim: rgba(55, 73, 97, 0.38);
 }
 
 .landing-page__sparkles--parchment {
@@ -734,10 +843,18 @@ onBeforeUnmount(() => {
   transform-origin: center;
   pointer-events: none;
   opacity: 0;
-  background: radial-gradient(circle, rgba(255, 255, 255, 1) 0 24%, var(--sparkle-core) 25% 50%, transparent 75%);
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 255, 255, 1) 0 20%,
+      var(--sparkle-core) 21% 44%,
+      color-mix(in srgb, var(--sparkle-edge) 42%, transparent) 45% 56%,
+      transparent 76%
+    );
   filter:
-    drop-shadow(0 0 0.2rem color-mix(in srgb, var(--sparkle-halo) 78%, transparent))
-    drop-shadow(0 0 0.44rem color-mix(in srgb, var(--sparkle-glow) 72%, transparent));
+    drop-shadow(0 0 0.03rem var(--sparkle-rim))
+    drop-shadow(0 0 0.24rem color-mix(in srgb, var(--sparkle-halo) 88%, transparent))
+    drop-shadow(0 0 0.56rem color-mix(in srgb, var(--sparkle-glow) 84%, transparent));
   animation-delay: calc(var(--sparkle-delay) * var(--landing-sparkle-time-scale));
   animation-duration: calc(var(--sparkle-duration) * var(--landing-sparkle-time-scale));
   animation-iteration-count: infinite;
@@ -759,7 +876,14 @@ onBeforeUnmount(() => {
   border-radius: 999px;
   transform: translate(-50%, -50%);
   background:
-    linear-gradient(90deg, transparent 0 4%, var(--sparkle-line) 18% 82%, transparent 96% 100%);
+    linear-gradient(
+      90deg,
+      transparent 0 4%,
+      color-mix(in srgb, var(--sparkle-edge) 96%, transparent) 16% 24%,
+      var(--sparkle-line) 33% 67%,
+      color-mix(in srgb, var(--sparkle-edge) 96%, transparent) 76% 84%,
+      transparent 96% 100%
+    );
   opacity: 1;
 }
 
@@ -772,7 +896,14 @@ onBeforeUnmount(() => {
   width: 18%;
   height: 220%;
   background:
-    linear-gradient(180deg, transparent 0 4%, var(--sparkle-line) 18% 82%, transparent 96% 100%);
+    linear-gradient(
+      180deg,
+      transparent 0 4%,
+      color-mix(in srgb, var(--sparkle-edge) 96%, transparent) 16% 24%,
+      var(--sparkle-line) 33% 67%,
+      color-mix(in srgb, var(--sparkle-edge) 96%, transparent) 76% 84%,
+      transparent 96% 100%
+    );
 }
 
 .landing-page__sparkles--silver .landing-page__sparkle-particle {
@@ -791,37 +922,6 @@ onBeforeUnmount(() => {
   filter:
     drop-shadow(0 0 0.15rem color-mix(in srgb, var(--sparkle-halo) 76%, transparent))
     drop-shadow(0 0 0.34rem color-mix(in srgb, var(--sparkle-glow) 64%, transparent));
-}
-
-.landing-page__tutorial-name {
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 0.38rem);
-  transform: translate(-50%, 0.22rem);
-  width: max-content;
-  max-width: min(18rem, 32cqw);
-  padding: 0.22rem 0.56rem;
-  border-radius: 999px;
-  border: 1px solid rgba(106, 83, 43, 0.18);
-  background: rgba(248, 241, 228, 0.92);
-  box-shadow: 0 8px 16px rgba(69, 49, 23, 0.08);
-  font-family: var(--font-sans);
-  font-size: clamp(0.72rem, 0.94cqw, 0.9rem);
-  font-weight: 700;
-  line-height: 1.25;
-  text-align: center;
-  white-space: nowrap;
-  color: rgba(59, 45, 29, 0.92);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--transition-fast), transform var(--transition-fast);
-}
-
-.landing-page__hotspot--tutorial:hover .landing-page__tutorial-name,
-.landing-page__hotspot--tutorial:focus-visible .landing-page__tutorial-name,
-.landing-page__hotspot--tutorial.landing-page__hotspot--active .landing-page__tutorial-name {
-  opacity: 1;
-  transform: translate(-50%, 0);
 }
 
 .landing-page__tooltip {
@@ -846,11 +946,6 @@ onBeforeUnmount(() => {
 
 .landing-page__hotspot--tutorial .landing-page__tooltip {
   bottom: calc(100% + 2rem);
-}
-
-.landing-page--compact-height .landing-page__hotspot--prefer-below .landing-page__tutorial-name {
-  top: calc(100% + 0.38rem);
-  bottom: auto;
 }
 
 .landing-page--compact-height .landing-page__hotspot--prefer-below .landing-page__tooltip {
@@ -1125,12 +1220,17 @@ onBeforeUnmount(() => {
 
 @media (max-width: 680px) {
   .landing-page {
-    padding: 0.45rem 0.2rem 0.45rem;
+    --landing-inline-padding: 0.45rem;
+    min-height: 100svh;
+    height: auto;
+    gap: 0.65rem;
+    padding: calc(env(safe-area-inset-top, 0px) + 0.35rem) 0.35rem 0.9rem;
+    overflow-y: visible;
   }
 
   .landing-page__title {
-    max-width: 97vw;
-    font-size: clamp(0.98rem, 2.1vw + 0.46rem, 1.18rem);
+    max-width: min(22rem, 92vw);
+    font-size: clamp(0.88rem, 3.9vw, 1.12rem);
     line-height: 1.08;
     white-space: normal;
     text-wrap: balance;
@@ -1141,11 +1241,16 @@ onBeforeUnmount(() => {
   }
 
   .landing-page__legend {
-    width: min(25rem, 84vw);
+    width: min(92vw, 22rem);
+  }
+
+  .landing-page__tree-area {
+    transform: none;
   }
 
   .landing-page__tree-frame {
-    width: min(100vw, calc((100svh - 12.8rem) * 1279 / 1809));
+    width: min(92vw, 27rem);
+    height: auto;
   }
 
   .landing-page__tooltip {
@@ -1161,6 +1266,29 @@ onBeforeUnmount(() => {
 
   .landing-page__root-label {
     font-size: clamp(0.68rem, 2vw, 0.84rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-page__masthead {
+    width: 100%;
+  }
+
+  .landing-page__title {
+    max-width: 21rem;
+    font-size: clamp(0.84rem, 3.65vw, 1rem);
+  }
+
+  .landing-page__tree-frame {
+    width: min(92vw, 24rem);
+  }
+
+  .landing-page__legend {
+    width: min(92vw, 20rem);
+  }
+
+  .landing-page__root-label {
+    font-size: clamp(0.6rem, 2.4vw, 0.76rem);
   }
 }
 

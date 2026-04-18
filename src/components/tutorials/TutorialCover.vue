@@ -92,6 +92,7 @@ defineProps({
 .tutorial-cover__title {
   margin: 0;
   font-size: clamp(2rem, 4vw, 3rem);
+  overflow-wrap: anywhere;
 }
 
 .tutorial-cover__subtitle {
@@ -105,6 +106,7 @@ defineProps({
   width: 100%;
   max-width: none;
   margin: 1rem 0 0;
+  overflow-wrap: anywhere;
 }
 
 .tutorial-cover__meta {
@@ -148,6 +150,38 @@ defineProps({
 @media (max-width: 900px) {
   .tutorial-cover--with-media {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .tutorial-cover {
+    padding: 1rem;
+    border-radius: 22px;
+  }
+
+  .tutorial-cover__title {
+    font-size: clamp(1.8rem, 9vw, 2.4rem);
+    line-height: 1.06;
+  }
+
+  .tutorial-cover__subtitle {
+    margin-top: 0.5rem;
+    font-size: 0.94rem;
+  }
+
+  .tutorial-cover__description {
+    margin-top: 0.75rem;
+    line-height: 1.6;
+  }
+
+  .tutorial-cover__meta {
+    gap: 0.5rem;
+    padding-top: 1rem;
+  }
+
+  .tutorial-cover__media img {
+    max-height: none;
+    border-radius: 18px;
   }
 }
 </style>

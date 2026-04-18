@@ -1,13 +1,27 @@
 <script setup>
 import { digitalPalaeographyPage } from '../../content/tutorials/digitalPalaeography'
+import TutorialBreadcrumb from '../../components/navigation/TutorialBreadcrumb.vue'
+import { routePaths } from '../../config/siteLinks'
 </script>
 
 <template>
   <main class="digipal-page">
     <div class="digipal-page__inner">
-      <details class="digipal-page__panel" open>
+      <TutorialBreadcrumb
+        :crumbs="[
+          { label: 'Tutorials', to: routePaths.tutorialsIndex },
+          { label: 'Digital Palaeography', to: routePaths.tutorialPages.digitalPalaeography }
+        ]"
+      />
+
+      <details class="digipal-page__panel">
         <summary class="digipal-page__summary">
-          <span>Introduction</span>
+          <div class="digipal-page__summary-content">
+            <span class="digipal-page__summary-title">Introduction</span>
+            <p class="digipal-page__teaser" aria-hidden="true">
+              {{ digitalPalaeographyPage.introduction.join(' ') }}
+            </p>
+          </div>
           <span class="digipal-page__summary-icon" aria-hidden="true"></span>
         </summary>
 
@@ -97,7 +111,7 @@ import { digitalPalaeographyPage } from '../../content/tutorials/digitalPalaeogr
 
 .digipal-page__summary {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
   padding: 1.35rem 1.45rem;
@@ -107,11 +121,39 @@ import { digitalPalaeographyPage } from '../../content/tutorials/digitalPalaeogr
   list-style: none;
 }
 
+.digipal-page__summary-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.digipal-page__summary-title {
+  display: block;
+}
+
+.digipal-page__teaser {
+  margin-top: 0.75rem;
+  font-size: 1.05rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--color-ink-soft);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+}
+
+.digipal-page__panel[open] .digipal-page__teaser {
+  display: none;
+}
+
 .digipal-page__summary::-webkit-details-marker {
   display: none;
 }
 
 .digipal-page__summary-icon {
+  margin-top: 0.25rem;
   flex: 0 0 auto;
   width: 0.9rem;
   height: 0.9rem;
@@ -131,6 +173,10 @@ import { digitalPalaeographyPage } from '../../content/tutorials/digitalPalaeogr
   padding: 0 1.45rem 1.45rem;
 }
 
+section.digipal-page__panel > .digipal-page__body {
+  padding-top: 1.45rem;
+}
+
 .digipal-page__body p,
 .digipal-page__body ul,
 .digipal-page__body h1,
@@ -140,7 +186,6 @@ import { digitalPalaeographyPage } from '../../content/tutorials/digitalPalaeogr
 
 .digipal-page__body--map {
   gap: 1.1rem;
-  padding-top: 1.45rem;
 }
 
 .digipal-page__header {

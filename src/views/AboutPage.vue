@@ -38,23 +38,40 @@ import { aboutContent } from '../content/about/about'
                 </a>
               </figcaption>
             </figure>
-            <p
+            <template
               v-for="(paragraph, paragraphIndex) in aboutContent.overview.paragraphs"
               :key="`${aboutContent.overview.id}-${paragraphIndex}`"
-              class="about-page__paragraph about-page__paragraph--intro"
             >
-              <template v-for="(segment, segmentIndex) in paragraph" :key="`${paragraphIndex}-${segmentIndex}`">
+              <p class="about-page__paragraph about-page__paragraph--intro">
+                <template v-for="(segment, segmentIndex) in paragraph" :key="`${paragraphIndex}-${segmentIndex}`">
+                  <a
+                    v-if="segment.href"
+                    :href="segment.href"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    {{ segment.text }}
+                  </a>
+                  <span v-else>{{ segment.text }}</span>
+                </template>
+              </p>
+
+              <p
+                v-if="paragraphIndex === 0 && aboutContent.overview.resources"
+                :id="aboutContent.overview.resources.id"
+                class="about-page__resource-link-row"
+                aria-label="Resources link"
+              >
                 <a
-                  v-if="segment.href"
-                  :href="segment.href"
+                  :href="aboutContent.overview.resources.href"
+                  class="ui-button-link ui-button--secondary"
                   target="_blank"
                   rel="noreferrer noopener"
                 >
-                  {{ segment.text }}
+                  {{ aboutContent.overview.resources.label }}
                 </a>
-                <span v-else>{{ segment.text }}</span>
-              </template>
-            </p>
+              </p>
+            </template>
           </div>
         </div>
       </SectionFrame>
@@ -102,14 +119,21 @@ import { aboutContent } from '../content/about/about'
 
       <SectionFrame :id="aboutContent.acknowledgements.id" :title="aboutContent.acknowledgements.title" tone="muted">
         <div class="about-page__logo-grid">
-          <figure
+          <a
             v-for="logo in aboutContent.acknowledgements.logos"
             :key="logo.id"
             class="about-page__logo-card ui-surface-card ui-surface-card--soft"
+            :class="{
+              'about-page__logo-card--sub': logo.id === 'sub',
+              'about-page__logo-card--uni-goettingen': logo.id === 'uni-goettingen',
+            }"
+            :href="logo.href"
+            target="_blank"
+            rel="noreferrer noopener"
           >
             <img :src="logo.src" :alt="logo.alt" />
-            <figcaption>{{ logo.label }}</figcaption>
-          </figure>
+            <span class="about-page__logo-caption">{{ logo.label }}</span>
+          </a>
         </div>
       </SectionFrame>
     </div>
@@ -162,6 +186,16 @@ import { aboutContent } from '../content/about/about'
 
 .about-page__paragraph:last-child {
   margin-bottom: 0;
+}
+
+.about-page__resource-link-row {
+  display: flex;
+  margin: 0.75rem 0 0;
+}
+
+.about-page__resource-link-row > .ui-button-link {
+  width: fit-content;
+  max-width: 100%;
 }
 
 .about-page__app-grid,
@@ -243,7 +277,7 @@ import { aboutContent } from '../content/about/about'
 
 .about-page__logo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.95rem;
 }
 
@@ -253,6 +287,7 @@ import { aboutContent } from '../content/about/about'
   place-items: center;
   text-align: center;
   padding: 1rem;
+  text-decoration: none;
 }
 
 .about-page__logo-card img {
@@ -262,13 +297,31 @@ import { aboutContent } from '../content/about/about'
   object-fit: contain;
 }
 
-.about-page__logo-card figcaption {
+.about-page__logo-card--sub img {
+  max-height: 164px;
+}
+
+.about-page__logo-card--uni-goettingen img {
+  background:
+    linear-gradient(135deg, rgba(74, 89, 103, 0.94), rgba(39, 51, 63, 0.96));
+  padding: 0.95rem 1rem;
+  border-radius: 14px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+    0 10px 24px rgba(31, 40, 50, 0.18);
+}
+
+.about-page__logo-caption {
   margin: 0;
   font-size: 0.92rem;
   color: var(--color-ink-soft);
 }
 
 @media (max-width: 720px) {
+  .about-page__resource-link-row > .ui-button-link {
+    width: 100%;
+  }
+
   .about-page__manuscript-figure {
     float: none;
     width: min(100%, var(--about-prose-width));

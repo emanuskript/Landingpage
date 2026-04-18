@@ -43,8 +43,9 @@ import { bookbindingChapters, bookbindingOverview, workshopHotspots } from '../.
 
 .chapter-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 320px));
   gap: 1rem;
+  justify-content: center;
 }
 
 .chapter-grid__card {
@@ -84,5 +85,11 @@ import { bookbindingChapters, bookbindingOverview, workshopHotspots } from '../.
   background:
     linear-gradient(180deg, rgba(255, 252, 246, 0.97), rgba(243, 233, 214, 0.94)),
     radial-gradient(circle at top right, rgba(57, 89, 120, 0.08), transparent 36%);
+}
+
+@media (min-width: 840px) {
+  .chapter-grid__card--feature {
+    grid-column: 2;
+  }
 }
 </style>

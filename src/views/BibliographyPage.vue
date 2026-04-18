@@ -222,40 +222,6 @@ watch(
             </div>
           </SectionFrame>
 
-          <SectionFrame title="Browse collections" tone="muted">
-            <p v-if="loadingCollections" class="bibliography-page__sidebar-note">Loading collection list...</p>
-            <template v-else>
-              <p class="bibliography-page__sidebar-note">
-                Use these Zotero collections to narrow the bibliography by thematic groupings from the Zotero library.
-              </p>
-              <div class="bibliography-collections">
-                <button
-                  type="button"
-                  :class="[
-                    'bibliography-collection',
-                    'ui-select-card',
-                    { 'ui-select-card--active': !selectedCollection },
-                  ]"
-                  :aria-pressed="!selectedCollection"
-                  @click="toggleCollection('')"
-                >
-                  <span class="bibliography-collection__name">All references</span>
-                  <strong class="bibliography-collection__count">Reset filter</strong>
-                </button>
-                <button
-                  v-for="collection in collections"
-                  :key="collection.key"
-                  type="button"
-                  :class="['bibliography-collection', 'ui-select-card', { 'ui-select-card--active': selectedCollection === collection.key }]"
-                  :aria-pressed="selectedCollection === collection.key"
-                  @click="toggleCollection(collection.key)"
-                >
-                  <span class="bibliography-collection__name">{{ collection.name }}</span>
-                  <strong class="bibliography-collection__count">{{ collection.numItems }} items</strong>
-                </button>
-              </div>
-            </template>
-          </SectionFrame>
         </aside>
 
         <div class="bibliography-layout__results">

@@ -206,8 +206,17 @@ onBeforeUnmount(() => {
 
 @media (max-width: 760px) {
   .root-home {
-    top: calc(env(safe-area-inset-top, 0px) - 1rem);
-    width: clamp(132px, 34vw, 188px);
+    top: calc(env(safe-area-inset-top, 0px) - 0.35rem);
+    left: -26px;
+    width: clamp(104px, 24vw, 138px);
+  }
+}
+
+@media (max-width: 480px) {
+  .root-home {
+    top: calc(env(safe-area-inset-top, 0px) + 0.15rem);
+    left: -22px;
+    width: 96px;
   }
 }
 </style>

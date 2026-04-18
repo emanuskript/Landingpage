@@ -199,6 +199,8 @@ onUpdated(() => {
 }
 
 .source-article {
+  --source-image-max-width: 44rem;
+  --source-image-max-height: calc(var(--source-image-max-width) * 841.89 / 1190.55);
   padding: clamp(1.2rem, 2vw, 1.8rem);
   background:
     linear-gradient(180deg, rgba(255, 252, 246, 0.96), rgba(244, 236, 221, 0.92)),
@@ -242,7 +244,13 @@ onUpdated(() => {
 
 .source-article :deep(p),
 .source-article :deep(li) {
+  font-size: 0.96rem;
   line-height: 1.7;
+}
+
+.source-article :deep(ul),
+.source-article :deep(ol) {
+  padding-left: 1.2rem;
 }
 
 .source-article :deep(p),
@@ -257,7 +265,16 @@ onUpdated(() => {
   color: var(--color-primary);
 }
 
-.source-article :deep(img),
+.source-article :deep(img) {
+  display: block;
+  width: min(100%, var(--source-image-max-width));
+  max-width: 100%;
+  max-height: var(--source-image-max-height);
+  height: auto;
+  margin-inline: auto;
+  object-fit: contain;
+}
+
 .source-article :deep(iframe),
 .source-article :deep(video) {
   display: block;
@@ -289,8 +306,39 @@ onUpdated(() => {
 }
 
 .source-article :deep(.illustration-block img) {
-  width: 100%;
   border-radius: 16px;
+}
+
+.source-article :deep(.illustration-block--stitch-row .illustration-strip) {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  align-items: start;
+  justify-items: center;
+}
+
+.source-article :deep(.illustration-block--stitch-row .illustration-strip img) {
+  width: 100%;
+  max-width: 24rem;
+  height: auto;
+  object-fit: contain;
+  justify-self: center;
+  border-radius: 12px;
+}
+
+.source-article :deep(.illustration-block--spine-row .illustration-strip) {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  align-items: start;
+  justify-items: center;
+}
+
+.source-article :deep(.illustration-block--spine-row .illustration-strip img) {
+  width: 100%;
+  max-width: 24rem;
+  justify-self: center;
+  border-radius: 12px;
 }
 
 .source-article :deep(.illustration-caption) {
@@ -326,6 +374,17 @@ onUpdated(() => {
   color: var(--color-ink-soft);
 }
 
+.source-article :deep(.source-indent-block--poem) {
+  margin: 1rem 0 0;
+  padding: 1rem 1.2rem;
+  background: rgba(255, 250, 242, 0.74);
+}
+
+.source-article :deep(.source-indent-block--poem p) {
+  margin: 0;
+  white-space: normal;
+}
+
 .source-article :deep(.source-table-wrap) {
   width: 100%;
   margin: 1.2rem 0;
@@ -338,8 +397,8 @@ onUpdated(() => {
   border-collapse: collapse;
   min-width: 32rem;
   font-family: var(--font-sans);
-  font-size: 0.92rem;
-  line-height: 1.55;
+  font-size: 0.9rem;
+  line-height: 1.6;
   background: rgba(255, 252, 246, 0.78);
   border: 1px solid rgba(106, 83, 43, 0.16);
   border-radius: 16px;
@@ -348,7 +407,7 @@ onUpdated(() => {
 
 .source-article :deep(th),
 .source-article :deep(td) {
-  padding: 0.78rem 0.9rem;
+  padding: 0.72rem 0.88rem;
   border-bottom: 1px solid rgba(106, 83, 43, 0.14);
   vertical-align: top;
 }

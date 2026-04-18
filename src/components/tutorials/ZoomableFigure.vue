@@ -15,6 +15,7 @@ const props = defineProps({
 const open = ref(false)
 const shouldRender = ref(false)
 const rootRef = ref(null)
+const figureOrientation = ref('unknown')
 let observer
 
 function ensureVisible() {
@@ -26,6 +27,13 @@ function ensureVisible() {
 function openFigure() {
   ensureVisible()
   open.value = true
+}
+
+function handleImageLoad(event) {
+  const image = event?.target
+  if (!image?.naturalWidth || !image?.naturalHeight) return
+
+  figureOrientation.value = image.naturalWidth >= image.naturalHeight ? 'horizontal' : 'vertical'
 }
 
 onMounted(() => {
@@ -54,18 +62,21 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="rootRef" class="zoomable-figure">
+  <div ref="rootRef" class="zoomable-figure" :class="`zoomable-figure--${figureOrientation}`">
     <button class="zoomable-figure__button" type="button" @click="openFigure">
-      <img
-        v-if="shouldRender"
-        :src="props.image"
-        :alt="props.alt"
-        loading="lazy"
-        decoding="async"
-        fetchpriority="low"
-      />
-      <div v-else class="zoomable-figure__placeholder" aria-hidden="true"></div>
-      <span>Zoom</span>
+      <span class="zoomable-figure__media">
+        <img
+          v-if="shouldRender"
+          :src="props.image"
+          :alt="props.alt"
+          loading="lazy"
+          decoding="async"
+          fetchpriority="low"
+          @load="handleImageLoad"
+        />
+        <div v-else class="zoomable-figure__placeholder" aria-hidden="true"></div>
+      </span>
+      <span class="zoomable-figure__zoom-label">Zoom</span>
     </button>
 
     <teleport to="body">
@@ -78,38 +89,68 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+.zoomable-figure {
+  height: 100%;
+}
+
 .zoomable-figure__button {
   display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-content: start;
   gap: 0.55rem;
   width: 100%;
+  height: 100%;
   padding: 0;
   background: none;
   border: none;
   text-align: left;
 }
 
-.zoomable-figure__button span {
+.zoomable-figure__media {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 0;
+  border-radius: 18px;
+  border: 1px solid var(--color-border-strong);
+  background: rgba(255, 251, 243, 0.72);
+  overflow: hidden;
+}
+
+.zoomable-figure--horizontal .zoomable-figure__media {
+  aspect-ratio: 4 / 3;
+}
+
+.zoomable-figure__zoom-label {
   font-family: var(--font-sans);
   font-size: 0.8rem;
   color: var(--color-primary);
+  justify-self: start;
 }
 
 .zoomable-figure__button img {
   width: 100%;
+  height: auto;
   display: block;
-  border-radius: 18px;
-  border: 1px solid var(--color-border-strong);
-  background: rgba(255, 251, 243, 0.72);
+  object-fit: contain;
+}
+
+.zoomable-figure--horizontal .zoomable-figure__button img {
+  width: 100%;
+  height: 100%;
 }
 
 .zoomable-figure__placeholder {
   width: 100%;
-  aspect-ratio: 4 / 3;
-  border-radius: 18px;
-  border: 1px solid var(--color-border-strong);
+  min-height: 10rem;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.24), transparent 48%),
     rgba(244, 236, 221, 0.78);
+}
+
+.zoomable-figure--horizontal .zoomable-figure__placeholder {
+  height: 100%;
+  min-height: 0;
 }
 
 .zoomable-figure__overlay {

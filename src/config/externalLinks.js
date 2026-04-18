@@ -25,8 +25,8 @@ export const appExternalLinks = {
     zenodoTodo: null,
   },
   proteus: {
-    landingUrl: 'https://github.com/emanuskript/Proteus/releases/tag/v2.0.0',
-    launchUrl: 'https://github.com/emanuskript/Proteus/releases/tag/v2.0.0',
+    landingUrl: 'https://github.com/emanuskript/Proteus/releases',
+    launchUrl: 'https://github.com/emanuskript/Proteus/releases',
     launchLabel: 'Download Proteus',
     launchTodo: null,
     githubUrl: 'https://github.com/emanuskript/Proteus',

@@ -50,4 +50,18 @@ defineProps({
 .site-shell__content {
   margin-top: 2.2rem;
 }
+
+@media (max-width: 680px) {
+  .site-shell {
+    padding: 1.5rem 0 3rem;
+  }
+
+  .site-shell__inner {
+    width: min(1120px, calc(100% - 1rem));
+  }
+
+  .site-shell__content {
+    margin-top: 1.4rem;
+  }
+}
 </style>

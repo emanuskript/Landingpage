@@ -38,6 +38,13 @@ const appDefinitions = {
       'Useful where layout structure matters before deeper processing',
       'Helps isolate text blocks, decorations, and marginal elements for downstream workflows',
     ],
+    resources: {
+      to: {
+        path: routePaths.aboutProject,
+        hash: '#ai-safety-resources',
+      },
+      label: 'Resources about AI Safety and Best Practices',
+    },
   },
   proteus: {
     id: 'proteus',
@@ -68,6 +75,13 @@ const appDefinitions = {
       'Complements the site’s historical and digital manuscript routes',
       'Enables comparative examination of letterforms across hands and manuscript witnesses',
     ],
+    resources: {
+      to: {
+        path: routePaths.aboutProject,
+        hash: '#ai-safety-resources',
+      },
+      label: 'Resources about AI Safety and Best Practices',
+    },
   },
 }
 
@@ -87,6 +101,13 @@ export const apps = Object.fromEntries(
           label: external.launchLabel,
           todo: external.launchTodo,
         },
+        howToUse:
+          appId === 'proteus'
+            ? {
+                to: `${routePaths.tutorialPages.msi}/proteus`,
+                label: 'How to use',
+              }
+            : null,
         github: {
           href: external.githubUrl,
           label: `${app.name} on GitHub`,

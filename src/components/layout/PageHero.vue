@@ -51,11 +51,13 @@ defineProps({
 }
 
 .page-hero__title {
-  max-width: 20ch;
+  max-width: min(20ch, 100%);
   margin: 0;
   font-size: clamp(2.4rem, 5vw, 4.4rem);
   line-height: 1.04;
   letter-spacing: -0.03em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 
 .page-hero__lede {
@@ -63,6 +65,7 @@ defineProps({
   margin: 1rem 0 0;
   font-size: 1.08rem;
   color: var(--color-ink-soft);
+  overflow-wrap: anywhere;
 }
 
 .page-hero__meta {
@@ -74,5 +77,33 @@ defineProps({
 
 .page-hero__meta-item {
   align-self: start;
+}
+
+@media (max-width: 680px) {
+  .page-hero {
+    padding-top: 0.55rem;
+  }
+
+  .page-hero::after {
+    width: min(140px, 46vw);
+    margin-top: 1rem;
+  }
+
+  .page-hero__title {
+    max-width: none;
+    font-size: clamp(2rem, 10vw, 3rem);
+    line-height: 1.02;
+  }
+
+  .page-hero__lede {
+    margin-top: 0.75rem;
+    font-size: 0.98rem;
+    line-height: 1.62;
+  }
+
+  .page-hero__meta {
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
 }
 </style>

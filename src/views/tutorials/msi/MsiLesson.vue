@@ -39,11 +39,14 @@ const lessonMeta = computed(() => {
   if (!lesson.value) return []
   return [`Unit ${lesson.value.numeral}`, 'MSI tutorial']
 })
+
+const isProteusLesson = computed(() => lesson.value?.slug === 'proteus')
 </script>
 
 <template>
   <TutorialShell
     v-if="lesson"
+    :class="{ 'msi-lesson--proteus': isProteusLesson }"
     :crumbs="[
       { label: 'Tutorials', to: routePaths.tutorialsIndex },
       { label: msiOverview.title, to: getMsiPath() },
@@ -72,5 +75,34 @@ const lessonMeta = computed(() => {
 .page-stack {
   display: grid;
   gap: 1rem;
+}
+
+.msi-lesson--proteus :deep(.tutorial-cover__media) {
+  justify-items: center;
+}
+
+.msi-lesson--proteus :deep(.tutorial-cover__media img) {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  image-rendering: auto;
+}
+
+.msi-lesson--proteus :deep(.zoomable-figure__button) {
+  justify-items: center;
+}
+
+.msi-lesson--proteus :deep(.zoomable-figure__button img) {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  image-rendering: auto;
+}
+
+.msi-lesson--proteus :deep(.zoomable-figure__overlay img) {
+  width: auto;
+  max-width: min(1200px, 94vw);
+  image-rendering: auto;
 }
 </style>

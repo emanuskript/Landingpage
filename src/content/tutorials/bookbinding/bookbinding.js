@@ -15,7 +15,7 @@ export const bookbindingSourceAssetMap = {
     '/images/bookbinding/Folio-Quarto-Octavo_Compared.svg',
   'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Marie_de_France_1.tif/lossy-page1-714px-Marie_de_France_1.tif.jpg?_=20120509143945':
     '/images/bookbinding/Marie%20de%20France.jpg',
-  'https://www.e-codices.unifr.ch/en/fmb/cb-0127/244r': '/images/bookbinding/Henry%20Gospel.jpg',
+  'https://www.e-codices.unifr.ch/en/fmb/cb-0127/244r': '/images/bookbinding/bodmer-cb-0127-244r.jpg',
   'https://www.conservation-wiki.com/wiki/File:Sewing-frame.jpg': '/images/bookbinding/Sewing-frame.jpg',
   'https://www.conservation-wiki.com/w/images/1/15/Sewing-frame.jpg': '/images/bookbinding/Sewing-frame.jpg',
   'https://www.conservation-wiki.com/w/images/8/83/SecondaryEndband01.JPG':

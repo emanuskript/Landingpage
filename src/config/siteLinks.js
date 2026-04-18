@@ -1,5 +1,6 @@
 export const routePaths = {
   landing: '/',
+  landingCalibration: '/landing-calibration',
   apps: '/apps',
   tutorialsIndex: '/tutorials',
   bibliography: '/bibliography',
