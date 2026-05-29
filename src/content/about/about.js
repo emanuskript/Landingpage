@@ -116,7 +116,7 @@ export const aboutContent = {
         id: 'ifdh',
         label: 'Institute for Digital Humanities',
         alt: 'Logo of the Institute for Digital Humanities.',
-        src: '/images/partners/ifdh.png',
+        src: '/images/partners/ifdh.webp',
       },
     ],
   },

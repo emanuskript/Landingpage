@@ -24,7 +24,7 @@ import { aboutContent } from '../content/about/about'
               >
                 <img
                   class="about-page__manuscript-image"
-                  src="/images/bibliography/bern-burgerbibliothek-cod-9.png"
+                  src="/images/bibliography/bern-burgerbibliothek-cod-9.webp"
                   alt="Manuscript page from Bern, Burgerbibliothek, Cod. 9."
                 />
               </a>

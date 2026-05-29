@@ -2,32 +2,32 @@ const bookbindingSourcePath = '/source/bookbinding/tutorial.html'
 
 export const bookbindingSourceAssetMap = {
   // Remote sources remapped to local copies for stable rendering.
-  'https://nbn-resolving.org/urn:nbn:de:bvb:22-dtl-0000025604': '/images/bookbinding/bamberger-schreiberbild.jpg',
+  'https://nbn-resolving.org/urn:nbn:de:bvb:22-dtl-0000025604': '/images/bookbinding/bamberger-schreiberbild.webp',
   'http://digital.bib-bvb.de/webclient/StreamGate?folder_id=0&dvs=1773092214098~122':
-    '/images/bookbinding/bamberger-schreiberbild.jpg',
-  'https://bibliotheque-numerique.ville-laon.fr/idviewer/1465/26': '/images/bookbinding/laon-diagram.png',
-  'https://digi.vatlib.it/view/MSS_Pal.lat.1993/0005': '/images/bookbinding/opicinus-sheet.jpg',
+    '/images/bookbinding/bamberger-schreiberbild.webp',
+  'https://bibliotheque-numerique.ville-laon.fr/idviewer/1465/26': '/images/bookbinding/laon-diagram.webp',
+  'https://digi.vatlib.it/view/MSS_Pal.lat.1993/0005': '/images/bookbinding/opicinus-sheet.webp',
   'https://books.google.de/books/content?id=mNOBekGmmpQC&pg=PA22&img=1&zoom=3&hl=en&sig=ACfU3U0mCh32-yLR1V6CWJbjSnlfuS_1TQ&w=1025':
-    '/images/bookbinding/tagliente-scribal-tools.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/c/c8/Busto_maschile.JPG': '/images/bookbinding/Busto_maschile.JPG',
-  'https://upload.wikimedia.org/wikipedia/commons/a/ab/Mendel_I_034_v.jpg': '/images/bookbinding/Mendel_I_034_v.jpg',
+    '/images/bookbinding/tagliente-scribal-tools.webp',
+  'https://upload.wikimedia.org/wikipedia/commons/c/c8/Busto_maschile.JPG': '/images/bookbinding/Busto_maschile.webp',
+  'https://upload.wikimedia.org/wikipedia/commons/a/ab/Mendel_I_034_v.jpg': '/images/bookbinding/Mendel_I_034_v.webp',
   'https://upload.wikimedia.org/wikipedia/commons/8/8c/Folio-Quarto-Octavo_Compared.svg':
     '/images/bookbinding/Folio-Quarto-Octavo_Compared.svg',
   'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Marie_de_France_1.tif/lossy-page1-714px-Marie_de_France_1.tif.jpg?_=20120509143945':
-    '/images/bookbinding/Marie%20de%20France.jpg',
-  'https://www.e-codices.unifr.ch/en/fmb/cb-0127/244r': '/images/bookbinding/Henry%20Gospel.jpg',
-  'https://www.conservation-wiki.com/wiki/File:Sewing-frame.jpg': '/images/bookbinding/Sewing-frame.jpg',
-  'https://www.conservation-wiki.com/w/images/1/15/Sewing-frame.jpg': '/images/bookbinding/Sewing-frame.jpg',
-  'https://www.conservation-wiki.com/w/images/8/83/SecondaryEndband01.JPG':
-    '/images/bookbinding/SecondaryEndband01.JPG',
-  'https://www.conservation-wiki.com/w/images/b/bc/Germanforedlg.jpg': '/images/bookbinding/Germanforedlg.jpg',
-  'https://www.conservation-wiki.com/w/images/d/d6/Fragmentarium_F-boql_1r.jpg_medium.jpg':
-    '/images/bookbinding/Fragmentarium_F-boql_1r.jpg_medium.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/4/4a/Buchbinder-1568.png': '/images/bookbinding/Buchbinder-1568.png',
-  'https://upload.wikimedia.org/wikipedia/commons/2/2a/Codex_of_Uta.png': '/images/bookbinding/Codex_of_Uta.png',
-  'https://upload.wikimedia.org/wikipedia/commons/5/5a/Landauer_I_021_v.jpg': '/images/bookbinding/Landauer_I_021_v.jpg',
+    '/images/bookbinding/Marie%20de%20France.webp',
+  'https://www.e-codices.unifr.ch/en/fmb/cb-0127/244r': '/images/bookbinding/Henry%20Gospel.webp',
+  'https://www.conservation-wiki.com/wiki/File:Sewing-frame.jpg': '/images/bookbinding/Sewing-frame.webp',
+  'https://www.conservation-wiki.com/w/images/1/15/Sewing-frame.webp': '/images/bookbinding/Sewing-frame.webp',
+  'https://www.conservation-wiki.com/w/images/8/83/SecondaryEndband01.webp':
+    '/images/bookbinding/SecondaryEndband01.webp',
+  'https://www.conservation-wiki.com/w/images/b/bc/Germanforedlg.webp': '/images/bookbinding/Germanforedlg.webp',
+  'https://www.conservation-wiki.com/w/images/d/d6/Fragmentarium_F-boql_1r.jpg_medium.webp':
+    '/images/bookbinding/Fragmentarium_F-boql_1r.jpg_medium.webp',
+  'https://upload.wikimedia.org/wikipedia/commons/4/4a/Buchbinder-1568.png': '/images/bookbinding/Buchbinder-1568.webp',
+  'https://upload.wikimedia.org/wikipedia/commons/2/2a/Codex_of_Uta.png': '/images/bookbinding/Codex_of_Uta.webp',
+  'https://upload.wikimedia.org/wikipedia/commons/5/5a/Landauer_I_021_v.jpg': '/images/bookbinding/Landauer_I_021_v.webp',
   'https://upload.wikimedia.org/wikipedia/commons/0/0b/Santa_Caterina_d%27Alessandria_%28Torino%298244.jpg':
-    '/images/bookbinding/Santa_Caterina_d%27Alessandria_%28Torino%298244.jpg',
+    '/images/bookbinding/Santa_Caterina_d%27Alessandria_%28Torino%298244.webp',
 
   // Relative references from the source export.
   '15 Herringbone Stitch Slit Leather Thong copy.svg':
@@ -59,10 +59,10 @@ export const bookbindingOverview = {
     'From the oak gall on the landing page, the codicology tutorial opens onto a workshop scene. You can follow a guided tour through the numbered zones or explore the scriptorium freely and open fuller lessons from each region.',
     'Units I to IX trace the making of a western medieval codex from writing supports to covering and decoration. Unit X extends the tutorial with a comparative introduction to Islamic codicology and bookbinding by Narges Pourmohammadian Roudsari.',
   ],
-  coverImage: '/images/bookbinding/scriptorium-clean.png',
+  coverImage: '/images/bookbinding/scriptorium-clean.webp',
   coverAlt: 'Illustrated medieval workshop used as the gateway to the codicology tutorial.',
   coverCaption: 'The scriptorium scene acts as the tutorial gateway and maps the first nine codicology units.',
-  workshopImage: '/images/bookbinding/scriptorium-clean.png',
+  workshopImage: '/images/bookbinding/scriptorium-clean.webp',
 }
 
 const islamicReferences = [
@@ -302,25 +302,25 @@ export const bookbindingChapters = [
         type: 'figure-grid',
         figures: [
           {
-            image: '/images/bookbinding/islamic/type-i-binding.png',
+            image: '/images/bookbinding/islamic/type-i-binding.webp',
             alt: 'Diagram of a Type I Islamic binding.',
             caption: 'Figure 1. Type I binding.',
             detail: 'From Déroche 2015, p. 262, fig. 79.',
           },
           {
-            image: '/images/bookbinding/islamic/type-ii-binding.png',
+            image: '/images/bookbinding/islamic/type-ii-binding.webp',
             alt: 'Diagram of a Type II Islamic binding.',
             caption: 'Figure 2. Type II binding.',
             detail: 'From Déroche 2015, p. 260, fig. 78.',
           },
           {
-            image: '/images/bookbinding/islamic/type-ii-full-leather.jpeg',
+            image: '/images/bookbinding/islamic/type-ii-full-leather.webp',
             alt: 'Full leather Type II Islamic binding.',
             caption: 'Figure 3. Full leather binding of Type II.',
             detail: 'From Scheper 2019b, p. 57, fig. 13.',
           },
           {
-            image: '/images/bookbinding/islamic/type-iii-binding.png',
+            image: '/images/bookbinding/islamic/type-iii-binding.webp',
             alt: 'Diagram of a Type III Islamic binding.',
             caption: 'Figure 4. Type III binding.',
             detail: 'From Déroche 2015, p. 258, fig. 76.',
@@ -348,7 +348,7 @@ export const bookbindingChapters = [
       },
       {
         type: 'figure',
-        image: '/images/bookbinding/islamic/ruling-board-mistarah.jpeg',
+        image: '/images/bookbinding/islamic/ruling-board-mistarah.webp',
         alt: 'Board for ruling paper used in Islamic manuscript preparation.',
         caption: 'Figure 5. Board for ruling paper.',
         detail: 'The Metropolitan Museum of Art, New York, Gift of H. P. Kraus, 1973.',
@@ -400,25 +400,25 @@ export const bookbindingChapters = [
         type: 'figure-grid',
         figures: [
           {
-            image: '/images/bookbinding/islamic/link-stitch-scheper.jpeg',
+            image: '/images/bookbinding/islamic/link-stitch-scheper.webp',
             alt: 'Diagram of Islamic link-stitch sewing on two stations.',
             caption: 'Figure 6. Link-stitch on two stations.',
             detail: 'From Scheper 2019b, p. 63, fig. 25.',
           },
           {
-            image: '/images/bookbinding/islamic/link-stitch-gacek.jpeg',
+            image: '/images/bookbinding/islamic/link-stitch-gacek.webp',
             alt: 'Diagram of Islamic link-stitch sewing from Gacek.',
             caption: 'Figure 7. Link-stitch on two stations.',
             detail: 'From Gacek 2009, p. 248, fig. 177.',
           },
           {
-            image: '/images/bookbinding/islamic/spine-structure-endband.jpeg',
+            image: '/images/bookbinding/islamic/spine-structure-endband.webp',
             alt: 'Structure of an Islamic manuscript spine with primary and secondary endbands.',
             caption: 'Figure 8. Structure of the spine with primary and secondary endbands.',
             detail: 'From Scheper 2019b, p. 58, fig. 15.',
           },
           {
-            image: '/images/bookbinding/islamic/secondary-endband-diagram.png',
+            image: '/images/bookbinding/islamic/secondary-endband-diagram.webp',
             alt: 'Diagram of secondary endband weaving.',
             caption: 'Figure 9. Diagram of secondary endband weaving.',
             detail: 'From Fischer 1986, p. 191, fig. 5.',
@@ -491,25 +491,25 @@ export const bookbindingChapters = [
         type: 'figure-grid',
         figures: [
           {
-            image: '/images/bookbinding/islamic/type-ii-full-leather.jpeg',
+            image: '/images/bookbinding/islamic/type-ii-full-leather.webp',
             alt: 'Type II Islamic binding with one-piece full leather covering.',
             caption: 'Figure 10. Type II binding with one-piece full leather covering.',
             detail: 'From Scheper 2019b, p. 57, fig. 13.',
           },
           {
-            image: '/images/bookbinding/islamic/type-ii-two-piece.jpeg',
+            image: '/images/bookbinding/islamic/type-ii-two-piece.webp',
             alt: 'Type II Islamic binding with two-piece full leather covering.',
             caption: 'Figure 11. Type II binding with two-piece full leather covering.',
             detail: 'From Scheper 2019b, p. 57, fig. 14.',
           },
           {
-            image: '/images/bookbinding/islamic/partial-leather-binding.jpeg',
+            image: '/images/bookbinding/islamic/partial-leather-binding.webp',
             alt: 'Partial leather Islamic binding with leather frame and paper panels.',
             caption: 'Figure 12. Partial leather binding.',
             detail: 'From Scheper 2019b, p. 59, fig. 17.',
           },
           {
-            image: '/images/bookbinding/islamic/leather-spine-lining-doublure.jpeg',
+            image: '/images/bookbinding/islamic/leather-spine-lining-doublure.webp',
             alt: 'Structure of an Islamic binding showing leather spine lining and doublure.',
             caption: 'Figure 13. Structure with leather spine lining and leather doublure.',
             detail: 'From Scheper 2019b, p. 60, fig. 20.',
