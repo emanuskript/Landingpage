@@ -82,7 +82,7 @@ const sparkleConfig = {
 }
 
 export const landingArtwork = {
-  src: '/images/tree/tree-portrait-soft.png',
+  src: '/images/tree/tree-portrait-soft.webp',
   alt: 'Illustrated eManuSkript tree with apples for applications, oak galls for tutorials, and roots for informational pages.',
   ratio: {
     width: 1279,

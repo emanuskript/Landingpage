@@ -6,7 +6,7 @@ import { landingArtwork, landingCopy, landingHotspots } from '../config/landingH
 const DRAFT_STORAGE_KEY = 'emanuskript-landing-calibration-draft'
 const FINAL_STORAGE_KEY = 'emanuskript-landing-calibration-final'
 const legendArtwork = {
-  src: '/images/legend/guide-panel-replacement.png',
+  src: '/images/legend/guide-panel-replacement.webp',
   alt: 'Legend explaining applications, tutorials, and further information in the eManuSkript tree.',
 }
 
