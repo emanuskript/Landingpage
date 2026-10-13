@@ -26,18 +26,10 @@ const app = computed(() => apps[props.appId])
     <div class="app-detail">
       <section class="app-detail__access ui-surface-card ui-surface-card--soft">
         <div class="app-detail__access-copy">
-          <h2>{{ app.access.label }}</h2>
-          <p class="app-detail__access-text">
-            <template v-if="app.access.href">
-              Start here to open the live app or download page directly.
-            </template>
-            <template v-else>
-              A public launch link is not yet available, but the project repository is linked below.
-            </template>
-          </p>
-          <p v-if="app.id === 'proteus'" class="app-detail__access-note">
-            Proteus is available as a download for Apple silicon Macs, Windows, and Linux. For other operating systems, please use the installation instructions provided on GitHub.
-          </p>
+          <div class="app-detail__access-heading">
+            <h2>{{ app.access.label }}</h2>
+          </div>
+          <p class="app-detail__access-text">{{ app.accessMessage }}</p>
         </div>
 
         <div class="app-detail__access-actions">
@@ -66,13 +58,25 @@ const app = computed(() => apps[props.appId])
             {{ app.github.label }}
           </a>
 
-          <RouterLink
-            v-if="app.resources"
-            :to="app.resources.to"
-            class="app-detail__launch ui-button-link ui-button--secondary"
-          >
-            {{ app.resources.label }}
-          </RouterLink>
+          <details v-if="app.resources" class="app-detail__resource-tree">
+            <summary class="app-detail__launch ui-button-link ui-button--secondary app-detail__resource-toggle">
+              <span>{{ app.resources.label }}</span>
+              <span class="app-detail__resource-caret" aria-hidden="true"></span>
+            </summary>
+
+            <div class="app-detail__resource-branches">
+              <a
+                v-for="resource in app.resources.items"
+                :key="resource.href"
+                :href="resource.href"
+                class="app-detail__resource-link ui-button-link ui-button--secondary"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                {{ resource.label }}
+              </a>
+            </div>
+          </details>
         </div>
       </section>
 
@@ -121,6 +125,11 @@ const app = computed(() => apps[props.appId])
   flex-direction: column;
   gap: 0.45rem;
   min-height: 100%;
+  justify-content: center;
+}
+
+.app-detail__access-heading {
+  display: block;
 }
 
 .app-detail__access-copy h2 {
@@ -129,14 +138,6 @@ const app = computed(() => apps[props.appId])
 
 .app-detail__access-text {
   font-family: var(--font-sans);
-  color: var(--color-ink-soft);
-}
-
-.app-detail__access-note {
-  margin-top: auto;
-  font-family: var(--font-sans);
-  font-size: 0.94rem;
-  font-style: italic;
   color: var(--color-ink-soft);
 }
 
@@ -149,6 +150,82 @@ const app = computed(() => apps[props.appId])
 
 .app-detail__launch {
   width: fit-content;
+}
+
+.app-detail__resource-tree {
+  width: min(100%, 28rem);
+  justify-self: center;
+}
+
+.app-detail__resource-tree summary {
+  list-style: none;
+}
+
+.app-detail__resource-tree summary::-webkit-details-marker {
+  display: none;
+}
+
+.app-detail__resource-toggle {
+  width: 100%;
+  justify-content: space-between;
+  text-align: left;
+  white-space: normal;
+}
+
+.app-detail__resource-caret {
+  width: 0.72rem;
+  height: 0.72rem;
+  flex: 0 0 auto;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-12%);
+  transition: transform var(--transition-fast);
+}
+
+.app-detail__resource-tree[open] .app-detail__resource-caret {
+  transform: rotate(225deg) translateY(-12%);
+}
+
+.app-detail__resource-branches {
+  position: relative;
+  display: grid;
+  gap: 0.55rem;
+  width: 100%;
+  margin-top: 0.65rem;
+  padding-left: 1.2rem;
+}
+
+.app-detail__resource-branches::before {
+  content: '';
+  position: absolute;
+  left: 0.32rem;
+  top: 0.2rem;
+  bottom: 0.55rem;
+  width: 1px;
+  background: linear-gradient(180deg, rgba(127, 100, 57, 0.64), rgba(127, 100, 57, 0.18));
+}
+
+.app-detail__resource-link {
+  position: relative;
+  width: 100%;
+  min-height: 40px;
+  justify-content: flex-start;
+  padding: 0.58rem 0.82rem;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  white-space: normal;
+  text-align: left;
+}
+
+.app-detail__resource-link::before {
+  content: '';
+  position: absolute;
+  left: -0.86rem;
+  top: 50%;
+  width: 0.72rem;
+  height: 1px;
+  background: rgba(127, 100, 57, 0.52);
+  transform: translateY(-50%);
 }
 
 .app-detail__placeholder {
@@ -185,6 +262,10 @@ const app = computed(() => apps[props.appId])
   }
 
   .app-detail__launch {
+    width: 100%;
+  }
+
+  .app-detail__resource-tree {
     width: 100%;
   }
 }

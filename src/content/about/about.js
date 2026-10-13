@@ -12,7 +12,20 @@ export const aboutContent = {
     resources: {
       id: 'ai-safety-resources',
       label: 'Resources about AI Safety and Best Practices',
-      href: 'https://owncloud.gwdg.de/index.php/s/PyQ2nN6aKpypKfG?path=%2FWebsite%2FResources%20on%20AI%20Policies',
+      items: [
+        {
+          label: 'EU Regulations for AI',
+          href: 'https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng',
+        },
+        {
+          label: 'AI Guide in German HEIs',
+          href: 'https://ki-edu-nrw.ruhr-uni-bochum.de/rechtsgutachten-von-kiedu-nrw-zur-bedeutung-der-europaeischen-ki-verordnung-veroeffentlicht/',
+        },
+        {
+          label: 'UNESCO Guidance for Gen AI',
+          href: 'https://unesdoc.unesco.org/ark:/48223/pf0000386693',
+        },
+      ],
     },
     paragraphs: [
       [
@@ -22,6 +35,11 @@ export const aboutContent = {
           text:
             ' and led by Dr. Anna Dorofeeva in the Institute for Digital Humanities at the University of Göttingen. Its goal was to build an extensive platform for learning about medieval western Latin manuscripts in the digital environment in which many students now first encounter them. Despite the growing accessibility of medieval manuscripts through digitisation, the study of these historical artefacts still presumes a high level of specialist knowledge. Moreover, the sciences of palaeography and codicology still largely depend on unbarred access to the physical objects themselves. To this end, the project team developed a concept for a comprehensive pedagogical website outfitted with several apps intended for learning about manuscript study and practising it. Its goal was to build tools that would meet learners and researchers where they are, whether in the classroom, at an archive, or online.',
         },
+      ],
+      [
+        { text: 'All the code related to this project is available under a CC BY-NC licence on ' },
+        { text: 'GitHub', href: 'https://github.com/emanuskript' },
+        { text: '.' },
       ],
     ],
   },

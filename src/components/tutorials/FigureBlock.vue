@@ -18,13 +18,17 @@ defineProps({
     type: String,
     default: '',
   },
+  eager: {
+    type: Boolean,
+    default: false,
+  },
 })
 </script>
 
 <template>
   <figure class="figure-block">
-    <ZoomableFigure :image="image" :alt="alt" />
-    <figcaption>
+    <ZoomableFigure :image="image" :alt="alt" :eager="eager" />
+    <figcaption v-if="caption || detail">
       <strong>{{ caption }}</strong>
       <span v-if="detail">{{ detail }}</span>
     </figcaption>

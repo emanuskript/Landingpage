@@ -1,10 +1,3 @@
-// Temporary external destinations for the landing-page apples until the live app URLs are published.
-const placeholderLandingAppUrls = {
-  fenius: 'https://example.com/emanuskript/fenius',
-  mergen: 'https://example.com/emanuskript/mergen',
-  seshat: 'https://example.com/emanuskript/seshat',
-}
-
 export const appExternalLinks = {
   fenius: {
     landingUrl: 'https://fenius-ten.vercel.app/',
@@ -16,8 +9,8 @@ export const appExternalLinks = {
     zenodoTodo: null,
   },
   mergen: {
-    landingUrl: placeholderLandingAppUrls.mergen,
-    launchUrl: null,
+    landingUrl: 'http://134.76.19.184/analyze',
+    launchUrl: 'http://134.76.19.184/analyze',
     launchLabel: 'Open Mergen',
     launchTodo: null,
     githubUrl: 'https://github.com/emanuskript/Mergen',
@@ -25,8 +18,8 @@ export const appExternalLinks = {
     zenodoTodo: null,
   },
   proteus: {
-    landingUrl: 'https://github.com/emanuskript/Proteus/releases',
-    launchUrl: 'https://github.com/emanuskript/Proteus/releases',
+    landingUrl: 'https://github.com/emanuskript/Proteus/releases/tag/v2.0.0',
+    launchUrl: 'https://github.com/emanuskript/Proteus/releases/tag/v2.0.0',
     launchLabel: 'Download Proteus',
     launchTodo: null,
     githubUrl: 'https://github.com/emanuskript/Proteus',

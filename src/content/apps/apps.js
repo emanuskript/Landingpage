@@ -8,6 +8,24 @@ export const appCollection = {
     'Each application page introduces a focused manuscript tool and highlights how it supports study, analysis, and teaching workflows.',
 }
 
+const aiGuidanceResources = {
+  label: 'Resources about AI Safety and Best Practices',
+  items: [
+    {
+      label: 'EU Regulations for AI',
+      href: 'https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng',
+    },
+    {
+      label: 'AI Guide in German HEIs',
+      href: 'https://ki-edu-nrw.ruhr-uni-bochum.de/rechtsgutachten-von-kiedu-nrw-zur-bedeutung-der-europaeischen-ki-verordnung-veroeffentlicht/',
+    },
+    {
+      label: 'UNESCO Guidance for Gen AI',
+      href: 'https://unesdoc.unesco.org/ark:/48223/pf0000386693',
+    },
+  ],
+}
+
 const appDefinitions = {
   fenius: {
     id: 'fenius',
@@ -18,11 +36,13 @@ const appDefinitions = {
     tagline: 'A three-part app for understanding and documenting bookbindings.',
     description:
       'Fenius is a research-facing environment for studying the physical structure of manuscripts, with emphasis on bookbinding observation and documentation.',
+    accessMessage: 'Launch the app in your browser using the button on the right',
     features: [
       'Connects directly to codicology-oriented study',
       'Designed for understanding, describing, and comparing bindings',
       'Supports structured recording of binding components for consistent analysis',
     ],
+    resources: aiGuidanceResources,
   },
   mergen: {
     id: 'mergen',
@@ -33,18 +53,13 @@ const appDefinitions = {
     tagline: 'A segmentation model for page layouts.',
     description:
       'Mergen focuses on page-layout segmentation for manuscript images and prepares complex pages for more structured analysis downstream.',
+    accessMessage: 'Launch the app in your browser using the button on the right',
     features: [
       'Page-region segmentation for manuscript material',
       'Useful where layout structure matters before deeper processing',
       'Helps isolate text blocks, decorations, and marginal elements for downstream workflows',
     ],
-    resources: {
-      to: {
-        path: routePaths.aboutProject,
-        hash: '#ai-safety-resources',
-      },
-      label: 'Resources about AI Safety and Best Practices',
-    },
+    resources: aiGuidanceResources,
   },
   proteus: {
     id: 'proteus',
@@ -55,11 +70,14 @@ const appDefinitions = {
     tagline: 'An easy-to-use interface for enhancing digital images.',
     description:
       'Proteus sits alongside the imaging material as an approachable interface for enhancing, comparing, and interpreting manuscript images.',
+    accessMessage:
+      'Proteus is available as a download for Apple silicon Macs, Windows, and Linux. For other operating systems, please use the installation instructions provided on GitHub.',
     features: [
       'Closely aligned with multispectral imaging teaching material',
       'Suited to enhancement and inspection workflows',
       'Improves visual legibility through contrast and channel-based image adjustments',
     ],
+    resources: aiGuidanceResources,
   },
   seshat: {
     id: 'seshat',
@@ -70,18 +88,13 @@ const appDefinitions = {
     tagline: 'A multifaceted tool for analysing scripts.',
     description:
       'Seshat is a multifaceted environment for script analysis, comparison, and other close palaeographic work.',
+    accessMessage: 'Launch the app in your browser using the button on the right',
     features: [
       'Supports detailed script-focused investigation',
       'Complements the site’s historical and digital manuscript routes',
       'Enables comparative examination of letterforms across hands and manuscript witnesses',
     ],
-    resources: {
-      to: {
-        path: routePaths.aboutProject,
-        hash: '#ai-safety-resources',
-      },
-      label: 'Resources about AI Safety and Best Practices',
-    },
+    resources: aiGuidanceResources,
   },
 }
 

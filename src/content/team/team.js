@@ -170,7 +170,7 @@ export const teamContent = {
     {
       id: 'further-acknowledgements',
       title: 'Further Acknowledgements',
-      intro: 'We also gratefully acknowledge the contributions of the following individuals:',
+      intro: 'We also gratefully acknowledge the contributions of the following individuals/Organizations:',
       members: [
         {
           id: 'abs',
@@ -183,7 +183,7 @@ export const teamContent = {
         },
         {
           id: 'natalia-brockey',
-          name: 'Natalia Brockey',
+          name: 'Natalia Illustrations',
           description: 'Bookbinding and scriptorium illustrations; all illustrations are copyrighted under the CC BY-NC license',
           photo: '/images/team/natalia-brockey.png',
           photoAlt: 'Natalia Illustration logo',

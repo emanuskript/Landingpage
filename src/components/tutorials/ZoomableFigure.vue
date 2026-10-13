@@ -10,6 +10,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  eager: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const open = ref(false)
@@ -37,6 +41,11 @@ function handleImageLoad(event) {
 }
 
 onMounted(() => {
+  if (props.eager) {
+    shouldRender.value = true
+    return
+  }
+
   if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
     shouldRender.value = true
     return
@@ -48,7 +57,7 @@ onMounted(() => {
         ensureVisible()
       }
     },
-    { rootMargin: '360px 0px' },
+    { rootMargin: '900px 0px' },
   )
 
   if (rootRef.value) {
@@ -69,9 +78,9 @@ onBeforeUnmount(() => {
           v-if="shouldRender"
           :src="props.image"
           :alt="props.alt"
-          loading="lazy"
+          :loading="props.eager ? 'eager' : 'lazy'"
           decoding="async"
-          fetchpriority="low"
+          :fetchpriority="props.eager ? 'high' : 'auto'"
           @load="handleImageLoad"
         />
         <div v-else class="zoomable-figure__placeholder" aria-hidden="true"></div>

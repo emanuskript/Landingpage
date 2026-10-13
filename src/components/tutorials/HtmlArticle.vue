@@ -19,6 +19,14 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   },
+  transformOptions: {
+    type: Object,
+    default: () => ({}),
+  },
+  transform: {
+    type: String,
+    default: 'default',
+  },
 })
 
 const html = ref('')
@@ -64,11 +72,13 @@ function updateQuizScore(question) {
 
 function runCheckAnswer(questionId, correctAnswer, message) {
   const root = articleRef.value
-  if (!root) return
+  if (!root || !/^[A-Za-z][A-Za-z0-9_-]*$/.test(questionId || '')) return
 
-  const question = root.querySelector(`#${questionId}`)
-  const feedback = root.querySelector(`#${questionId}-feedback`)
-  const selected = question?.querySelector(`input[name="${questionId}"]:checked`)
+  const question = root.querySelector(`#${CSS.escape(questionId)}`)
+  const feedback = root.querySelector(`#${CSS.escape(`${questionId}-feedback`)}`)
+  const selected = [...(question?.querySelectorAll('input:checked') ?? [])].find(
+    (input) => input.getAttribute('name') === questionId,
+  )
 
   if (!question || !feedback) return
 
@@ -139,7 +149,14 @@ async function loadFragment() {
   error.value = ''
 
   try {
-    html.value = await fetchHtmlFragment(props.sourcePath, props.selector, props.routeMap, props.assetMap)
+    html.value = await fetchHtmlFragment(
+        props.sourcePath,
+        props.selector,
+        props.routeMap,
+        props.assetMap,
+        props.transform,
+        props.transformOptions,
+      )
   } catch {
     error.value = 'Could not load tutorial content.'
   } finally {
@@ -148,7 +165,14 @@ async function loadFragment() {
 }
 
 watch(
-  () => [props.sourcePath, props.selector, JSON.stringify(props.routeMap), JSON.stringify(props.assetMap)],
+  () => [
+    props.sourcePath,
+    props.selector,
+    JSON.stringify(props.routeMap),
+    JSON.stringify(props.assetMap),
+    props.transform,
+    JSON.stringify(props.transformOptions),
+  ],
   loadFragment,
   { immediate: true },
 )
@@ -177,7 +201,12 @@ onUpdated(() => {
   <div class="html-article">
     <p v-if="loading" class="html-article__status">Loading tutorial content…</p>
     <p v-else-if="error" class="html-article__status html-article__status--error">{{ error }}</p>
-    <article v-else ref="articleRef" class="source-article" v-html="html" />
+    <article
+      v-else
+      ref="articleRef"
+      :class="['source-article', { 'source-article--msi-docx': props.transform === 'msi-docx' }]"
+      v-html="html"
+    />
   </div>
 </template>
 
@@ -208,11 +237,6 @@ onUpdated(() => {
   border: 1px solid var(--color-border-strong);
   border-radius: 28px;
   box-shadow: var(--shadow-panel);
-}
-
-.source-article > :deep(*) {
-  content-visibility: auto;
-  contain-intrinsic-size: 1px 120px;
 }
 
 .source-article :deep(h1),
@@ -307,6 +331,20 @@ onUpdated(() => {
 
 .source-article :deep(.illustration-block img) {
   border-radius: 16px;
+}
+
+.source-article :deep(figure) {
+  margin: 1.35rem 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.source-article :deep(figcaption) {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--color-ink-soft);
 }
 
 .source-article :deep(.illustration-block--stitch-row .illustration-strip) {
@@ -422,6 +460,19 @@ onUpdated(() => {
 
 .source-article :deep(tbody tr:last-child td) {
   border-bottom: 0;
+}
+
+.source-article--msi-docx {
+  --source-image-max-width: 100%;
+  --source-image-max-height: none;
+}
+
+.source-article--msi-docx :deep(h2) {
+  font-size: clamp(1.22rem, 1.9vw, 1.48rem);
+}
+
+.source-article--msi-docx :deep(h3) {
+  font-size: 1.02rem;
 }
 
 .source-article :deep(.badge),

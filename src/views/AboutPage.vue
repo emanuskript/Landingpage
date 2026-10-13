@@ -55,23 +55,34 @@ import { aboutContent } from '../content/about/about'
                   <span v-else>{{ segment.text }}</span>
                 </template>
               </p>
-
-              <p
-                v-if="paragraphIndex === 0 && aboutContent.overview.resources"
-                :id="aboutContent.overview.resources.id"
-                class="about-page__resource-link-row"
-                aria-label="Resources link"
-              >
-                <a
-                  :href="aboutContent.overview.resources.href"
-                  class="ui-button-link ui-button--secondary"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  {{ aboutContent.overview.resources.label }}
-                </a>
-              </p>
             </template>
+
+            <p
+              v-if="aboutContent.overview.resources"
+              :id="aboutContent.overview.resources.id"
+              class="about-page__resource-link-row"
+              aria-label="Resources link"
+            >
+              <details class="about-page__resource-tree">
+                <summary class="ui-button-link ui-button--secondary about-page__resource-toggle">
+                  <span>{{ aboutContent.overview.resources.label }}</span>
+                  <span class="about-page__resource-caret" aria-hidden="true"></span>
+                </summary>
+
+                <div class="about-page__resource-branches">
+                  <a
+                    v-for="resource in aboutContent.overview.resources.items"
+                    :key="resource.href"
+                    :href="resource.href"
+                    class="ui-button-link ui-button--secondary about-page__resource-link"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    {{ resource.label }}
+                  </a>
+                </div>
+              </details>
+            </p>
           </div>
         </div>
       </SectionFrame>
@@ -193,9 +204,56 @@ import { aboutContent } from '../content/about/about'
   margin: 0.75rem 0 0;
 }
 
-.about-page__resource-link-row > .ui-button-link {
+.about-page__resource-tree {
+  width: min(100%, 1000px);
+}
+
+.about-page__resource-tree summary {
+  list-style: none;
+}
+
+.about-page__resource-tree summary::-webkit-details-marker {
+  display: none;
+}
+
+.about-page__resource-toggle {
   width: fit-content;
   max-width: 100%;
+  justify-content: space-between;
+  gap: 0.75rem;
+  text-align: left;
+  white-space: normal;
+}
+
+.about-page__resource-caret {
+  width: 0.72rem;
+  height: 0.72rem;
+  flex: 0 0 auto;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-12%);
+  transition: transform var(--transition-fast);
+}
+
+.about-page__resource-tree[open] .about-page__resource-caret {
+  transform: rotate(225deg) translateY(-12%);
+}
+
+.about-page__resource-branches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  width: 100%;
+  margin-top: 0.65rem;
+}
+
+.about-page__resource-link {
+  min-height: 38px;
+  padding: 0.5rem 0.78rem;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  white-space: normal;
+  text-align: left;
 }
 
 .about-page__app-grid,

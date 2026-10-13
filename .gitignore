@@ -24,3 +24,6 @@ test-results
 *.sln
 *.sw?
 .vercel
+
+# One-off local content-normalization helpers (not production code)
+/fix_*.py

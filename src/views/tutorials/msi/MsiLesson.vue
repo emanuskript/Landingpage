@@ -46,7 +46,7 @@ const isProteusLesson = computed(() => lesson.value?.slug === 'proteus')
 <template>
   <TutorialShell
     v-if="lesson"
-    :class="{ 'msi-lesson--proteus': isProteusLesson }"
+    :class="['msi-lesson', { 'msi-lesson--proteus': isProteusLesson }]"
     :crumbs="[
       { label: 'Tutorials', to: routePaths.tutorialsIndex },
       { label: msiOverview.title, to: getMsiPath() },
@@ -75,6 +75,18 @@ const isProteusLesson = computed(() => lesson.value?.slug === 'proteus')
 .page-stack {
   display: grid;
   gap: 1rem;
+}
+
+.msi-lesson :deep(.tutorial-cover--with-media) {
+  align-items: center;
+}
+
+.msi-lesson :deep(.tutorial-cover__copy) {
+  justify-content: center;
+}
+
+.msi-lesson :deep(.tutorial-cover__meta) {
+  margin-top: 1.5rem;
 }
 
 .msi-lesson--proteus :deep(.tutorial-cover__media) {

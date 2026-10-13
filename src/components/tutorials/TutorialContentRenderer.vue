@@ -10,6 +10,10 @@ defineProps({
     default: () => [],
   },
 })
+
+function shouldPrioritizeBlockImage(blockIndex, figureIndex = 0) {
+  return blockIndex < 2 && figureIndex < 2
+}
 </script>
 
 <template>
@@ -21,6 +25,8 @@ defineProps({
         :selector="block.selector"
         :route-map="block.routeMap"
         :asset-map="block.assetMap"
+        :transform="block.transform || 'default'"
+        :transform-options="block.transformOptions || {}"
       />
 
       <SectionFrame
@@ -108,17 +114,28 @@ defineProps({
         :alt="block.alt"
         :caption="block.caption"
         :detail="block.detail || ''"
+        :eager="shouldPrioritizeBlockImage(index)"
       />
 
-      <div v-else-if="block.type === 'figure-grid'" class="tutorial-content-renderer__figure-grid">
-        <FigureBlock
-          v-for="figure in block.figures"
-          :key="figure.image"
-          :image="figure.image"
-          :alt="figure.alt"
-          :caption="figure.caption"
-          :detail="figure.detail || ''"
-        />
+      <div v-else-if="block.type === 'figure-grid'" class="tutorial-content-renderer__figure-group">
+        <div class="tutorial-content-renderer__figure-grid">
+          <FigureBlock
+            v-for="(figure, figureIndex) in block.figures"
+            :key="figure.image"
+            :image="figure.image"
+            :alt="figure.alt"
+            :caption="figure.caption"
+            :detail="figure.detail || ''"
+            :eager="shouldPrioritizeBlockImage(index, figureIndex)"
+          />
+        </div>
+        <figcaption
+          v-if="block.caption || block.detail"
+          class="tutorial-content-renderer__figure-grid-caption"
+        >
+          <strong v-if="block.caption">{{ block.caption }}</strong>
+          <span v-if="block.detail">{{ block.detail }}</span>
+        </figcaption>
       </div>
 
       <FurtherReadingBlock
@@ -141,6 +158,11 @@ defineProps({
   gap: 1rem;
 }
 
+.tutorial-content-renderer__figure-group {
+  display: grid;
+  gap: 0.75rem;
+}
+
 .tutorial-content-renderer__subsection + .tutorial-content-renderer__subsection {
   padding-top: 1rem;
   border-top: 1px solid var(--color-border-light);
@@ -157,6 +179,19 @@ defineProps({
   padding-left: 1.15rem;
   font-size: 0.96rem;
   line-height: 1.7;
+}
+
+.tutorial-content-renderer__figure-grid-caption {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0;
+  color: var(--color-ink-soft);
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+}
+
+.tutorial-content-renderer__figure-grid-caption strong {
+  color: var(--color-ink);
 }
 
 .tutorial-content-renderer__subsection ul,

@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
+import { Analytics } from '@vercel/analytics/vue'
 import RootlingNav from './components/navigation/RootlingNav.vue'
 
 const route = useRoute()
@@ -13,6 +14,7 @@ const showRootling = computed(() => route.meta.showRootling !== false)
     <RouterView v-slot="{ Component }">
       <component :is="Component" />
     </RouterView>
+    <Analytics />
   </div>
 </template>
 

@@ -85,6 +85,7 @@ const scriptAssetMaps = {
     '11_Antiquior.jpg': '/images/scripts/unit11/11-antiquior.jpg',
     '11_Bastarda.jpg': '/images/scripts/unit11/11-bastarda.jpg',
     '11_Batarde.jpeg': '/images/scripts/unit11/11-batarde.jpeg',
+    '11_Cursiva_Recentior_Saint_Omer.png': '/images/scripts/unit11/11-cursiva-recentior-saint-omer.png',
     '11_Paradiso.jpg': '/images/scripts/unit11/11-paradiso.jpg',
     '11_Secretary.jpg': '/images/scripts/unit11/11-secretary.jpg',
   },
